@@ -3,7 +3,9 @@ import { RouterView } from 'vue-router'
 import { ref } from 'vue'
 
 const items = [
-  { title: 'Home', icon: 'mdi-home', to: '/' },
+  { title: 'Map', icon: 'mdi-map', to: '/' },
+  { title: 'What is an ALPR?', icon: 'mdi-cctv', to: '/what-is-an-alpr' },
+  { title: 'Report an ALPR', icon: 'mdi-map-marker-plus', to: '/report' },
   { title: 'About', icon: 'mdi-information', to: '/about' },
 ]
 const drawer = ref(false)
@@ -18,18 +20,16 @@ const drawer = ref(false)
       <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>
-        <v-img height="36" width="200" src="/deflock-logo.png" />
+        <v-img height="36" width="200" src="/deflock-logo.svg" />
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
 
       <template v-if="$vuetify.display.mdAndUp">
-        <v-btn icon="mdi-magnify" variant="text"></v-btn>
+        <v-btn disabled icon="mdi-magnify" variant="text"></v-btn>
 
-        <v-btn icon="mdi-filter" variant="text"></v-btn>
+        <v-btn disabled icon="mdi-filter" variant="text"></v-btn>
       </template>
-
-      <v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
     </v-app-bar>
 
     <v-navigation-drawer
@@ -42,7 +42,7 @@ const drawer = ref(false)
           :key="item.title"
           link
           :to="item.to"
-        >{{ item.title }}</v-list-item>
+        ><v-icon start>{{ item.icon }}</v-icon>{{ item.title }}</v-list-item>
       </v-list>
     </v-navigation-drawer>
 

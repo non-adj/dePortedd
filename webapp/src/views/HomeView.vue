@@ -1,5 +1,9 @@
 <template>
   <div class="map-container">
+    <v-card class="map-notif" v-show="!canRefreshMarkers">
+      <v-card-title><b>Zoom in to Refresh ALPRs</b></v-card-title>
+    </v-card>
+
     <!-- use-global-leaflet=false is a workaround for a bug in current version of vue-leaflet -->
     <l-map
       v-if="center"
@@ -20,7 +24,7 @@
         v-for="alpr in alprsInView"
         :key="alpr.id"
         :lat-lng="[alpr.lat, alpr.lon]"
-      ><l-popup>This is an ALPR! Fuck it!</l-popup></l-marker>
+      ><l-popup>This is an ALPR! More data (such as direction) coming soon.</l-popup></l-marker>
     </l-map>
     <div v-else>
       loading...
@@ -31,7 +35,7 @@
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
 import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router'
 import type { Ref } from 'vue';
 import type { BoundingBox } from '@/services/apiService';
@@ -42,45 +46,47 @@ const center: Ref<any|null> = ref(null);
 const bounds: Ref<BoundingBox|null> = ref(null);
 const router = useRouter();
 
-const alprsInView = ref([
-    {
-        "type": "node",
-        "id": 12187369976,
-        "lat": 34.6616103,
-        "lon": -86.4870137,
-        "tags": {
-            "brand": "Flock Safety",
-            "brand:wikidata": "Q108485435",
-            "camera:mount": "pole",
-            "camera:type": "fixed",
-            "direction": "335",
-            "man_made": "surveillance",
-            "operator": "Flock Safety",
-            "operator:wikidata": "Q108485435",
-            "surveillance": "traffic",
-            "surveillance:type": "ALPR",
-            "surveillance:zone": "traffic"
-        }
-    },
-    {
-        "type": "node",
-        "id": 12187369977,
-        "lat": 34.6615727,
-        "lon": -86.4881948,
-        "tags": {
-            "brand": "Flock Safety",
-            "brand:wikidata": "Q108485435",
-            "camera:mount": "pole",
-            "camera:type": "fixed",
-            "direction": "295",
-            "man_made": "surveillance",
-            "operator": "Flock Safety",
-            "operator:wikidata": "Q108485435",
-            "surveillance": "traffic",
-            "surveillance:type": "ALPR",
-            "surveillance:zone": "traffic"
-        }
-    }
+const canRefreshMarkers = computed(() => zoom.value >= 10);
+
+const alprsInView: Ref<any[]> = ref([
+    // {
+    //     "type": "node",
+    //     "id": 12187369976,
+    //     "lat": 34.6616103,
+    //     "lon": -86.4870137,
+    //     "tags": {
+    //         "brand": "Flock Safety",
+    //         "brand:wikidata": "Q108485435",
+    //         "camera:mount": "pole",
+    //         "camera:type": "fixed",
+    //         "direction": "335",
+    //         "man_made": "surveillance",
+    //         "operator": "Flock Safety",
+    //         "operator:wikidata": "Q108485435",
+    //         "surveillance": "traffic",
+    //         "surveillance:type": "ALPR",
+    //         "surveillance:zone": "traffic"
+    //     }
+    // },
+    // {
+    //     "type": "node",
+    //     "id": 12187369977,
+    //     "lat": 34.6615727,
+    //     "lon": -86.4881948,
+    //     "tags": {
+    //         "brand": "Flock Safety",
+    //         "brand:wikidata": "Q108485435",
+    //         "camera:mount": "pole",
+    //         "camera:type": "fixed",
+    //         "direction": "295",
+    //         "man_made": "surveillance",
+    //         "operator": "Flock Safety",
+    //         "operator:wikidata": "Q108485435",
+    //         "surveillance": "traffic",
+    //         "surveillance:type": "ALPR",
+    //         "surveillance:zone": "traffic"
+    //     }
+    // }
 ]);
 
 function getUserLocation(): Promise<[number, number]> {
@@ -139,15 +145,15 @@ function updateMarkers() {
     return;
   }
 
-  if (zoom.value < 12) {
+  if (!canRefreshMarkers.value) {
     console.log('zoomed out too far');
     return;
   }
 
-  // getALPRs(bounds.value)
-  //   .then((alprs: any) => {
-  //     alprsInView.value = alprs.elements;
-  //   });
+  getALPRs(bounds.value)
+    .then((alprs: any) => {
+      alprsInView.value = alprs.elements;
+    });
 }
 
 onMounted(() => {
@@ -181,5 +187,18 @@ onMounted(() => {
   width: 100%;
   height: calc(100vh - 64px);
   overflow: auto;
+}
+
+.map-notif {
+  position: absolute;
+  text-align: center;
+  bottom: 32px;
+  left: 32px;
+  width: calc(100% - 64px);
+  z-index: 1000;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  padding: 4px;
+  color: #333;
 }
 </style>
