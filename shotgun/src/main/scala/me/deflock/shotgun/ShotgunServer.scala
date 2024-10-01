@@ -1,6 +1,7 @@
 package me.deflock.shotgun
 
 import org.apache.pekko
+import org.apache.pekko.http.scaladsl.model.headers.{HttpOrigin, HttpOriginRange, `Access-Control-Allow-Origin`}
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.http.scaladsl.Http
@@ -17,16 +18,32 @@ object ShotgunServer {
     implicit val system: ActorSystem[Any] = ActorSystem(Behaviors.empty, "my-system")
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
-    val route =
-      path("oauth2" / "callback") {
-        get {
-          parameters(Symbol("code").?) { (code) =>
-            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to Pekko HTTP</h1><p><b>Code: " + code.getOrElse("None") + "</b></p>"))
+    val routes = {
+      concat {
+        path("oauth2" / "callback") {
+          get {
+            parameters(Symbol("code").?) { (code) =>
+              complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to Pekko HTTP</h1><p><b>Code: " + code.getOrElse("None") + "</b></p>"))
+            }
+          }
+        }
+        path("alpr") {
+          get {
+            parameters("minLat".as[Double], "minLng".as[Double], "maxLat".as[Double], "maxLng".as[Double]) { (minLat, minLng, maxLat, maxLng) =>
+              val client = new services.OverpassClient() // TODO: make this global
+              val bBox = services.BoundingBox(minLat, minLng, maxLat, maxLng)
+              onSuccess(client.getALPRs(bBox)) { json =>
+                respondWithHeader(`Access-Control-Allow-Origin`.*) {
+                  complete(HttpEntity(ContentTypes.`application/json`, json.toString()))
+                }
+              }
+            }
           }
         }
       }
+    }
 
-    val bindingFuture = Http().newServerAt("localhost", 8080).bind(route)
+    val bindingFuture = Http().newServerAt("localhost", 8080).bind(routes)
 
     println(s"Server now online. Please navigate to http://localhost:8080\nPress RETURN to stop...")
     StdIn.readLine() // let it run until user presses return
