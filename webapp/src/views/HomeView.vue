@@ -20,11 +20,14 @@
         name="OpenStreetMap"
       ></l-tile-layer>
       <l-marker
-        @click="console.log('marker clicked')"
         v-for="alpr in alprsInView"
         :key="alpr.id"
         :lat-lng="[alpr.lat, alpr.lon]"
-      ><l-popup>This is an ALPR! More data (such as direction) coming soon.</l-popup></l-marker>
+      ><l-popup>
+        <h2>ALPR</h2>
+        <p v-if="alpr.tags.brand || alpr.tags.operator"><strong>Brand: </strong><a target="_blank" :href="`https://www.wikidata.org/wiki/${alpr.tags['brand:wikidata'] || alpr.tags['operator:wikidata']}`">{{ alpr.tags.brand || alpr.tags.operator || 'Unknown' }}</a></p>
+        <p v-if="alpr.tags.direction"><strong>Faces: {{ degreesToCardinal(alpr.tags.direction) }}</strong></p>
+      </l-popup></l-marker>
     </l-map>
     <div v-else>
       loading...
@@ -38,7 +41,7 @@ import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet';
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router'
 import type { Ref } from 'vue';
-import type { BoundingBox } from '@/services/apiService';
+import { BoundingBox } from '@/services/apiService';
 import { getALPRs } from '@/services/apiService';
 
 const zoom: Ref<number> = ref(12);
@@ -48,46 +51,8 @@ const router = useRouter();
 
 const canRefreshMarkers = computed(() => zoom.value >= 10);
 
-const alprsInView: Ref<any[]> = ref([
-    // {
-    //     "type": "node",
-    //     "id": 12187369976,
-    //     "lat": 34.6616103,
-    //     "lon": -86.4870137,
-    //     "tags": {
-    //         "brand": "Flock Safety",
-    //         "brand:wikidata": "Q108485435",
-    //         "camera:mount": "pole",
-    //         "camera:type": "fixed",
-    //         "direction": "335",
-    //         "man_made": "surveillance",
-    //         "operator": "Flock Safety",
-    //         "operator:wikidata": "Q108485435",
-    //         "surveillance": "traffic",
-    //         "surveillance:type": "ALPR",
-    //         "surveillance:zone": "traffic"
-    //     }
-    // },
-    // {
-    //     "type": "node",
-    //     "id": 12187369977,
-    //     "lat": 34.6615727,
-    //     "lon": -86.4881948,
-    //     "tags": {
-    //         "brand": "Flock Safety",
-    //         "brand:wikidata": "Q108485435",
-    //         "camera:mount": "pole",
-    //         "camera:type": "fixed",
-    //         "direction": "295",
-    //         "man_made": "surveillance",
-    //         "operator": "Flock Safety",
-    //         "operator:wikidata": "Q108485435",
-    //         "surveillance": "traffic",
-    //         "surveillance:type": "ALPR",
-    //         "surveillance:zone": "traffic"
-    //     }
-    // }
-]);
+const alprsInView: Ref<any[]> = ref([]);
+const bboxForLastRequest: Ref<BoundingBox|null> = ref(null);
 
 function getUserLocation(): Promise<[number, number]> {
   return new Promise((resolve, reject) => {
@@ -115,18 +80,22 @@ function mapLoaded(map: any) {
 }
 
 function updateBounds(newBounds: any) {
-  bounds.value = {
+  updateURL();
+  
+  const newBoundingBox = new BoundingBox({
     minLat: newBounds.getSouth(),
     maxLat: newBounds.getNorth(),
     minLng: newBounds.getWest(),
     maxLng: newBounds.getEast(),
-  };
+  });
+  bounds.value = newBoundingBox;
+
+  if (bboxForLastRequest.value && newBoundingBox.isSubsetOf(bboxForLastRequest.value)) {
+    console.debug('new bounds are a subset of the last request, skipping');
+    return;
+  }
 
   updateMarkers();
-
-  if (center.value) {
-    updateURL();
-  }
 }
 
 function updateURL() {
@@ -153,14 +122,19 @@ function updateMarkers() {
   getALPRs(bounds.value)
     .then((alprs: any) => {
       alprsInView.value = alprs.elements;
+      bboxForLastRequest.value = bounds.value;
     });
+}
+
+function degreesToCardinal(degrees: number): string {
+  const cardinals = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+  return cardinals[Math.round(degrees / 45) % 8];
 }
 
 onMounted(() => {
   const hash = router.currentRoute.value.hash;
   if (hash) {
     const parts = hash.split('/');
-    console.log('parts', parts);
     if (parts.length === 3 && parts[0].startsWith('#map')) {
       const zoomLevelString = parts[0].replace('#map=', '');
       zoom.value = parseInt(zoomLevelString, 10);
@@ -168,8 +142,6 @@ onMounted(() => {
         lat: parseFloat(parts[1]),
         lng: parseFloat(parts[2]),
       };
-      console.log('center', center.value);
-      console.log('zoom', zoom.value);
     }
   }
 
@@ -196,9 +168,9 @@ onMounted(() => {
   left: 32px;
   width: calc(100% - 64px);
   z-index: 1000;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
   border-radius: 4px;
   padding: 4px;
-  color: #333;
+  color: #eee;
 }
 </style>

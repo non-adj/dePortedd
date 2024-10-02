@@ -2,32 +2,84 @@
   <v-container>
     <h2>How to Report an ALPR</h2>
     <p>
-      If you've spotted an ALPR in your area, you can help us track it by reporting it to our database. Here's how you can do it:
+      If you've spotted an ALPR in your area, you can help us track it by reporting it to OpenStreetMap, where we source our information. Here's how you can do it:
     </p>
 
-    <h3>Coming Soon</h3>
-    <p>
-      We're working on a way for you to report ALPRs directly from this site. Check back soon for updates!
-    </p>
-    <p>
-      Until then, you can report them on OpenStreetMap. <a href="https://wiki.openstreetmap.org/wiki/Tag:man_made%3Dsurveillance" target="_blank">Learn how to add ALPRs to OpenStreetMap</a>.
-    </p>
+    <v-alert
+      variant="tonal"
+      type="warning"
+      class="my-6"
+      title="Are you sure it's an ALPR?"
+    >
+      <p>
+        Before you report an ALPR, please read our <router-link style="color: unset !important" to="/what-is-an-alpr">guide on what ALPRs look like</router-link> to make sure you're reporting the right thing.
+      </p>
+    </v-alert>
 
-    <!-- <p>
-      If you can do so safely, take a picture of the ALPR camera. Make sure the camera is visible in the image, and try to capture any identifying information, such as the brand name or any logos.
-    </p>
+    <div class="ml-4 mt-4">
+      <h3>1. Create an OpenStreetMap Account</h3>
+      <p>
+        <a href="https://www.openstreetmap.org/user/new" target="_blank">Sign up for an OpenStreetMap account</a> in order to submit changes.
+      </p>
 
-    <h3>Step 2: Note the Location</h3>
-    <p>
-      Record the location of the ALPR camera. You can use your phone's GPS to get the coordinates, or note the nearest address or intersection.
-    </p>
+      <h3>2. Find the ALPR's Location on OpenStreetMap</h3>
+      <p>
+        <a href="https://www.openstreetmap.org" target="_blank">Launch OpenStreetMap</a> and search for the location of the ALPR. You can use the search bar at the top of the page to find the location.
+      </p>
 
-    <h3>Step 3: Submit the Report</h3>
-    <p>
-      Click the "Report" button below to submit your report. You'll be asked to upload the picture you took and provide the location information. Your report will help us build a more comprehensive database of ALPRs in the United States.
-    </p> -->
+      <h3>3. Add the ALPR to OpenStreetMap</h3>
+      <p>
+        Once you've found the location of the ALPR, click the <strong>Edit</strong> button in the top left corner of the page. This will open the OpenStreetMap editor, where you can add the ALPR to the map.
+      </p>
+
+      <v-img src="/edit-map.png" />
+
+      <p>
+        To add the ALPR, click the <strong>Point</strong> button in the top left corner of the editor, then click on the location of the ALPR on the map. In the popup that appears, paste the following tags:
+      </p>
+
+      <DFCode>
+        man_made=surveillance<br>
+        surveillance:type=ALPR<br>
+        camera:mount=pole<br>
+        camera:type=fixed<br>
+        surveillance=traffic<br>
+        surveillance:zone=traffic<br>
+      </DFCode>
+
+      <v-img class="my-4" src="/paste-tags.png" />
+
+      <p>
+        If you've identified the brand of the ALPR as Flock Safety, then you can also add the following tags:
+      </p>
+      <DFCode>
+        operator=Flock Safety<br>
+        operator:wikidata=Q108485435<br>
+        brand=Flock Safety<br>
+        brand:wikidata=Q108485435<br>
+      </DFCode>
+
+      <h3>4. Adjust the Direction</h3>
+
+      <v-img src="/adjust-angle.png" />
+
+      <p>
+        If you know the direction that the ALPR is facing, you can use the up and down arrows to set the direction it faces.
+      </p>
+
+      <h3>5. Submit Your Changes</h3>
+      <p>
+        Once you've added the ALPR to the map, click the <strong>Save</strong> button in the top left corner of the editor. You'll be asked to provide a brief description of your changes. Once you've submitted your changes, the ALPR will be added to OpenStreetMap.
+      </p>
+
+    </div>
   </v-container>
 </template>
+
+<script setup lang="ts">
+import DFCode from '@/components/DFCode.vue';
+
+</script>
 
 <style scoped>
 /* TODO: put this all in one place, also in what-is view */
@@ -50,16 +102,11 @@ p {
   margin-top: 0.5rem;
 }
 
-a {
-  color: var(--v-primary-base);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-a:visited {
-  color: var(--v-primary-base);
+code {
+  background-color: #f4f4f4;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  display: block;
+  margin-top: 0.5rem;
 }
 </style>

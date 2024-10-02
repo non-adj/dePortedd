@@ -1,25 +1,65 @@
 package me.deflock.shotgun
 
 import org.apache.pekko
-import org.apache.pekko.http.scaladsl.model.headers.{HttpOrigin, HttpOriginRange, `Access-Control-Allow-Origin`}
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.scaladsl.Behaviors
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.event.Logging
+import org.apache.pekko.http.cors.scaladsl.CorsDirectives.cors
+import org.apache.pekko.http.cors.scaladsl.model.HttpOriginMatcher
+import org.apache.pekko.http.cors.scaladsl.settings.CorsSettings
+import org.apache.pekko.http.scaladsl.model.headers.{HttpOrigin, `Access-Control-Allow-Origin`}
 import pekko.http.scaladsl.Http
 import pekko.http.scaladsl.model._
-import pekko.http.scaladsl.server.Directives._
+import pekko.http.scaladsl.server.Directives.{path, _}
+import org.apache.pekko.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import org.apache.pekko.http.scaladsl.server.RejectionHandler
 
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.{Await, ExecutionContextExecutor, Future}
+import scala.concurrent.duration._
 import scala.io.StdIn
 
 object ShotgunServer {
 
   def main(args: Array[String]): Unit = {
 
-    implicit val system: ActorSystem[Any] = ActorSystem(Behaviors.empty, "my-system")
-    implicit val executionContext: ExecutionContextExecutor = system.executionContext
+    implicit val system: ActorSystem = ActorSystem("my-system")
+    implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+    val logging = Logging(system, getClass)
 
-    val routes = {
-      concat {
+    val client = new services.OverpassClient()
+
+    // CORS
+    val allowedOrigins = List(
+      "http://localhost:8080",
+      "http://localhost:5173",
+      "https://deflock.me",
+      "https://www.deflock.me",
+    ).map(HttpOrigin(_)) // TODO: make this a config setting
+    val corsSettings = CorsSettings.default
+      .withAllowedOrigins(HttpOriginMatcher(allowedOrigins: _*))
+      .withExposedHeaders(List(`Access-Control-Allow-Origin`.name))
+
+    val rejectionHandler = RejectionHandler.newBuilder()
+      .handleNotFound {
+        complete((StatusCodes.NotFound, "The requested resource could not be found."))
+      }
+      .handle {
+        case corsRejection: org.apache.pekko.http.cors.scaladsl.CorsRejection =>
+          complete((StatusCodes.Forbidden, "CORS rejection: Invalid origin"))
+      }
+      .result()
+
+    val apiRoutes = pathPrefix("api") {
+      concat (
+        path("alpr") {
+          get {
+            parameters("minLat".as[Double], "minLng".as[Double], "maxLat".as[Double], "maxLng".as[Double]) { (minLat, minLng, maxLat, maxLng) =>
+              val bBox = services.BoundingBox(minLat, minLng, maxLat, maxLng)
+              onSuccess(client.getALPRs(bBox)) { json =>
+                complete(json)
+              }
+            }
+          }
+        },
         path("oauth2" / "callback") {
           get {
             parameters(Symbol("code").?) { (code) =>
@@ -27,23 +67,20 @@ object ShotgunServer {
             }
           }
         }
-        path("alpr") {
-          get {
-            parameters("minLat".as[Double], "minLng".as[Double], "maxLat".as[Double], "maxLng".as[Double]) { (minLat, minLng, maxLat, maxLng) =>
-              val client = new services.OverpassClient() // TODO: make this global
-              val bBox = services.BoundingBox(minLat, minLng, maxLat, maxLng)
-              onSuccess(client.getALPRs(bBox)) { json =>
-                respondWithHeader(`Access-Control-Allow-Origin`.*) {
-                  complete(HttpEntity(ContentTypes.`application/json`, json.toString()))
-                }
-              }
-            }
-          }
-        }
+      )
+    }
+
+    val spaRoutes = pathSingleSlash {
+      getFromFile("../webapp/dist/index.html")
+    } ~ getFromDirectory("../webapp/dist")
+
+    val routes = handleRejections(rejectionHandler) {
+      cors(corsSettings) {
+        concat(apiRoutes, spaRoutes)
       }
     }
 
-    val bindingFuture = Http().newServerAt("localhost", 8080).bind(routes)
+    val bindingFuture = Http().newServerAt("0.0.0.0", 8080).bind(routes)
 
     println(s"Server now online. Please navigate to http://localhost:8080\nPress RETURN to stop...")
     StdIn.readLine() // let it run until user presses return

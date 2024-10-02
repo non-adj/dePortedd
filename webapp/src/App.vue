@@ -20,16 +20,10 @@ const drawer = ref(false)
       <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>
-        <v-img height="36" width="200" src="/deflock-logo.svg" />
+        <v-img height="36" width="130" src="/deflock-logo.svg" />
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
-
-      <template v-if="$vuetify.display.mdAndUp">
-        <v-btn disabled icon="mdi-magnify" variant="text"></v-btn>
-
-        <v-btn disabled icon="mdi-filter" variant="text"></v-btn>
-      </template>
     </v-app-bar>
 
     <v-navigation-drawer
