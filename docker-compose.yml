@@ -16,16 +16,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     environment:
       - SSL_CERTIFICATE=/etc/letsencrypt/live/deflock.me/fullchain.pem
       - SSL_CERTIFICATE_KEY=/etc/letsencrypt/live/deflock.me/privkey.pem
     restart: always
-
-  certbot:
-    image: certbot/certbot
-    environment:
-      - CERTBOT_EMAIL
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
-      - /var/lib/letsencrypt:/var/lib/letsencrypt
-    command: certonly --webroot -w /var/www/certbot -d deflock.me --email ${CERTBOT_EMAIL} --agree-tos --no-eff-email
