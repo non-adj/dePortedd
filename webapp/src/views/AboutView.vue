@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container max-width="1000">
     <h2>About Us</h2>
     <p>
       Welcome to DeFlock, your go-to resource for understanding and addressing the growing presence of Automated License Plate Readers (ALPRs) in our communities.

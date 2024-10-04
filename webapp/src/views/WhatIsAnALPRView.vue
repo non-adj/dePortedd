@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container max-width="1000">
     <p>
       <v-img max-height="350" width="100%" cover src="/flock-camera.jpeg" />
     </p>
@@ -31,9 +31,18 @@
     </div>
 
     <h2 id="not-alpr" :class="{ highlighted: route.hash === '#not-alpr' }">What They Look Like</h2>
-    <v-img class="my-4" width="400" src="/flock-camera.jpeg" />
+    <v-carousel class="my-4" hide-delimiters>
+      <v-carousel-item
+        v-for="n in carouselCount"
+        :key="n"
+        aspect-ratio="1"
+        :src="`/flock-${n}.jpg`"
+      ></v-carousel-item>
+    </v-carousel>
+    
+
     <p>
-      The most common brand of ALPRs in the US is Flock Safety. They are easy to spot because they almost all look the same. They are usually mounted on a standalone black pole with a solar panel on top. The cameras are often placed near intersections or on main roads at the edge of a city or town.
+      The most common brand of ALPRs in the US is <a href="https://en.wikipedia.org/wiki/Flock_Safety" target="_blank">Flock Safety</a>. They are easy to spot because they almost all look the same. They are almost always mounted on a pole with a solar panel on top. In rural areas, they are likely to be on standalone black poles, while in cities, they are more likely to be on existing utility/traffic poles. The cameras are often placed near intersections or on main roads at the edge of a city or town.
     </p>
 
     <h2>Not All Cameras are ALPRs</h2>
@@ -66,6 +75,8 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 const route = useRoute();
+
+const carouselCount = 6;
 </script>
 
 <style scoped>

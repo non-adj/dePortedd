@@ -24,13 +24,13 @@
         :key="alpr.id"
         :lat-lng="[alpr.lat, alpr.lon]"
       ><l-popup>
-        <h2>ALPR</h2>
-        <p v-if="alpr.tags.brand || alpr.tags.operator"><strong>Brand: </strong><a target="_blank" :href="`https://www.wikidata.org/wiki/${alpr.tags['brand:wikidata'] || alpr.tags['operator:wikidata']}`">{{ alpr.tags.brand || alpr.tags.operator || 'Unknown' }}</a></p>
-        <p v-if="alpr.tags.direction"><strong>Faces: {{ degreesToCardinal(alpr.tags.direction) }}</strong></p>
+        <p class="mb-0 mt-2" v-if="alpr.tags.brand || alpr.tags.operator"><strong>Brand: </strong><a target="_blank" :href="`https://www.wikidata.org/wiki/${alpr.tags['brand:wikidata'] || alpr.tags['operator:wikidata']}`">{{ alpr.tags.brand || alpr.tags.operator || 'Unknown' }}</a></p>
+        <p class="my-0" v-if="alpr.tags.direction"><strong>Faces: {{ degreesToCardinal(alpr.tags.direction) }} {{ alpr.tags.direction }}&deg;</strong></p>
       </l-popup></l-marker>
     </l-map>
-    <div v-else>
-      loading...
+    <div class="loader" v-else>
+      <span class="mb-4 text-grey">Loading Map</span>
+      <v-progress-circular indeterminate color="primary" />
     </div>
   </div>
 </template>
@@ -44,7 +44,7 @@ import type { Ref } from 'vue';
 import { BoundingBox } from '@/services/apiService';
 import { getALPRs } from '@/services/apiService';
 
-const zoom: Ref<number> = ref(12);
+const zoom: Ref<number> = ref(13);
 const center: Ref<any|null> = ref(null);
 const bounds: Ref<BoundingBox|null> = ref(null);
 const router = useRouter();
@@ -115,13 +115,15 @@ function updateMarkers() {
   }
 
   if (!canRefreshMarkers.value) {
-    console.log('zoomed out too far');
     return;
   }
 
   getALPRs(bounds.value)
     .then((alprs: any) => {
-      alprsInView.value = alprs.elements;
+      // merge incoming with existing, so that moving the map doesn't remove markers
+      const existingIds = new Set(alprsInView.value.map(alpr => alpr.id));
+      const newAlprs = alprs.elements.filter((alpr: any) => !existingIds.has(alpr.id));
+      alprsInView.value = [...alprsInView.value, ...newAlprs];
       bboxForLastRequest.value = bounds.value;
     });
 }
@@ -149,6 +151,10 @@ onMounted(() => {
     .then(location => {
       if (!hash)
         center.value = { lat: location[0], lng: location[1] };
+    }).catch(error => {
+      // TODO: allow search
+      console.debug('Error getting user location. Defaulting to Huntsville, AL.', error);
+      center.value = { lat: 34.730819, lng: -86.586114 }; // Huntsville, AL
     });
 });
 
@@ -167,10 +173,25 @@ onMounted(() => {
   bottom: 32px;
   left: 32px;
   width: calc(100% - 64px);
+  max-width: 1000px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.6);
   border-radius: 4px;
   padding: 4px;
   color: #eee;
+}
+
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #333;
 }
 </style>

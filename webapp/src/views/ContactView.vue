@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container max-width="1000">
     <h2>Contact Us</h2>
     <p>
       If you have any questions or concerns about the data on this site, please contact us at <a href="mailto:contact@deflock.me">contact@deflock.me</a>.

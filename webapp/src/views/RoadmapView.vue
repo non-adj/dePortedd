@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container max-width="1000">
     <h1>Feature Roadmap</h1>
 
     <h2>Current Features</h2>
@@ -17,6 +17,11 @@
 
     <h2>Upcoming Features</h2>
     <div class="ml-4">
+      <h3><v-icon start>mdi-magnify</v-icon>Search Functionality</h3>
+      <p>
+        Search the map for specific locations, cities, or regions.
+      </p>
+      
       <h3><v-icon start>mdi-map-marker-plus</v-icon>Report an ALPR on this Site</h3>
       <p>
         Report ALPRs directly from this site, without having to use the OSM Editor or copy and paste object tags.

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container max-width="1000">
     <v-alert
       variant="tonal"
       type="info"
