@@ -15,11 +15,31 @@
       @ready="mapLoaded"
       :options="{ zoomControl: false, attributionControl: false }"
     >
+      <l-control position="topleft">
+        <v-text-field
+          class="map-search"
+          ref="searchField"
+          prepend-inner-icon="mdi-magnify"
+          placeholder="Search for a location"
+          single-line
+          variant="solo"
+          clearable
+          hide-details
+          v-model="searchQuery"
+          @keyup.enter="onSearch"
+        >
+          <template v-slot:append-inner>
+            <v-btn :disabled="!searchQuery" variant="text" flat color="#0080BC" @click="onSearch">
+              Go<v-icon end>mdi-chevron-right</v-icon>
+            </v-btn>
+          </template>
+        </v-text-field>
+      </l-control>
       <l-tile-layer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         layer-type="base"
         name="OpenStreetMap"
-      ></l-tile-layer>
+      />
       <l-control-zoom position="bottomright" />
       <l-marker
         v-for="alpr in alprsInView"
@@ -41,22 +61,46 @@
 
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
-import { LMap, LTileLayer, LMarker, LPopup, LControlZoom } from '@vue-leaflet/vue-leaflet';
+import { LMap, LTileLayer, LMarker, LPopup, LControlZoom, LControl } from '@vue-leaflet/vue-leaflet';
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router'
 import type { Ref } from 'vue';
 import { BoundingBox } from '@/services/apiService';
-import { getALPRs } from '@/services/apiService';
+import { getALPRs, geocodeQuery } from '@/services/apiService';
 
 const zoom: Ref<number> = ref(13);
 const center: Ref<any|null> = ref(null);
 const bounds: Ref<BoundingBox|null> = ref(null);
+const searchField: Ref<any|null> = ref(null);
+const searchQuery: Ref<string> = ref('');
 const router = useRouter();
 
 const canRefreshMarkers = computed(() => zoom.value >= 10);
 
 const alprsInView: Ref<any[]> = ref([]);
 const bboxForLastRequest: Ref<BoundingBox|null> = ref(null);
+
+function onSearch() {
+  if (searchField.value) {
+    console.log('Blurring search field');
+    searchField.value?.blur();
+  }
+  if (!searchQuery.value) {
+    return;
+  }
+  geocodeQuery(searchQuery.value, center.value)
+    .then((result: any) => {
+      if (!result) {
+        alert('No results found');
+        return;
+      }
+      console.log('Geocode result:', result);
+      const { lat, lon: lng } = result;
+      center.value = { lat, lng };
+      zoom.value = 13;
+      searchQuery.value = '';
+    });
+}
 
 function getUserLocation(): Promise<[number, number]> {
   return new Promise((resolve, reject) => {
@@ -169,6 +213,15 @@ onMounted(() => {
   width: 100%;
   height: calc(100vh - 64px);
   overflow: auto;
+}
+
+.map-search {
+  /* position: absolute;
+  top: 16px;
+  left: 16px; */
+  width: calc(100vw - 32px);
+  max-width: 400px;
+  z-index: 1000;
 }
 
 .map-notif {

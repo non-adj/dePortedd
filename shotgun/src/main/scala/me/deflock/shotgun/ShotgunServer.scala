@@ -13,8 +13,9 @@ import pekko.http.scaladsl.server.Directives.{path, _}
 import org.apache.pekko.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import org.apache.pekko.http.scaladsl.server.RejectionHandler
 
-import scala.concurrent.{Await, ExecutionContextExecutor, Future}
-import scala.concurrent.duration._
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
 
 object ShotgunServer {
@@ -26,6 +27,7 @@ object ShotgunServer {
     val logging = Logging(system, getClass)
 
     val client = new services.OverpassClient()
+    val nominatim = new services.NominatimClient()
 
     // CORS
     val allowedOrigins = List(
@@ -55,6 +57,16 @@ object ShotgunServer {
             parameters("minLat".as[Double], "minLng".as[Double], "maxLat".as[Double], "maxLng".as[Double]) { (minLat, minLng, maxLat, maxLng) =>
               val bBox = services.BoundingBox(minLat, minLng, maxLat, maxLng)
               onSuccess(client.getALPRs(bBox)) { json =>
+                complete(json)
+              }
+            }
+          }
+        },
+        path("geocode") {
+          get {
+            parameters("query".as[String]) { query =>
+              val encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.toString)
+              onSuccess(nominatim.geocodePhrase(encodedQuery)) { json =>
                 complete(json)
               }
             }
