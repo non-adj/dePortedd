@@ -17,6 +17,8 @@
     >
       <l-control position="topleft">
         <v-text-field
+          :rounded="xs || undefined"
+          :density="xs ? 'compact' : 'default'"
           class="map-search"
           ref="searchField"
           prepend-inner-icon="mdi-magnify"
@@ -67,6 +69,7 @@ import { useRouter } from 'vue-router'
 import type { Ref } from 'vue';
 import { BoundingBox } from '@/services/apiService';
 import { getALPRs, geocodeQuery } from '@/services/apiService';
+import { useDisplay } from 'vuetify';
 
 const zoom: Ref<number> = ref(13);
 const center: Ref<any|null> = ref(null);
@@ -74,6 +77,7 @@ const bounds: Ref<BoundingBox|null> = ref(null);
 const searchField: Ref<any|null> = ref(null);
 const searchQuery: Ref<string> = ref('');
 const router = useRouter();
+const { xs } = useDisplay();
 
 const canRefreshMarkers = computed(() => zoom.value >= 10);
 
@@ -216,10 +220,7 @@ onMounted(() => {
 }
 
 .map-search {
-  /* position: absolute;
-  top: 16px;
-  left: 16px; */
-  width: calc(100vw - 32px);
+  width: calc(100vw - 22px);
   max-width: 400px;
   z-index: 1000;
 }
