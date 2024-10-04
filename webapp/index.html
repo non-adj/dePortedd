@@ -13,6 +13,16 @@
     <meta property="og:url" content="https://deflock.me" />
     <meta property="og:type" content="website" />
     <title>DeFlock - ALPR Database</title>
+    <script>
+      // Analytics in prod
+      if (window.location.hostname !== 'localhost') {
+        var plausibleScript = document.createElement('script');
+        plausibleScript.src = 'https://plausible.io/js/script.file-downloads.outbound-links.js';
+        plausibleScript.defer = true;
+        plausibleScript.setAttribute('data-domain', 'deflock.me');
+        document.head.appendChild(plausibleScript);
+      }
+    </script>
   </head>
   <body>
     <div id="app"></div>
