@@ -1,5 +1,15 @@
 <template>
   <v-container>
+    <v-alert
+      variant="tonal"
+      type="info"
+      class="my-6"
+      title="Reporting Feature Coming Soon"
+    >
+      <p>
+        We're working on a feature that will allow you to report ALPRs directly on this site. In the meantime, you can follow the steps below to add the ALPR to OpenStreetMap.
+      </p>
+    </v-alert>
     <h2>How to Report an ALPR</h2>
     <p>
       If you've spotted an ALPR in your area, you can help us track it by reporting it to OpenStreetMap, where we source our information. Here's how you can do it:
@@ -12,7 +22,7 @@
       title="Are you sure it's an ALPR?"
     >
       <p>
-        Before you report an ALPR, please read our <router-link style="color: unset !important" to="/what-is-an-alpr">guide on what ALPRs look like</router-link> to make sure you're reporting the right thing.
+        Before you report an ALPR, please read our <router-link style="color: unset !important" to="/what-is-an-alpr#not-alpr">guide on what ALPRs look like</router-link> to make sure you're reporting the right thing.
       </p>
     </v-alert>
 
@@ -45,19 +55,13 @@
         camera:type=fixed<br>
         surveillance=traffic<br>
         surveillance:zone=traffic<br>
-      </DFCode>
-
-      <v-img class="my-4" src="/paste-tags.png" />
-
-      <p>
-        If you've identified the brand of the ALPR as Flock Safety, then you can also add the following tags:
-      </p>
-      <DFCode>
         operator=Flock Safety<br>
         operator:wikidata=Q108485435<br>
         brand=Flock Safety<br>
         brand:wikidata=Q108485435<br>
       </DFCode>
+
+      <v-img class="my-4" src="/paste-tags.png" />
 
       <h3>4. Adjust the Direction</h3>
 
@@ -72,13 +76,17 @@
         Once you've added the ALPR to the map, click the <strong>Save</strong> button in the top left corner of the editor. You'll be asked to provide a brief description of your changes. Once you've submitted your changes, the ALPR will be added to OpenStreetMap.
       </p>
 
+      <h3>6. Hang a Sign</h3>
+      <p>
+        Download our <a href="/deflock-poster.pdf" target="_blank">ALPR sign</a> and hang it near the ALPR to help raise awareness about the device. Be sure to follow all local laws and regulations when hanging signs.
+      </p>
+
     </div>
   </v-container>
 </template>
 
 <script setup lang="ts">
 import DFCode from '@/components/DFCode.vue';
-
 </script>
 
 <style scoped>

@@ -70,9 +70,12 @@ object ShotgunServer {
       )
     }
 
-    val spaRoutes = pathSingleSlash {
+    val spaRoutes = pathEndOrSingleSlash {
       getFromFile("../webapp/dist/index.html")
-    } ~ getFromDirectory("../webapp/dist")
+    } ~ getFromDirectory("../webapp/dist") ~
+      path(Remaining) { _ =>
+        getFromFile("../webapp/dist/index.html")
+      }
 
     val routes = handleRejections(rejectionHandler) {
       cors(corsSettings) {
