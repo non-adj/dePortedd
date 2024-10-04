@@ -13,20 +13,24 @@
       :use-global-leaflet="false"
       @update:bounds="updateBounds"
       @ready="mapLoaded"
+      :options="{ zoomControl: false, attributionControl: false }"
     >
       <l-tile-layer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         layer-type="base"
         name="OpenStreetMap"
       ></l-tile-layer>
+      <l-control-zoom position="bottomright" />
       <l-marker
         v-for="alpr in alprsInView"
         :key="alpr.id"
         :lat-lng="[alpr.lat, alpr.lon]"
-      ><l-popup>
-        <p class="mb-0 mt-2" v-if="alpr.tags.brand || alpr.tags.operator"><strong>Brand: </strong><a target="_blank" :href="`https://www.wikidata.org/wiki/${alpr.tags['brand:wikidata'] || alpr.tags['operator:wikidata']}`">{{ alpr.tags.brand || alpr.tags.operator || 'Unknown' }}</a></p>
-        <p class="my-0" v-if="alpr.tags.direction"><strong>Faces: {{ degreesToCardinal(alpr.tags.direction) }} {{ alpr.tags.direction }}&deg;</strong></p>
-      </l-popup></l-marker>
+      >
+        <l-popup>
+          <p class="mb-0 mt-2" v-if="alpr.tags.brand || alpr.tags.operator"><strong>Brand: </strong><a target="_blank" :href="`https://www.wikidata.org/wiki/${alpr.tags['brand:wikidata'] || alpr.tags['operator:wikidata']}`">{{ alpr.tags.brand || alpr.tags.operator || 'Unknown' }}</a></p>
+          <p class="my-0" v-if="alpr.tags.direction"><strong>Faces: {{ degreesToCardinal(alpr.tags.direction) }} {{ alpr.tags.direction }}&deg;</strong></p>
+        </l-popup>
+      </l-marker>
     </l-map>
     <div class="loader" v-else>
       <span class="mb-4 text-grey">Loading Map</span>
@@ -37,7 +41,7 @@
 
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
-import { LMap, LTileLayer, LMarker, LPopup } from '@vue-leaflet/vue-leaflet';
+import { LMap, LTileLayer, LMarker, LPopup, LControlZoom } from '@vue-leaflet/vue-leaflet';
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router'
 import type { Ref } from 'vue';

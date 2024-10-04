@@ -4,7 +4,7 @@ import HomeView from '../views/HomeView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   scrollBehavior(to, from, savedPosition) {
-    if (to.hash) {
+    if (to.hash && !to.hash.startsWith('#map')) {
       return {
         el: to.hash,
         behavior: 'smooth',
