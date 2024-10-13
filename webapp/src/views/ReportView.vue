@@ -42,30 +42,47 @@
         Once you've found the location of the ALPR, click the <strong>Edit</strong> button in the top left corner of the page. This will open the OpenStreetMap editor, where you can add the ALPR to the map.
       </p>
 
-      <v-img src="/edit-map.png" />
+      <v-img max-width="450" src="/edit-map.png" class="my-8" />
 
       <p>
-        To add the ALPR, click the <strong>Point</strong> button in the top left corner of the editor, then click on the location of the ALPR on the map. In the popup that appears, paste the following tags:
+        To add the ALPR, click the <strong>Point</strong> button in the top left corner of the editor, then click on the location of the ALPR on the map. In the popup that appears, paste one of the following sets of tags based on the brand of the ALPR:
       </p>
 
-      <DFCode>
-        man_made=surveillance<br>
-        surveillance:type=ALPR<br>
-        camera:mount=pole<br>
-        camera:type=fixed<br>
-        surveillance=traffic<br>
-        surveillance:zone=traffic<br>
-        operator=Flock Safety<br>
-        operator:wikidata=Q108485435<br>
-        brand=Flock Safety<br>
-        brand:wikidata=Q108485435<br>
-      </DFCode>
+      <div class="d-flex flex-row w-100 justify-space-between mb-16">
+        <div style="flex: 1" class="mr-2">
+          <h3 class="text-center">Flock Safety</h3>
+          <DFCode>
+            man_made=surveillance<br>
+            surveillance:type=ALPR<br>
+            camera:mount=pole<br>
+            camera:type=fixed<br>
+            surveillance=traffic<br>
+            surveillance:zone=traffic<br>
+            brand=<span class="highlight">Flock Safety</span><br>
+            brand:wikidata=<span class="highlight">Q108485435</span><br>
+          </DFCode>
+        </div>
+  
+        <div style="flex: 1" class="ml-2">
+          <h3 class="text-center">Motorola Solutions</h3>
+          <DFCode>
+            man_made=surveillance<br>
+            surveillance:type=ALPR<br>
+            camera:mount=pole<br>
+            camera:type=fixed<br>
+            surveillance=traffic<br>
+            surveillance:zone=traffic<br>
+            brand=<span class="highlight">Motorola Solutions</span><br>
+            brand:wikidata=<span class="highlight">Q634815</span><br>
+          </DFCode>
+        </div>
+      </div>
 
-      <v-img class="my-4" src="/paste-tags.png" />
+      <v-img max-width="450" class="my-8" src="/paste-tags.png" />
 
       <h3>4. Adjust the Direction</h3>
 
-      <v-img src="/adjust-angle.png" />
+      <v-img max-width="450" class="my-8" src="/adjust-angle.png" />
 
       <p>
         If you know the direction that the ALPR is facing, you can use the up and down arrows to set the direction it faces.
@@ -116,5 +133,12 @@ code {
   border-radius: 0.25rem;
   display: block;
   margin-top: 0.5rem;
+}
+
+.highlight {
+  background-color: #0081ac;
+  padding: 0.15rem;
+  border-radius: 0.25rem;
+  font-weight: bold;
 }
 </style>

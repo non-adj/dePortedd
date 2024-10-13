@@ -1,6 +1,6 @@
 <template>
   <div style="position: relative">
-    <v-btn @click="copyToClipboard" variant="plain" flat class="copy-button">
+    <v-btn @click="copyToClipboard" icon variant="plain" flat class="copy-button">
       <v-icon>mdi-content-copy</v-icon>
     </v-btn>
     <code ref="codeContent">
@@ -23,7 +23,8 @@ function copyToClipboard() {
 
 <style scoped>
 code {
-  background-color: #f4f4f4;
+  background-color: rgb(33,33,33);
+  color: white;
   padding: 0.5rem;
   border-radius: 0.25rem;
   display: block;

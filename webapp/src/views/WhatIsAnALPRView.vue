@@ -9,7 +9,7 @@
       Automated License Plate Readers (ALPRs) are cameras that capture images of all passing license plates, storing details like the car's location, date, and time. These cameras collect data on millions of vehicles—regardless of whether the driver is suspected of a crime. While these systems can be useful for tracking stolen cars or wanted individuals, they are mostly used to track the movements of innocent people.
     </p>
 
-    <p>For a detailed explanation of how ALPRs are a threat to privacy, see this <a href="https://www.aclu.org/issues/privacy-technology/you-are-being-tracked" target="_blank">ACLU article on them</a>.</p>
+    <p>For a detailed explanation of how ALPRs are a threat to privacy, see this <a href="https://www.aclu.org/issues/privacy-technology/you-are-being-tracked" target="_blank">ACLU article</a> as well as this <a href="https://sls.eff.org/technologies/automated-license-plate-readers-alprs" target="_blank">EFF article</a> on ALPRs.</p>
 
     <h2>Why Should You Be Concerned</h2>
     <p>
@@ -44,16 +44,21 @@
     <h2 id="not-alpr" :class="{ highlighted: route.hash === '#not-alpr' }">What They Look Like</h2>
     <v-carousel class="my-4" hide-delimiters>
       <v-carousel-item
-        v-for="n in carouselCount"
-        :key="n"
+        v-for="{ url, brand } in images"
+        :key="url"
         aspect-ratio="1"
-        :src="`/flock-${n}.jpg`"
-      ></v-carousel-item>
+        :src="url"
+        class="text-center"
+      >
+        <v-chip :rounded="false" color="warning" variant="elevated" size="x-large" style="position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);">
+          <span class="font-weight-bold">Brand: <span class="text-uppercase">{{ brand }}</span></span>
+        </v-chip>
+      </v-carousel-item>
     </v-carousel>
     
 
     <p>
-      The most common brand of ALPRs in the US is <a href="https://en.wikipedia.org/wiki/Flock_Safety" target="_blank">Flock Safety</a>. They are easy to spot because they almost all look the same. They are almost always mounted on a pole with a solar panel on top. In rural areas, they are likely to be on standalone black poles, while in cities, they are more likely to be on existing utility/traffic poles. The cameras are often placed near intersections or on main roads at the edge of a city or town.
+      While <a href="https://en.wikipedia.org/wiki/Flock_Safety" target="_blank">Flock Safety</a> is a common brand of ALPRs in the US, there are several others, including <a href="https://en.wikipedia.org/wiki/Vigilant_Solutions" target="_blank">Vigilant Solutions</a>, owned by Motorola Solutions. Flock Safety ALPRs are easy to spot as they almost all look the same, typically mounted on poles with a solar panel on top. In rural areas, they are likely to be on standalone black poles, while in cities, they are more likely to be on existing utility or traffic poles. The cameras are often placed near intersections or on main roads at the edge of a city or town. Vigilant Solutions ALPRs, on the other hand, are typically mounted on traffic poles at or near intersections, with a distinctive white box mounted nearby.
     </p>
 
     <h2>Not All Cameras are ALPRs</h2>
@@ -87,7 +92,19 @@
 import { useRoute } from 'vue-router';
 const route = useRoute();
 
-const carouselCount = 6;
+const flockImageCount = 6;
+const vigilantImageCount = 3;
+
+const images = [
+  ...Array.from({ length: flockImageCount }, (_, i) => ({
+    url: `/flock-${i + 1}.jpg`,
+    brand: 'flock'
+  })),
+  ...Array.from({ length: vigilantImageCount }, (_, i) => ({
+    url: `/vigilant-${i + 1}.jpg`,
+    brand: 'vigilant'
+  }))
+];
 </script>
 
 <style scoped>
