@@ -1,5 +1,7 @@
 <template>
   <div class="map-container" @keyup="handleKeyUp">
+    <NewVisitor />
+
     <v-card class="map-notif" v-show="!canRefreshMarkers">
       <v-card-title><b>Zoom in to Refresh</b></v-card-title>
     </v-card>
@@ -65,6 +67,7 @@ import { BoundingBox } from '@/services/apiService';
 import { getALPRs, geocodeQuery } from '@/services/apiService';
 import { useDisplay, useTheme } from 'vuetify';
 import DFMapMarker from '@/components/DFMapMarker.vue';
+import NewVisitor from '@/components/NewVisitor.vue';
 import type { ALPR } from '@/types';
 
 const DEFAULT_ZOOM = 12;

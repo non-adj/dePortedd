@@ -7,7 +7,7 @@
   <l-polygon
     :lat-lngs="directionIndicatorPolygonCoordinates"
     :options="{ color: 'red' }"
-    v-if="showFov"
+    v-if="showFov && hasDirection"
   >
     <!-- TODO: use the same popup -->
     <l-popup>
@@ -34,7 +34,13 @@ const props = defineProps({
   }
 });
 
+const hasDirection = computed(() => props.alpr.tags.direction !== undefined);
+
 const directionIndicatorPolygonCoordinates = computed(() => {
+  if (!hasDirection.value) {
+    console.warn('ALPR does not have direction tag');
+    return [];
+  }
   const { lat, lon } = props.alpr;
   const direction = parseInt(props.alpr.tags.direction);
   const fov = 30; // Field of view in degrees

@@ -1,7 +1,7 @@
 <template>
   <v-container max-width="1000">
     <p>
-      <v-img max-height="350" width="100%" cover src="/flock-camera.jpeg" />
+      <v-img max-height="450" width="100%" cover src="/flock-camera.jpeg" />
     </p>
 
     <h2>What is an ALPR</h2>
@@ -28,18 +28,15 @@
 
       <h3>Potential for Abuse</h3>
       <p>Law enforcement officers or other individuals with access could misuse this data, for example, tracking ex-partners, political rivals, or targeting specific communities without oversight.</p>
-    </div>
 
-    <h2>How They've Been Abused</h2>
-    <p>
-      ALPRs have been used in a variety of ways that violate privacy and civil liberties. Here are some examples:
-    </p>
-    <ul>
-      <li><a target="_blank" href="https://www.kwch.com/2022/10/31/kechi-police-lieutenant-arrested-using-police-technology-stalk-wife/">Kechi police lieutenant arrested for using police technology to stalk wife</a></li>
-      <li><a target="_blank" href="https://www.kwch.com/2022/11/04/kechi-police-lieutenants-arrest-puts-flock-technology-under-scrutiny/">Kechi police lieutenant&apos;s arrest puts Flock technology under scrutiny</a></li>
-      <li><a target="_blank" href="https://www.koat.com/article/espanola-police-license-plate-stolen-cover-traffic-stop/45361740">License plate cover leads to traffic stop mishap</a></li>
-      <li><a href="https://apnews.com/article/handcuffed-black-girls-colorado-settlement-a7a695839b8841e56b7db0d103cc5ed1">Family of Black girls handcuffed by Colorado police, held at gunpoint reach $1.9 million settlement</a></li>
-    </ul>
+      <h4 class="mt-4">Examples of Abuse</h4>
+      <ul>
+        <li><a target="_blank" href="https://www.kwch.com/2022/10/31/kechi-police-lieutenant-arrested-using-police-technology-stalk-wife/">Kechi police lieutenant arrested for using police technology to stalk wife</a></li>
+        <li><a target="_blank" href="https://www.kwch.com/2022/11/04/kechi-police-lieutenants-arrest-puts-flock-technology-under-scrutiny/">Kechi police lieutenant&apos;s arrest puts Flock technology under scrutiny</a></li>
+        <li><a target="_blank" href="https://www.koat.com/article/espanola-police-license-plate-stolen-cover-traffic-stop/45361740">License plate cover leads to traffic stop mishap</a></li>
+        <li><a href="https://apnews.com/article/handcuffed-black-girls-colorado-settlement-a7a695839b8841e56b7db0d103cc5ed1">Family of Black girls handcuffed by Colorado police, held at gunpoint reach $1.9 million settlement</a></li>
+      </ul>
+    </div>
 
     <h2 id="not-alpr" :class="{ highlighted: route.hash === '#not-alpr' }">What They Look Like</h2>
     <v-carousel class="my-4" hide-delimiters>
