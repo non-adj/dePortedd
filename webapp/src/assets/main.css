@@ -7,3 +7,16 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+:root {
+  --df-background-color: rgb(33,33,33);
+  --df-text-color: #ccc;
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip, .leaflet-bar a {
+  background: var(--df-background-color) !important;
+}
+
+.leaflet-bar a {
+  color: var(--df-text-color) !important;
+}

@@ -39,8 +39,9 @@
           </v-text-field>
         </form>
       </l-control>
+      <!-- url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" -->
       <l-tile-layer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        :url="mapTileUrl"
         layer-type="base"
         name="OpenStreetMap"
       />
@@ -62,12 +63,13 @@ import { useRouter } from 'vue-router'
 import type { Ref } from 'vue';
 import { BoundingBox } from '@/services/apiService';
 import { getALPRs, geocodeQuery } from '@/services/apiService';
-import { useDisplay } from 'vuetify';
+import { useDisplay, useTheme } from 'vuetify';
 import DFMapMarker from '@/components/DFMapMarker.vue';
 import type { ALPR } from '@/types';
 
 const DEFAULT_ZOOM = 12;
 
+const theme = useTheme();
 const zoom: Ref<number> = ref(DEFAULT_ZOOM);
 const center: Ref<any|null> = ref(null);
 const bounds: Ref<BoundingBox|null> = ref(null);
@@ -77,6 +79,11 @@ const router = useRouter();
 const { xs } = useDisplay();
 
 const canRefreshMarkers = computed(() => zoom.value >= 10);
+const mapTileUrl = computed(() =>
+  theme.global.name.value === 'dark' ?
+    'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png' :
+    'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png'
+);
 
 const alprsInView: Ref<ALPR[]> = ref([]);
 const bboxForLastRequest: Ref<BoundingBox|null> = ref(null);

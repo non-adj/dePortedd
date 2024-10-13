@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { useTheme } from 'vuetify';
+
+const theme = useTheme();
+
+function toggleTheme() {
+  const newTheme = theme.global.name.value === 'dark' ? 'light' : 'dark';
+  theme.global.name.value = newTheme;
+}
 
 const items = [
   { title: 'Map', icon: 'mdi-map', to: '/' },
@@ -11,6 +19,17 @@ const items = [
   { title: 'Contact', icon: 'mdi-email', to: '/contact' },
 ]
 const drawer = ref(false)
+
+watch(() => theme.global.name.value, (newTheme) => {
+  const root = document.documentElement;
+  if (newTheme === 'dark') {
+    root.style.setProperty('--df-background-color', 'rgb(33, 33, 33)');
+    root.style.setProperty('--df-text-color', '#ccc');
+  } else {
+    root.style.setProperty('--df-background-color', 'white');
+    root.style.setProperty('--df-text-color', 'black');
+  }
+});
 </script>
 
 <template>
@@ -26,6 +45,10 @@ const drawer = ref(false)
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
+
+      <v-btn icon>
+        <v-icon @click="toggleTheme">mdi-theme-light-dark</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-navigation-drawer
