@@ -43,16 +43,7 @@
         name="OpenStreetMap"
       />
       <l-control-zoom position="bottomright" />
-      <l-marker
-        v-for="alpr in alprsInView"
-        :key="alpr.id"
-        :lat-lng="[alpr.lat, alpr.lon]"
-      >
-        <l-popup>
-          <p class="mb-0 mt-2" v-if="alpr.tags.brand || alpr.tags.operator"><strong>Brand: </strong><a target="_blank" :href="`https://www.wikidata.org/wiki/${alpr.tags['brand:wikidata'] || alpr.tags['operator:wikidata']}`">{{ alpr.tags.brand || alpr.tags.operator || 'Unknown' }}</a></p>
-          <p class="my-0" v-if="alpr.tags.direction"><strong>Faces: {{ degreesToCardinal(alpr.tags.direction) }} {{ alpr.tags.direction }}&deg;</strong></p>
-        </l-popup>
-      </l-marker>
+      <DFMapMarker v-for="alpr in alprsInView" :key="alpr.id" :alpr :show-fov="zoom >= 16" />
     </l-map>
     <div class="loader" v-else>
       <span class="mb-4 text-grey">Loading Map</span>
@@ -70,6 +61,8 @@ import type { Ref } from 'vue';
 import { BoundingBox } from '@/services/apiService';
 import { getALPRs, geocodeQuery } from '@/services/apiService';
 import { useDisplay } from 'vuetify';
+import DFMapMarker from '@/components/DFMapMarker.vue';
+import type { ALPR } from '@/types';
 
 const zoom: Ref<number> = ref(13);
 const center: Ref<any|null> = ref(null);
@@ -81,7 +74,7 @@ const { xs } = useDisplay();
 
 const canRefreshMarkers = computed(() => zoom.value >= 10);
 
-const alprsInView: Ref<any[]> = ref([]);
+const alprsInView: Ref<ALPR[]> = ref([]);
 const bboxForLastRequest: Ref<BoundingBox|null> = ref(null);
 
 function onSearch() {
@@ -178,11 +171,6 @@ function updateMarkers() {
       alprsInView.value = [...alprsInView.value, ...newAlprs];
       bboxForLastRequest.value = bounds.value;
     });
-}
-
-function degreesToCardinal(degrees: number): string {
-  const cardinals = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-  return cardinals[Math.round(degrees / 45) % 8];
 }
 
 onMounted(() => {
