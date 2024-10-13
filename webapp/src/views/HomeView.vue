@@ -1,7 +1,7 @@
 <template>
-  <div class="map-container">
+  <div class="map-container" @keyup="handleKeyUp">
     <v-card class="map-notif" v-show="!canRefreshMarkers">
-      <v-card-title><b>Zoom in to Refresh ALPRs</b></v-card-title>
+      <v-card-title><b>Zoom in to Refresh</b></v-card-title>
     </v-card>
 
     <!-- use-global-leaflet=false is a workaround for a bug in current version of vue-leaflet -->
@@ -16,26 +16,28 @@
       :options="{ zoomControl: false, attributionControl: false }"
     >
       <l-control position="topleft">
-        <v-text-field
-          :rounded="xs || undefined"
-          :density="xs ? 'compact' : 'default'"
-          class="map-search"
-          ref="searchField"
-          prepend-inner-icon="mdi-magnify"
-          placeholder="Search for a location"
-          single-line
-          variant="solo"
-          clearable
-          hide-details
-          v-model="searchQuery"
-          @keyup.enter="onSearch"
-        >
-          <template v-slot:append-inner>
-            <v-btn :disabled="!searchQuery" variant="text" flat color="#0080BC" @click="onSearch">
-              Go<v-icon end>mdi-chevron-right</v-icon>
-            </v-btn>
-          </template>
-        </v-text-field>
+        <form @submit.prevent="onSearch">
+          <v-text-field
+            :rounded="xs || undefined"
+            :density="xs ? 'compact' : 'default'"
+            class="map-search"
+            ref="searchField"
+            prepend-inner-icon="mdi-magnify"
+            placeholder="Search for a location"
+            single-line
+            variant="solo"
+            clearable
+            hide-details
+            v-model="searchQuery"
+            type="search"
+          >
+            <template v-slot:append-inner>
+              <v-btn :disabled="!searchQuery" variant="text" flat color="#0080BC" @click="onSearch">
+                Go<v-icon end>mdi-chevron-right</v-icon>
+              </v-btn>
+            </template>
+          </v-text-field>
+        </form>
       </l-control>
       <l-tile-layer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -54,7 +56,7 @@
 
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
-import { LMap, LTileLayer, LMarker, LPopup, LControlZoom, LControl } from '@vue-leaflet/vue-leaflet';
+import { LMap, LTileLayer, LControlZoom, LControl } from '@vue-leaflet/vue-leaflet';
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router'
 import type { Ref } from 'vue';
@@ -64,7 +66,9 @@ import { useDisplay } from 'vuetify';
 import DFMapMarker from '@/components/DFMapMarker.vue';
 import type { ALPR } from '@/types';
 
-const zoom: Ref<number> = ref(13);
+const DEFAULT_ZOOM = 12;
+
+const zoom: Ref<number> = ref(DEFAULT_ZOOM);
 const center: Ref<any|null> = ref(null);
 const bounds: Ref<BoundingBox|null> = ref(null);
 const searchField: Ref<any|null> = ref(null);
@@ -77,11 +81,15 @@ const canRefreshMarkers = computed(() => zoom.value >= 10);
 const alprsInView: Ref<ALPR[]> = ref([]);
 const bboxForLastRequest: Ref<BoundingBox|null> = ref(null);
 
-function onSearch() {
-  if (searchField.value) {
-    console.log('Blurring search field');
-    searchField.value?.blur();
+function handleKeyUp(event: KeyboardEvent) {
+  if (event.key === '/' && searchField.value.value !== document.activeElement) {
+    searchField.value.focus();
+    event.preventDefault();
   }
+}
+
+function onSearch() {
+  searchField.value?.blur();
   if (!searchQuery.value) {
     return;
   }
@@ -91,10 +99,9 @@ function onSearch() {
         alert('No results found');
         return;
       }
-      console.log('Geocode result:', result);
       const { lat, lon: lng } = result;
       center.value = { lat, lng };
-      zoom.value = 13;
+      zoom.value = DEFAULT_ZOOM;
       searchQuery.value = '';
     });
 }
@@ -217,8 +224,8 @@ onMounted(() => {
   position: absolute;
   text-align: center;
   bottom: 32px;
-  left: 32px;
-  width: calc(100% - 64px);
+  left: 64px;
+  width: calc(100% - 128px);
   max-width: 1000px;
   left: 50%;
   transform: translateX(-50%);

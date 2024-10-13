@@ -60,7 +60,6 @@ export const geocodeQuery = async (query: string, currentLocation: any) => {
   const results = (await apiService.get(`/geocode?query=${encodedQuery}`)).data;
 
   function findNearestResult(results: any, currentLocation: any) {
-    console.log(currentLocation, results);
     let nearestResult = results[0];
     let nearestDistance = Number.MAX_VALUE;
     for (const result of results) {
