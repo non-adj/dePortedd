@@ -33,7 +33,7 @@
                 </v-col>
                 <v-col >
                   <h4 class="no-small">
-                    The red area extending from the ALPR show which direction the camera faces.
+                    Zoom in to see which direction each ALPR is facing.
                   </h4>
                 </v-col>
               </v-row>
@@ -57,8 +57,9 @@
 
         </v-row>
       </v-container>
+      <div class="text-center">Map data from <a href="https://openstreetmap.org/copyright" target="_blank">OpenStreetMap</a></div>
       <v-card-actions>
-        <v-btn class="w-100" color="primary" variant="tonal" @click="acknowledge">Got it</v-btn>
+        <v-btn class="w-100" size="x-large" color="primary" variant="elevated" @click="acknowledge">Got it</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
