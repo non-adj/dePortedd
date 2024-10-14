@@ -1,6 +1,6 @@
 <template>
   <v-sheet>
-    <v-data-table density="compact" hide-default-footer disable-sort :items="kvTags" />
+    <v-data-table density="compact" hide-default-header hide-default-footer disable-sort :items="kvTags" />
   </v-sheet>
 </template>
 

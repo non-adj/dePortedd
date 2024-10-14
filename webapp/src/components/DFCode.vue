@@ -6,6 +6,17 @@
     <code ref="codeContent">
       <slot></slot>
     </code>
+    <v-snackbar color="#0081ac" v-model="snackbarOpen" :timeout="3000">
+      Copied to clipboard!
+      <template v-slot:actions>
+        <v-btn
+          variant="text"
+          @click="snackbarOpen = false"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -13,10 +24,13 @@
 import { ref } from 'vue';
 
 const codeContent = ref<HTMLElement | null>(null);
+const snackbarOpen = ref(false);
 
 function copyToClipboard() {
   if (codeContent.value) {
-    navigator.clipboard.writeText(codeContent.value.innerText);
+    navigator.clipboard.writeText(codeContent.value.innerText)
+      .then(() => snackbarOpen.value = true)
+      .catch(() => console.error('Failed to copy to clipboard'));
   }
 }
 </script>
