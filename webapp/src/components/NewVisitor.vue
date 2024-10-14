@@ -57,7 +57,7 @@
 
         </v-row>
       </v-container>
-      <div class="text-center">Map data from <a href="https://openstreetmap.org/copyright" target="_blank">OpenStreetMap</a></div>
+      <div class="text-center mx-4 mb-2">Map data from <a href="https://openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>. By using this site, you agree to our <router-link to="/legal">Terms of Service</router-link>.</div>
       <v-card-actions>
         <v-btn class="w-100" size="x-large" color="primary" variant="elevated" @click="acknowledge">Got it</v-btn>
       </v-card-actions>
