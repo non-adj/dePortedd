@@ -3,7 +3,7 @@ version: '3.8'
 services:
   deflock:
     image: public.ecr.aws/w2o0b9g0/deflock.me:latest
-    expose:
-      - 8080
+    ports:
+      - 8080:8080
     #restart: always
     stdin_open: true
