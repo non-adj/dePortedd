@@ -1,6 +1,23 @@
 <template>
-  <v-sheet>
-    <v-data-table density="compact" hide-default-header hide-default-footer disable-sort :items="kvTags" />
+  <v-sheet min-width="205">
+    <v-list density="compact">
+      <v-list-item v-if="isFaceRecognition">
+        <v-icon start>mdi-face-recognition</v-icon> <b>Face Recognition</b>
+      </v-list-item>
+      <v-list-item>
+        <v-icon start>mdi-car</v-icon> <b>License Plate</b>
+      </v-list-item>
+      <v-list-item v-if="isFaceRecognition">
+        <v-icon start>mdi-adjust</v-icon> <b>Omnidirectional</b>
+      </v-list-item>
+      <v-list-item v-else>
+        <v-icon start>mdi-cctv</v-icon> <b>Directional {{ alpr.tags.direction ? `(${degreesToCardinal(parseInt(alpr.tags.direction))})` : '' }}</b>
+      </v-list-item>
+      <v-list-item>
+        <v-icon start>mdi-domain</v-icon> <b>{{ alpr.tags.brand ?? 'Unknown' }}</b>
+      </v-list-item>
+    </v-list>
+    <!-- <v-data-table density="compact" hide-default-header hide-default-footer disable-sort :items="kvTags" /> -->
   </v-sheet>
 </template>
 
@@ -22,6 +39,8 @@ const valueTransformations: { [key: string]: (value: string) => string } = {
 
 const whitelistedTags = ['brand', 'camera:mount', 'camera:type', 'direction', 'operator'];
 
+const isFaceRecognition = computed(() => props.alpr.tags.brand === 'Avigilon');
+
 const kvTags = computed(() => {
   return Object.entries(props.alpr.tags)
     .filter(([key]) => whitelistedTags.includes(key))
@@ -29,7 +48,7 @@ const kvTags = computed(() => {
 });
 
 function degreesToCardinal(degrees: number): string {
-  const cardinals = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+  const cardinals = ['North', 'Northeast', 'East', 'Southeast', 'South', 'Southwest', 'West', 'Northwest'];
   return cardinals[Math.round(degrees / 45) % 8];
 }
 </script>

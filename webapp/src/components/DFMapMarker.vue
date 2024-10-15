@@ -1,9 +1,10 @@
 <template>
-  <l-circle-marker :lat-lng="[alpr.lat, alpr.lon]" :radius="7" color="#3f54f3">
+  <l-circle-marker :lat-lng="[alpr.lat, alpr.lon]" :radius="7" :color="markerColor">
     <l-popup>
       <DFMapPopup :alpr="alpr" />
     </l-popup>
   </l-circle-marker>
+  
   <l-polygon
     :lat-lngs="directionIndicatorPolygonCoordinates"
     :options="{ color: 'red' }"
@@ -17,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { LCircleMarker, LPolygon, LPopup } from '@vue-leaflet/vue-leaflet';
+import { LCircleMarker, LCircle, LPolygon, LPopup } from '@vue-leaflet/vue-leaflet';
 import DFMapPopup from '@/components/DFMapPopup.vue';
 import type { ALPR } from '@/types';
 import type { PropType } from 'vue';
@@ -32,6 +33,13 @@ const props = defineProps({
     type: Boolean,
     default: false
   }
+});
+
+const markerColor = computed(() => {
+  if (props.alpr.tags.brand === 'Avigilon') {
+    return '#ff5722';
+  }
+  return '#3f54f3';
 });
 
 const hasDirection = computed(() => props.alpr.tags.direction !== undefined);

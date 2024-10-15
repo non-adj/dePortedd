@@ -17,6 +17,22 @@
       @ready="mapLoaded"
       :options="{ zoomControl: false, attributionControl: false }"
     >
+      <l-control position="bottomleft">
+        <v-card>
+          <v-list density="compact">
+            <v-list-item>
+              <v-list-item-content>
+                <v-icon start color="#3f54f3">mdi-circle</v-icon> Directional ALPR
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-content>
+                <v-icon start color="#ff5722">mdi-circle</v-icon> Omni w/ Face Recognition
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </l-control>
       <l-control position="topleft">
         <form @submit.prevent="onSearch">
           <v-text-field
