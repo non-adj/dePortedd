@@ -30,3 +30,9 @@ coverage
 *.tsbuildinfo
 
 project/**/target/
+
+# Terraform
+terraform.tfstate.d/
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
