@@ -18,20 +18,23 @@
       :options="{ zoomControl: false, attributionControl: false }"
     >
       <l-control position="bottomleft">
-        <v-card>
-          <v-list density="compact">
-            <v-list-item>
-              <v-list-item-content>
-                <v-icon start color="#3f54f3">mdi-circle</v-icon> Directional ALPR
-              </v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content>
-                <v-icon start color="#ff5722">mdi-circle</v-icon> Omni w/ Face Recognition
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card>
+        <v-expansion-panels>
+          <v-expansion-panel>
+            <v-expansion-panel-title>Legend</v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <v-card flat>
+                <v-list density="compact">
+                  <v-list-item class="px-0">
+                    <v-icon start color="#3f54f3">mdi-circle</v-icon> Directional ALPR
+                  </v-list-item>
+                  <v-list-item class="px-0">
+                    <v-icon start color="#ff5722">mdi-circle</v-icon> Omnidirectional w/ Face Recognition
+                  </v-list-item>
+                </v-list>
+              </v-card>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </l-control>
       <l-control position="topleft">
         <form @submit.prevent="onSearch">
@@ -64,7 +67,9 @@
         name="OpenStreetMap"
       />
       <l-control-zoom position="bottomright" />
-      <DFMapMarker v-for="alpr in alprsInView" :key="alpr.id" :alpr :show-fov="zoom >= 16" />
+
+      <DFMarkerCluster v-if="showClusters" @click="zoomToCluster" v-for="cluster in clusters" :key="cluster.id" :lat="cluster.lat" :lon="cluster.lon" />
+      <DFMapMarker v-else v-for="alpr in visibleALPRs" :key="alpr.id" :alpr :show-fov="zoom >= 16" />
     </l-map>
     <div class="loader" v-else>
       <span class="mb-4 text-grey">Loading Map</span>
@@ -76,17 +81,21 @@
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
 import { LMap, LTileLayer, LControlZoom, LControl } from '@vue-leaflet/vue-leaflet';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router'
 import type { Ref } from 'vue';
 import { BoundingBox } from '@/services/apiService';
-import { getALPRs, geocodeQuery } from '@/services/apiService';
+import type { Cluster } from '@/services/apiService';
+import { getALPRs, geocodeQuery, getClusters } from '@/services/apiService';
 import { useDisplay, useTheme } from 'vuetify';
 import DFMapMarker from '@/components/DFMapMarker.vue';
+import DFMarkerCluster from '@/components/DFMarkerCluster.vue';
 import NewVisitor from '@/components/NewVisitor.vue';
 import type { ALPR } from '@/types';
 
 const DEFAULT_ZOOM = 12;
+const MIN_ZOOM_FOR_REFRESH = 4;
+const CLUSTER_ZOOM_THRESHOLD = 8;
 
 const theme = useTheme();
 const zoom: Ref<number> = ref(DEFAULT_ZOOM);
@@ -97,15 +106,27 @@ const searchQuery: Ref<string> = ref('');
 const router = useRouter();
 const { xs } = useDisplay();
 
-const canRefreshMarkers = computed(() => zoom.value >= 10);
+const canRefreshMarkers = computed(() => zoom.value >= MIN_ZOOM_FOR_REFRESH);
 const mapTileUrl = computed(() =>
   theme.global.name.value === 'dark' ?
     'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png' :
     'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png'
 );
 
-const alprsInView: Ref<ALPR[]> = ref([]);
+const alprs: Ref<ALPR[]> = ref([]);
+const clusters: Ref<Cluster[]> = ref([]);
 const bboxForLastRequest: Ref<BoundingBox|null> = ref(null);
+
+const showClusters = computed(() => zoom.value <= CLUSTER_ZOOM_THRESHOLD);
+
+const visibleALPRs = computed(() => {
+  return alprs.value.filter(alpr => bounds.value?.containsPoint(alpr.lat, alpr.lon));
+});
+
+function zoomToCluster({ lat, lon }: { lat: number, lon: number }) {
+  center.value = { lat: lat, lng: lon };
+  zoom.value = CLUSTER_ZOOM_THRESHOLD + 1;
+}
 
 function handleKeyUp(event: KeyboardEvent) {
   if (event.key === '/' && searchField.value.value !== document.activeElement) {
@@ -186,27 +207,38 @@ function updateURL() {
   });
 }
 
+watch(showClusters, (newValue, oldValue) => {
+  if (newValue && !oldValue) {
+    bboxForLastRequest.value = bounds.value;
+  }
+});
+
 function updateMarkers() {
   // Fetch ALPRs in the current view
   if (!bounds.value) {
     return;
   }
 
-  if (!canRefreshMarkers.value) {
+  if (showClusters.value || !canRefreshMarkers.value) {
     return;
   }
 
   getALPRs(bounds.value)
-    .then((alprs: any) => {
+    .then((result: any) => {
       // merge incoming with existing, so that moving the map doesn't remove markers
-      const existingIds = new Set(alprsInView.value.map(alpr => alpr.id));
-      const newAlprs = alprs.elements.filter((alpr: any) => !existingIds.has(alpr.id));
-      alprsInView.value = [...alprsInView.value, ...newAlprs];
+      const existingIds = new Set(alprs.value.map(alpr => alpr.id));
+      const newAlprs = result.elements.filter((alpr: any) => !existingIds.has(alpr.id));
+      alprs.value = [...alprs.value, ...newAlprs];
       bboxForLastRequest.value = bounds.value;
     });
 }
 
 onMounted(() => {
+  getClusters()
+    .then((result: any) => {
+      clusters.value = result.clusters;
+    });
+
   const hash = router.currentRoute.value.hash;
   if (hash) {
     const parts = hash.split('/');

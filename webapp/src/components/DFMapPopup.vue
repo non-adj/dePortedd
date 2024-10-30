@@ -14,7 +14,7 @@
         <v-icon start>mdi-cctv</v-icon> <b>Directional {{ alpr.tags.direction ? `(${degreesToCardinal(parseInt(alpr.tags.direction))})` : '' }}</b>
       </v-list-item>
       <v-list-item>
-        <v-icon start>mdi-domain</v-icon> <b>{{ alpr.tags.brand ?? 'Unknown' }}</b>
+        <v-icon start>mdi-domain</v-icon> <b>{{ alpr.tags.brand ?? 'Unknown Brand' }}</b>
       </v-list-item>
     </v-list>
     <!-- <v-data-table density="compact" hide-default-header hide-default-footer disable-sort :items="kvTags" /> -->

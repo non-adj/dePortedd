@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { LCircleMarker, LCircle, LPolygon, LPopup } from '@vue-leaflet/vue-leaflet';
+import { LCircleMarker, LPolygon, LPopup } from '@vue-leaflet/vue-leaflet';
 import DFMapPopup from '@/components/DFMapPopup.vue';
 import type { ALPR } from '@/types';
 import type { PropType } from 'vue';

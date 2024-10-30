@@ -1,5 +1,11 @@
 import axios from "axios";
 
+export interface Cluster {
+  id: string;
+  lat: number;
+  lon: number;
+}
+
 export interface BoundingBoxLiteral {
   minLat: number;
   maxLat: number;
@@ -18,6 +24,10 @@ export class BoundingBox implements BoundingBoxLiteral {
     this.maxLat = maxLat;
     this.minLng = minLng;
     this.maxLng = maxLng;
+  }
+
+  containsPoint(lat: number, lng: number) {
+    return lat >= this.minLat && lat <= this.maxLat && lng >= this.minLng && lng <= this.maxLng;
   }
 
   updateFromOther(boundingBoxLiteral: BoundingBoxLiteral) {
@@ -52,6 +62,12 @@ export const getALPRs = async (boundingBox: BoundingBox) => {
     maxLng: boundingBox.maxLng.toString(),
   });
   const response = await apiService.get(`/alpr?${queryParams.toString()}`);
+  return response.data;
+}
+
+export const getClusters = async () => {
+  const s3Url = "https://deflock-clusters.s3.us-east-1.amazonaws.com/alpr_clusters.json";
+  const response = await apiService.get(s3Url);
   return response.data;
 }
 

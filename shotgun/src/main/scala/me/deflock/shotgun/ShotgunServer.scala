@@ -97,10 +97,19 @@ object ShotgunServer {
 
     val bindingFuture = Http().newServerAt("0.0.0.0", 8080).bind(routes)
 
-    println(s"Server now online. Please navigate to http://localhost:8080\nPress RETURN to stop...")
-    StdIn.readLine() // let it run until user presses return
+    // Handle the binding future properly
+    bindingFuture.foreach { binding =>
+      println(s"Server online at http://localhost:${binding.localAddress.getPort}/")
+      println("Press RETURN to stop...")
+    }
+    
+    StdIn.readLine()
+
     bindingFuture
-      .flatMap(_.unbind()) // trigger unbinding from the port
-      .onComplete(_ => system.terminate()) // and shutdown when done
+      .flatMap(_.unbind())
+      .onComplete { _ =>
+        println("Server shutting down...")
+        system.terminate()
+      }
   }
 }
