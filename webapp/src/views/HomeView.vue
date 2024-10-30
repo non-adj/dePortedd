@@ -2,8 +2,11 @@
   <div class="map-container" @keyup="handleKeyUp">
     <NewVisitor />
 
-    <v-card class="map-notif" v-show="!canRefreshMarkers">
-      <v-card-title><b>Zoom in to Refresh</b></v-card-title>
+    <v-card class="map-notif" v-show="isLoadingALPRs">
+      <v-card-title><v-progress-circular indeterminate color="primary" size="x-large" /></v-card-title>
+      <v-card-text class="mt-4">
+        <span class="font-weight-bold text-white">Loading ALPRs...</span>
+      </v-card-text>
     </v-card>
 
     <!-- use-global-leaflet=false is a workaround for a bug in current version of vue-leaflet -->
@@ -68,7 +71,7 @@
       />
       <l-control-zoom position="bottomright" />
 
-      <DFMarkerCluster v-if="showClusters" @click="zoomToCluster" v-for="cluster in clusters" :key="cluster.id" :lat="cluster.lat" :lon="cluster.lon" />
+      <DFMarkerCluster v-if="showClusters" v-for="cluster in clusters" :key="cluster.id" :lat="cluster.lat" :lon="cluster.lon" />
       <DFMapMarker v-else v-for="alpr in visibleALPRs" :key="alpr.id" :alpr :show-fov="zoom >= 16" />
     </l-map>
     <div class="loader" v-else>
@@ -95,7 +98,7 @@ import type { ALPR } from '@/types';
 
 const DEFAULT_ZOOM = 12;
 const MIN_ZOOM_FOR_REFRESH = 4;
-const CLUSTER_ZOOM_THRESHOLD = 8;
+const CLUSTER_ZOOM_THRESHOLD = 9;
 
 const theme = useTheme();
 const zoom: Ref<number> = ref(DEFAULT_ZOOM);
@@ -116,17 +119,12 @@ const mapTileUrl = computed(() =>
 const alprs: Ref<ALPR[]> = ref([]);
 const clusters: Ref<Cluster[]> = ref([]);
 const bboxForLastRequest: Ref<BoundingBox|null> = ref(null);
-
 const showClusters = computed(() => zoom.value <= CLUSTER_ZOOM_THRESHOLD);
+const isLoadingALPRs = computed(() => !showClusters.value && visibleALPRs.value.length === 0);
 
 const visibleALPRs = computed(() => {
   return alprs.value.filter(alpr => bounds.value?.containsPoint(alpr.lat, alpr.lon));
 });
-
-function zoomToCluster({ lat, lon }: { lat: number, lon: number }) {
-  center.value = { lat: lat, lng: lon };
-  zoom.value = CLUSTER_ZOOM_THRESHOLD + 1;
-}
 
 function handleKeyUp(event: KeyboardEvent) {
   if (event.key === '/' && searchField.value.value !== document.activeElement) {
@@ -207,9 +205,13 @@ function updateURL() {
   });
 }
 
-watch(showClusters, (newValue, oldValue) => {
-  if (newValue && !oldValue) {
-    bboxForLastRequest.value = bounds.value;
+watch(zoom, (newZoom, oldZoom) => {
+
+  if (newZoom <= CLUSTER_ZOOM_THRESHOLD && oldZoom > CLUSTER_ZOOM_THRESHOLD) {
+    bboxForLastRequest.value = bounds.value; 
+  } else if (newZoom < CLUSTER_ZOOM_THRESHOLD) {
+    alprs.value = [];
+    bboxForLastRequest.value = null;
   }
 });
 
@@ -281,17 +283,13 @@ onMounted(() => {
 .map-notif {
   position: absolute;
   text-align: center;
-  bottom: 32px;
-  left: 64px;
-  width: calc(100% - 128px);
-  max-width: 1000px;
+  bottom: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, 50%);
   z-index: 1000;
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 4px;
-  padding: 4px;
-  color: #eee;
+  padding: 20px;
 }
 
 .loader {
