@@ -36,3 +36,5 @@ terraform.tfstate.d/
 .terraform/
 .terraform.lock.hcl
 terraform.tfvars
+
+.venv/
