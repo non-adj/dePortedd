@@ -99,7 +99,7 @@ const images = [
   })),
   ...Array.from({ length: vigilantImageCount }, (_, i) => ({
     url: `/vigilant-${i + 1}.jpg`,
-    brand: 'vigilant'
+    brand: 'motorola'
   }))
 ];
 </script>

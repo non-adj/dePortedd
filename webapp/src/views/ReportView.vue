@@ -48,7 +48,7 @@
         To add the ALPR, click the <strong>Point</strong> button in the top left corner of the editor, then click on the location of the ALPR on the map. In the popup that appears, paste one of the following sets of tags based on the brand of the ALPR:
       </p>
 
-      <div class="d-flex flex-row w-100 justify-space-between mb-16">
+      <div class="d-flex flex-row w-100 justify-space-between">
         <div style="flex: 1" class="mr-2">
           <h3 class="text-center">Flock Safety</h3>
           <DFCode>
@@ -77,6 +77,17 @@
           </DFCode>
         </div>
       </div>
+
+      <v-alert
+        variant="tonal"
+        type="info"
+        class="my-6 mb-16"
+        title="Don't see the brand?"
+      >
+        <p>
+          If you've located an ALPR that isn't from Flock Safety or Motorola Solutions, you can still add it to OpenStreetMap. Just use the tags above and replace the brand name and Wikidata ID with the correct information.
+        </p>
+      </v-alert>
 
       <v-img max-width="450" class="my-8" src="/paste-tags.png" />
 
