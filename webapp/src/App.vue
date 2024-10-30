@@ -17,6 +17,7 @@ const items = [
   { title: 'About', icon: 'mdi-information', to: '/about' },
   { title: 'Contact', icon: 'mdi-email', to: '/contact' },
   { title: 'Feature Roadmap', icon: 'mdi-road-variant', to: '/roadmap' },
+  { title: 'GitHub', icon: 'mdi-github', href: 'https://github.com/frillweeman/deflock'}
 ]
 const drawer = ref(false)
 
@@ -61,6 +62,7 @@ watch(() => theme.global.name.value, (newTheme) => {
           :key="item.title"
           link
           :to="item.to"
+          :href="item.href"
         ><v-icon start>{{ item.icon }}</v-icon>{{ item.title }}</v-list-item>
       </v-list>
     </v-navigation-drawer>

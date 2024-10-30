@@ -3,7 +3,7 @@
     <NewVisitor />
 
     <v-card class="map-notif" v-show="isLoadingALPRs && !showClusters">
-      <v-card-title><v-progress-circular indeterminate color="primary" size="x-large" /></v-card-title>
+      <v-card-title><v-progress-circular indeterminate color="primary" /></v-card-title>
     </v-card>
 
     <!-- use-global-leaflet=false is a workaround for a bug in current version of vue-leaflet -->
@@ -59,6 +59,9 @@
             </template>
           </v-text-field>
         </form>
+        <v-btn @click="goToUserLocation" icon class="mt-2">
+          <v-icon x-large>mdi-crosshairs-gps</v-icon>
+        </v-btn>
       </l-control>
       <!-- url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" -->
       <l-tile-layer
@@ -145,6 +148,15 @@ function onSearch() {
       center.value = { lat, lng };
       zoom.value = DEFAULT_ZOOM;
       searchQuery.value = '';
+    });
+}
+
+function goToUserLocation() {
+  getUserLocation()
+    .then(location => {
+      center.value = { lat: location[0], lng: location[1] };
+    }).catch(error => {
+      console.debug('Error getting user location.', error);
     });
 }
 
@@ -253,17 +265,9 @@ onMounted(() => {
         lng: parseFloat(parts[2]),
       };
     }
+  } else {
+    center.value = { lat: 37.855068, lng: -122.357998 };
   }
-
-  getUserLocation()
-    .then(location => {
-      if (!hash)
-        center.value = { lat: location[0], lng: location[1] };
-    }).catch(error => {
-      // TODO: allow search
-      console.debug('Error getting user location. Defaulting to Huntsville, AL.', error);
-      center.value = { lat: 34.730819, lng: -86.586114 }; // Huntsville, AL
-    });
 });
 
 </script>
