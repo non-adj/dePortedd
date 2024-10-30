@@ -2,11 +2,8 @@
   <div class="map-container" @keyup="handleKeyUp">
     <NewVisitor />
 
-    <v-card class="map-notif" v-show="isLoadingALPRs">
+    <v-card class="map-notif" v-show="isLoadingALPRs && !showClusters">
       <v-card-title><v-progress-circular indeterminate color="primary" size="x-large" /></v-card-title>
-      <v-card-text class="mt-4">
-        <span class="font-weight-bold text-white">Loading ALPRs...</span>
-      </v-card-text>
     </v-card>
 
     <!-- use-global-leaflet=false is a workaround for a bug in current version of vue-leaflet -->
@@ -120,7 +117,7 @@ const alprs: Ref<ALPR[]> = ref([]);
 const clusters: Ref<Cluster[]> = ref([]);
 const bboxForLastRequest: Ref<BoundingBox|null> = ref(null);
 const showClusters = computed(() => zoom.value <= CLUSTER_ZOOM_THRESHOLD);
-const isLoadingALPRs = computed(() => !showClusters.value && visibleALPRs.value.length === 0);
+const isLoadingALPRs = ref(false);
 
 const visibleALPRs = computed(() => {
   return alprs.value.filter(alpr => bounds.value?.containsPoint(alpr.lat, alpr.lon));
@@ -225,6 +222,7 @@ function updateMarkers() {
     return;
   }
 
+  isLoadingALPRs.value = true;
   getALPRs(bounds.value)
     .then((result: any) => {
       // merge incoming with existing, so that moving the map doesn't remove markers
@@ -232,6 +230,9 @@ function updateMarkers() {
       const newAlprs = result.elements.filter((alpr: any) => !existingIds.has(alpr.id));
       alprs.value = [...alprs.value, ...newAlprs];
       bboxForLastRequest.value = bounds.value;
+    })
+    .finally(() => {
+      isLoadingALPRs.value = false;
     });
 }
 
