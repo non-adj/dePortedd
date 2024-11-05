@@ -59,17 +59,20 @@
             </template>
           </v-text-field>
         </form>
-        <v-btn @click="goToUserLocation" icon class="mt-2">
-          <v-icon x-large>mdi-crosshairs-gps</v-icon>
-        </v-btn>
       </l-control>
       <!-- url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" -->
+
       <l-tile-layer
         :url="mapTileUrl"
         layer-type="base"
         name="OpenStreetMap"
       />
-      <l-control-zoom position="bottomright" />
+      
+      <l-control position="bottomright">
+        <v-btn @click="goToUserLocation" icon class="mt-2">
+          <v-icon x-large>mdi-crosshairs-gps</v-icon>
+        </v-btn>
+      </l-control>
 
       <DFMarkerCluster v-if="showClusters" v-for="cluster in clusters" :key="cluster.id" :lat="cluster.lat" :lon="cluster.lon" />
       <DFMapMarker v-else v-for="alpr in visibleALPRs" :key="alpr.id" :alpr :show-fov="zoom >= 16" />
@@ -266,7 +269,7 @@ onMounted(() => {
       };
     }
   } else {
-    center.value = { lat: 37.855068, lng: -122.357998 };
+    center.value = { lat: 37.875190, lng: -122.279819 };
   }
 });
 

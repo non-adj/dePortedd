@@ -18,7 +18,7 @@
                 </v-col>
                 <v-col>
                   <h4 class="no-small">
-                    Each Circle represents an Automated License Plate Reader (ALPR).
+                    Each Circle represents an Automated License Plate Reader.
                   </h4>
                 </v-col>
               </v-row>
@@ -48,7 +48,7 @@
                 </v-col>
                 <v-col>
                   <h4 class="no-small">
-                    Click on an ALPR to view more information about it.
+                    Please check our list of <a href="/operators">Known Operators</a> and report missing ALPRs near you.
                   </h4>
                 </v-col>
               </v-row>

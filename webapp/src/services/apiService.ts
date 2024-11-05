@@ -71,6 +71,12 @@ export const getClusters = async () => {
   return response.data;
 }
 
+export const getCities = async () => {
+  const s3Url = "https://deflock-clusters.s3.us-east-1.amazonaws.com/flock_cameras.json";
+  const response = await apiService.get(s3Url);
+  return response.data;
+}
+
 export const geocodeQuery = async (query: string, currentLocation: any) => {
   const encodedQuery = encodeURIComponent(query);
   const results = (await apiService.get(`/geocode?query=${encodedQuery}`)).data;
