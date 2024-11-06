@@ -48,46 +48,11 @@
         To add the ALPR, click the <strong>Point</strong> button in the top left corner of the editor, then click on the location of the ALPR on the map. In the popup that appears, paste one of the following sets of tags based on the brand of the ALPR:
       </p>
 
-      <div class="d-flex flex-row w-100 justify-space-between">
-        <div style="flex: 1" class="mr-2">
-          <h3 class="text-center">Flock Safety</h3>
-          <DFCode>
-            man_made=surveillance<br>
-            surveillance:type=ALPR<br>
-            camera:mount=pole<br>
-            camera:type=fixed<br>
-            surveillance=traffic<br>
-            surveillance:zone=traffic<br>
-            brand=<span class="highlight">Flock Safety</span><br>
-            brand:wikidata=<span class="highlight">Q108485435</span><br>
-          </DFCode>
-        </div>
-  
-        <div style="flex: 1" class="ml-2">
-          <h3 class="text-center">Motorola Solutions</h3>
-          <DFCode>
-            man_made=surveillance<br>
-            surveillance:type=ALPR<br>
-            camera:mount=pole<br>
-            camera:type=fixed<br>
-            surveillance=traffic<br>
-            surveillance:zone=traffic<br>
-            brand=<span class="highlight">Motorola Solutions</span><br>
-            brand:wikidata=<span class="highlight">Q634815</span><br>
-          </DFCode>
-        </div>
-      </div>
+      <OSMTagSelector />
 
-      <v-alert
-        variant="tonal"
-        type="info"
-        class="my-6 mb-16"
-        title="Don't see the brand?"
-      >
-        <p>
-          If you've located an ALPR that isn't from Flock Safety or Motorola Solutions, you can still add it to OpenStreetMap. Just use the tags above and replace the brand name and Wikidata ID with the correct information.
-        </p>
-      </v-alert>
+      <p class="mt-8">
+        After copying the tags, paste them into the <strong>Tags</strong> field in the popup.
+      </p>
 
       <v-img max-width="450" class="my-8" src="/paste-tags.png" />
 
@@ -115,6 +80,7 @@
 
 <script setup lang="ts">
 import DFCode from '@/components/DFCode.vue';
+import OSMTagSelector from '@/components/OSMTagSelector.vue';
 </script>
 
 <style scoped>
