@@ -15,12 +15,16 @@ const items = [
   { title: 'What is an ALPR?', icon: 'mdi-cctv', to: '/what-is-an-alpr' },
   { title: 'Report an ALPR', icon: 'mdi-map-marker-plus', to: '/report' },
   { title: 'Known Operators', icon: 'mdi-police-badge', to: '/operators' },
-  { title: 'About', icon: 'mdi-information', to: '/about' },
-  { title: 'Contact', icon: 'mdi-email', to: '/contact' },
+  // { title: 'About', icon: 'mdi-information', to: '/about' },
   // { title: 'Feature Roadmap', icon: 'mdi-road-variant', to: '/roadmap' },
-  { title: 'GitHub', icon: 'mdi-github', href: 'https://github.com/frillweeman/deflock'},
-  { title: 'Donate', icon: 'mdi-heart', href: 'https://github.com/sponsors/frillweeman'}
 ]
+
+const metaItems = [
+  { title: 'Discord', icon: 'mdi-chat-processing-outline', href: 'https://discord.gg/aV7v4R3sKT'},
+  { title: 'Contact', icon: 'mdi-email-outline', to: '/contact' },
+  { title: 'GitHub', icon: 'mdi-github', href: 'https://github.com/frillweeman/deflock'},
+  { title: 'Donate', icon: 'mdi-heart', href: 'https://github.com/sponsors/frillweeman'},
+];
 const drawer = ref(false)
 
 watch(() => theme.global.name.value, (newTheme) => {
@@ -59,8 +63,19 @@ watch(() => theme.global.name.value, (newTheme) => {
       temporary
     >
       <v-list nav>
+        <v-list-subheader>DeFlock</v-list-subheader>
         <v-list-item
           v-for="item in items"
+          :key="item.title"
+          link
+          :to="item.to"
+        ><v-icon start>{{ item.icon }}</v-icon>{{ item.title }}</v-list-item>
+        
+        <v-divider />
+        
+        <v-list-subheader>Get Involved</v-list-subheader>
+        <v-list-item
+          v-for="item in metaItems"
           :key="item.title"
           link
           :to="item.to"

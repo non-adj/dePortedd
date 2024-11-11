@@ -39,12 +39,16 @@
       </v-card-text>
     </v-card>
 
-    <h2>Want to Help?</h2>
+    <h2 id="community-datasets">Community Datasets</h2>
     <p>
-      If you live in one of these cities/counties, or if you're bored and want to browse Google Maps Street View, you can help us by reporting the locations of these Flock cameras. Their locations are pretty easy to predict, as they're usually installed at major intersections and the edges of city limits.
+      Here are some datasets that have been shared with us by the community through various collection methods (FOIA requests, scraping, wardriving, etc.). If you have a dataset you'd like to share, please reach out to us <router-link to="/contact">here</router-link>.
     </p>
-    <p class="mb-16">
-      You can report a camera by following <a href="/report">these instructions</a>.
+    <p class="mb-4">
+      If you'd like to report some of the ALPRs in these data sets so that they can be seen on the map, download the file and follow <router-link to="/report">these instructions</router-link>. Be sure to check that the cameras you're reporting are not already on the map. Please note that these datasets contain only approximate locations of cameras. You will need to verify the locations yourself.
+    </p>
+    <community-datasets />
+    <p class="my-8">
+      We are getting a lot of new datasets and trying to decide how to import them at a large scale, since they need to be verified and deduplicated. If you have any ideas or want to help, please reach out to us <router-link to="/contact">here</router-link> or join our <a href="https://discord.gg/aV7v4R3sKT" target="_blank">Discord</a>.
     </p>
   </v-container>
 </template>
@@ -52,6 +56,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue';
 import { getCities } from '@/services/apiService';
+import CommunityDatasets from '@/components/CommunityDatasets.vue';
 
 const page = ref(1);
 const selectedState = ref('');
