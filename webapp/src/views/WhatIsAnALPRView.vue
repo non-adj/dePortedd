@@ -58,9 +58,9 @@
       While <a href="https://en.wikipedia.org/wiki/Flock_Safety" target="_blank">Flock Safety</a> is a common brand of ALPRs in the US, there are several others, including <a href="https://en.wikipedia.org/wiki/Vigilant_Solutions" target="_blank">Vigilant Solutions</a>, owned by Motorola Solutions. Flock Safety ALPRs are easy to spot as they almost all look the same, typically mounted on poles with a solar panel on top. In rural areas, they are likely to be on standalone black poles, while in cities, they are more likely to be on existing utility or traffic poles. The cameras are often placed near intersections or on main roads at the edge of a city or town. Vigilant Solutions ALPRs, on the other hand, are typically mounted on traffic poles at or near intersections, with a distinctive white box mounted nearby.
     </p>
 
-    <h2>Not All Cameras are ALPRs</h2>
+    <h2>Not All Cameras are Law Enforcement ALPRs</h2>
     <p>
-      Not all cameras near roads are ALPRs. Many people mistakenly assume that every traffic camera or intersection camera is an ALPR, but that's not true. Here are some things ALPRs are not:
+      Not all cameras near roads are ALPRs operated by law enforcement. Many people mistakenly assume that every traffic camera or intersection camera is an ALPR, but the reality is more nuanced. Here are some common types of cameras you might see near roads:
     </p>
 
     <div class="ml-4">
@@ -76,10 +76,10 @@
         <p>These cameras are set up to capture violations, such as running a red light or speeding. They may record plate numbers when a violation is detected, but they do not perform continuous surveillance or collect location data over time.</p>
       </div>
 
-      <h3>Security Cameras</h3>
+      <h3>Toll Cameras</h3>
       <div class="flex-image">
-        <v-img rounded cover aspect-ratio="4/3" width="180" src="/security-camera.jpg" />
-        <p>Cameras used by businesses or homeowners for security purposes may capture vehicles incidentally, but they are not specifically designed to automatically read and record license plates.</p>
+        <v-img rounded cover aspect-ratio="4/3" width="180" src="/toll-camera.jpg" />
+        <p>Cameras on toll roads are used to capture license plates for billing purposes. They are not designed to track vehicles or store data beyond the transaction.</p>
       </div>
     </div>
   </v-container>

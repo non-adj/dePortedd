@@ -21,10 +21,18 @@
           :headers="headers"
           :items="filteredCities"
           :items-per-page="8"
+          :sort-by="[ { key: 'state', order: 'asc' } ]"
         >
+          <template v-slot:item.numCameras="i: any">
+            <span v-if="i.item.numCameras">{{ i.item.numCameras }}</span>
+            <span v-else>N/A</span>
+          </template>
+
           <template v-slot:item.transparencyReportUrl="i: any">
-            <v-btn variant="text" :href="i.item.transparencyReportUrl" target="_blank">
-              <v-icon start>mdi-eye</v-icon> View
+            <v-btn variant="text" :href="i.item.transparencyReportUrl" target="_blank" :disabled="!i.item.transparencyReportUrl">
+              <v-icon start>mdi-eye</v-icon>
+              <span v-if="i.item.transparencyReportUrl"> View</span>
+              <span v-else> N/A</span>
             </v-btn>
           </template>
         </v-data-table>

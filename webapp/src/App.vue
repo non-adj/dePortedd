@@ -17,8 +17,9 @@ const items = [
   { title: 'Known Operators', icon: 'mdi-police-badge', to: '/operators' },
   { title: 'About', icon: 'mdi-information', to: '/about' },
   { title: 'Contact', icon: 'mdi-email', to: '/contact' },
-  { title: 'Feature Roadmap', icon: 'mdi-road-variant', to: '/roadmap' },
-  { title: 'GitHub', icon: 'mdi-github', href: 'https://github.com/frillweeman/deflock'}
+  // { title: 'Feature Roadmap', icon: 'mdi-road-variant', to: '/roadmap' },
+  { title: 'GitHub', icon: 'mdi-github', href: 'https://github.com/frillweeman/deflock'},
+  { title: 'Donate', icon: 'mdi-heart', href: 'https://github.com/sponsors/frillweeman'}
 ]
 const drawer = ref(false)
 
@@ -64,6 +65,7 @@ watch(() => theme.global.name.value, (newTheme) => {
           link
           :to="item.to"
           :href="item.href"
+          :target="{ '_blank': item.href }"
         ><v-icon start>{{ item.icon }}</v-icon>{{ item.title }}</v-list-item>
       </v-list>
     </v-navigation-drawer>
