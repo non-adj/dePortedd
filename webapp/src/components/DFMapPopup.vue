@@ -1,5 +1,5 @@
 <template>
-  <v-sheet min-width="205">
+  <v-sheet min-width="240">
     <v-list density="compact">
       <v-list-item v-if="isFaceRecognition">
         <v-icon start>mdi-face-recognition</v-icon> <b>Face Recognition</b>
@@ -14,7 +14,30 @@
         <v-icon start>mdi-cctv</v-icon> <b>Directional {{ alpr.tags.direction ? `(${degreesToCardinal(parseInt(alpr.tags.direction))})` : '' }}</b>
       </v-list-item>
       <v-list-item>
-        <v-icon start>mdi-domain</v-icon> <b>{{ alpr.tags.brand ?? 'Unknown Brand' }}</b>
+        <v-icon start>mdi-domain</v-icon> <b>
+          <span v-if="alpr.tags.brand">
+            {{ alpr.tags.brand }}
+          </span>
+          <span v-else class="text--warning">
+            Unknown Brand
+            <v-btn :href="osmNodeUrl" variant="text" flat size="x-small" color="warning" target="_blank">
+              <v-icon start size="small">mdi-pencil</v-icon>Fix
+            </v-btn>
+          </span>
+        </b>
+      </v-list-item>
+      <v-list-item>
+        <v-icon start>mdi-police-badge</v-icon> <b>
+          <span v-if="alpr.tags.operator">
+            {{ alpr.tags.operator }}
+          </span>
+          <span v-else class="text--warning">
+            Unknown Operator
+            <v-btn :href="osmNodeUrl" variant="text" flat size="x-small" color="warning" target="_blank">
+              <v-icon start size="small">mdi-pencil</v-icon>Fix
+            </v-btn>
+          </span>
+        </b>
       </v-list-item>
     </v-list>
     <!-- <v-data-table density="compact" hide-default-header hide-default-footer disable-sort :items="kvTags" /> -->
@@ -40,6 +63,7 @@ const valueTransformations: { [key: string]: (value: string) => string } = {
 const whitelistedTags = ['brand', 'camera:mount', 'camera:type', 'direction', 'operator'];
 
 const isFaceRecognition = computed(() => props.alpr.tags.brand === 'Avigilon');
+const osmNodeUrl = computed(() => `https://www.openstreetmap.org/edit?node=${props.alpr.id}`);
 
 const kvTags = computed(() => {
   return Object.entries(props.alpr.tags)
