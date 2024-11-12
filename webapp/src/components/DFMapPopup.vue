@@ -18,11 +18,11 @@
           <span v-if="alpr.tags.brand">
             {{ alpr.tags.brand }}
           </span>
-          <span v-else class="text--warning">
+          <span v-else>
             Unknown Brand
-            <v-btn :href="osmNodeUrl" variant="text" flat size="x-small" color="warning" target="_blank">
+            <!-- <v-btn :href="osmNodeUrl" variant="text" flat size="x-small" color="warning" target="_blank">
               <v-icon start size="small">mdi-pencil</v-icon>Fix
-            </v-btn>
+            </v-btn> -->
           </span>
         </b>
       </v-list-item>
@@ -31,15 +31,19 @@
           <span v-if="alpr.tags.operator">
             {{ alpr.tags.operator }}
           </span>
-          <span v-else class="text--warning">
+          <span v-else>
             Unknown Operator
-            <v-btn :href="osmNodeUrl" variant="text" flat size="x-small" color="warning" target="_blank">
+            <!-- <v-btn :href="osmNodeUrl" variant="text" flat size="x-small" color="warning" target="_blank">
               <v-icon start size="small">mdi-pencil</v-icon>Fix
-            </v-btn>
+            </v-btn> -->
           </span>
         </b>
       </v-list-item>
     </v-list>
+
+    <div class="text-center text-grey-darken-1">
+      node/{{ alpr.id }}
+    </div>
     <!-- <v-data-table density="compact" hide-default-header hide-default-footer disable-sort :items="kvTags" /> -->
   </v-sheet>
 </template>
@@ -63,7 +67,7 @@ const valueTransformations: { [key: string]: (value: string) => string } = {
 const whitelistedTags = ['brand', 'camera:mount', 'camera:type', 'direction', 'operator'];
 
 const isFaceRecognition = computed(() => props.alpr.tags.brand === 'Avigilon');
-const osmNodeUrl = computed(() => `https://www.openstreetmap.org/edit?node=${props.alpr.id}`);
+const osmNodeUrl = computed(() => `/node/${props.alpr.id}`);
 
 const kvTags = computed(() => {
   return Object.entries(props.alpr.tags)
