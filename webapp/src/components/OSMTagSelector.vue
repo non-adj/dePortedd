@@ -43,6 +43,12 @@
         brand:wikidata=<span class="highlight">{{ selectedBrand.wikidata }}</span><br>
       </DFCode>
 
+      <h5 class="text-center mt-4">and if operator is known</h5>
+      <DFCode>
+        operator=<span class="highlight">(Police Dept Name)</span><br>
+        operator:wikidata=<span class="highlight">(WikiData ID)</span><br>
+      </DFCode>
+
       <v-alert
         v-if="selectedBrand.nickname === 'Other'"
         class="mt-4"
