@@ -17,25 +17,6 @@
       @ready="mapLoaded"
       :options="{ zoomControl: false, attributionControl: false }"
     >
-      <l-control position="bottomleft">
-        <v-expansion-panels>
-          <v-expansion-panel>
-            <v-expansion-panel-title>Legend</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <v-card flat>
-                <v-list density="compact">
-                  <v-list-item class="px-0">
-                    <v-icon start color="#3f54f3">mdi-circle</v-icon> Directional ALPR
-                  </v-list-item>
-                  <v-list-item class="px-0">
-                    <v-icon start color="#ff5722">mdi-circle</v-icon> Omnidirectional w/ Face Recognition
-                  </v-list-item>
-                </v-list>
-              </v-card>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
-        </v-expansion-panels>
-      </l-control>
       <l-control position="topleft">
         <form @submit.prevent="onSearch">
           <v-text-field
@@ -81,12 +62,18 @@
       <span class="mb-4 text-grey">Loading Map</span>
       <v-progress-circular indeterminate color="primary" />
     </div>
+    <transition name="fade">
+      <div v-show="showPardon" class="pardon">
+        <h4 class="mb-4">Pardon our Progress</h4>
+        <span>We're updating our map tiles, so it will be bright for now.</span>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
-import { LMap, LTileLayer, LControlZoom, LControl } from '@vue-leaflet/vue-leaflet';
+import { LMap, LTileLayer, LControl } from '@vue-leaflet/vue-leaflet';
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router'
 import type { Ref } from 'vue';
@@ -111,11 +98,12 @@ const searchField: Ref<any|null> = ref(null);
 const searchQuery: Ref<string> = ref('');
 const router = useRouter();
 const { xs } = useDisplay();
+const showPardon = ref(true);
 
 const canRefreshMarkers = computed(() => zoom.value >= MIN_ZOOM_FOR_REFRESH);
 const mapTileUrl = computed(() =>
   theme.global.name.value === 'dark' ?
-    'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png' :
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' :
     'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png'
 );
 
@@ -158,6 +146,7 @@ function goToUserLocation() {
   getUserLocation()
     .then(location => {
       center.value = { lat: location[0], lng: location[1] };
+      zoom.value = DEFAULT_ZOOM;
     }).catch(error => {
       console.debug('Error getting user location.', error);
     });
@@ -252,6 +241,10 @@ function updateMarkers() {
 }
 
 onMounted(() => {
+  setTimeout(() => {
+    showPardon.value = false;
+  }, 4200);
+
   getClusters()
     .then((result: any) => {
       clusters.value = result.clusters;
@@ -276,6 +269,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
+}
+
 .map-container {
   width: 100%;
   height: calc(100dvh - 64px);
@@ -310,5 +310,24 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   color: #333;
+}
+
+.pardon {
+  text-align: center;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  @media (min-width: 600px) {
+    right: auto;
+  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.85);
+  border-radius: 4px;
+  padding: 20px;
 }
 </style>
