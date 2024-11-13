@@ -1,6 +1,6 @@
 <template>
   <div style="position: relative">
-    <v-btn @click="copyToClipboard" icon variant="plain" flat class="copy-button">
+    <v-btn color="white" @click="copyToClipboard" icon variant="plain" flat class="copy-button">
       <v-icon>mdi-content-copy</v-icon>
     </v-btn>
     <code ref="codeContent">

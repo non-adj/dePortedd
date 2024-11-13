@@ -62,12 +62,6 @@
       <span class="mb-4 text-grey">Loading Map</span>
       <v-progress-circular indeterminate color="primary" />
     </div>
-    <transition name="fade">
-      <div v-show="showPardon" class="pardon">
-        <h4 class="mb-4">Pardon our Progress</h4>
-        <span>We're updating our map tiles, so it will be bright for now.</span>
-      </div>
-    </transition>
   </div>
 </template>
 
@@ -98,13 +92,12 @@ const searchField: Ref<any|null> = ref(null);
 const searchQuery: Ref<string> = ref('');
 const router = useRouter();
 const { xs } = useDisplay();
-const showPardon = ref(true);
 
 const canRefreshMarkers = computed(() => zoom.value >= MIN_ZOOM_FOR_REFRESH);
 const mapTileUrl = computed(() =>
   theme.global.name.value === 'dark' ?
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png' :
-    'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png'
+    'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png' :
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 );
 
 const alprs: Ref<ALPR[]> = ref([]);
@@ -241,10 +234,6 @@ function updateMarkers() {
 }
 
 onMounted(() => {
-  setTimeout(() => {
-    showPardon.value = false;
-  }, 4200);
-
   getClusters()
     .then((result: any) => {
       clusters.value = result.clusters;
@@ -310,24 +299,5 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   color: #333;
-}
-
-.pardon {
-  text-align: center;
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  @media (min-width: 600px) {
-    right: auto;
-  }
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.85);
-  border-radius: 4px;
-  padding: 20px;
 }
 </style>

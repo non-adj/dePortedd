@@ -103,6 +103,7 @@ const selectedBrand: Ref<WikidataItem> = ref(alprBrands[0]);
 
 .overlay {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+  color: white;
   /* font-family: 'Courier New', Courier, monospace; */
   font-weight: bold;
   text-transform: uppercase;
