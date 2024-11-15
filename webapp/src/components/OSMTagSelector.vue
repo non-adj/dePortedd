@@ -45,7 +45,7 @@
 
       <h5 class="text-center mt-4">and if operator is known</h5>
       <DFCode>
-        operator=<span class="highlight">(Police Dept Name)</span><br>
+        operator=<span class="highlight">(Police Dept/Owner)</span><br>
         operator:wikidata=<span class="highlight">(WikiData ID)</span><br>
       </DFCode>
 
@@ -87,6 +87,12 @@ const alprBrands: WikidataItem[] = [
     nickname: 'Neology',
     wikidata: 'Q130958232',
     exampleImage: '/neology-1.jpg',
+  },
+  {
+    name: 'Leonardo',
+    nickname: 'Leonardo',
+    wikidata: 'Q910379',
+    exampleImage: '/elsag.webp',
   },
   {
     name: '(brand goes here)',
