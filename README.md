@@ -2,6 +2,8 @@
 
 Crowdsourced tool for locating and reporting ALPRs. [View Live Site](https://deflock.me).
 
+![DeFlock Screenshot](./webapp/public/deflock-screenshot.webp)
+
 ## Purpose
 
 I created this project after noticing the mass deployment of ALPRs in cities, towns, and even rural areas in the recent years. It's a massive threat to privacy, and this projects helps shed a light on this issue as ALPRs continue to be deployed to thousands of cities across the US and possibly beyond.
