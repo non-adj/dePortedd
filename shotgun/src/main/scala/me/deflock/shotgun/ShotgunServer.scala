@@ -83,6 +83,9 @@ object ShotgunServer {
           get {
             complete(HttpResponse(StatusCodes.OK, entity = "Service is healthy"))
           }
+          head {
+            complete(StatusCodes.OK)
+          }
         }
       )
     }
