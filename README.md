@@ -28,6 +28,11 @@ _Likely to change soon._
 * PekkoHTTP
 * Nginx
 
+### Cloud
+* AWS Lambda (for [clustering](serverless/alpr_clusters) and [counts](serverless/alpr_counts))
+* AWS S3
+* AWS ECR
+
 ### Frontend
 * Vue3
 * Vuetify (UI component library)
