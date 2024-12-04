@@ -55,6 +55,11 @@ const router = createRouter({
       path: '/legal',
       name: 'legal',
       component: () => import('../views/LegalView.vue')
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('../views/404.vue')
     }
   ]
 })
