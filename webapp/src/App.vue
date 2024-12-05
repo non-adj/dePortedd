@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterView, useRouter } from 'vue-router'
 import { ref, watch } from 'vue'
 import { useTheme } from 'vuetify';
 
 const theme = useTheme();
+const router = useRouter();
 
 function toggleTheme() {
   const newTheme = theme.global.name.value === 'dark' ? 'light' : 'dark';
@@ -11,7 +12,8 @@ function toggleTheme() {
 }
 
 const items = [
-  { title: 'Map', icon: 'mdi-map', to: '/' },
+  { title: 'Home', icon: 'mdi-home', to: '/' },
+  { title: 'Map', icon: 'mdi-map', to: '/map' },
   { title: 'What is an ALPR?', icon: 'mdi-cctv', to: '/what-is-an-alpr' },
   { title: 'Report an ALPR', icon: 'mdi-map-marker-plus', to: '/report' },
   { title: 'Known Operators', icon: 'mdi-police-badge', to: '/operators' },
@@ -31,9 +33,11 @@ watch(() => theme.global.name.value, (newTheme) => {
   const root = document.documentElement;
   if (newTheme === 'dark') {
     root.style.setProperty('--df-background-color', 'rgb(33, 33, 33)');
+    root.style.setProperty('--df-page-background-color', 'unset');
     root.style.setProperty('--df-text-color', '#ccc');
   } else {
     root.style.setProperty('--df-background-color', 'white');
+    root.style.setProperty('--df-page-background-color', '#f5f5f5');
     root.style.setProperty('--df-text-color', 'black');
   }
 });
@@ -48,7 +52,7 @@ watch(() => theme.global.name.value, (newTheme) => {
       <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>
-        <v-img height="36" width="130" src="/deflock-logo.svg" />
+        <v-img style="cursor: pointer" height="36" width="130" src="/deflock-logo.svg" @click="router.push('/')" />
       </v-toolbar-title>
 
       <v-spacer></v-spacer>

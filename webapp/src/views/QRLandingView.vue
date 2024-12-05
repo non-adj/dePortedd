@@ -4,6 +4,7 @@
       <v-row justify="center">
         <v-col cols="12" md="8" class="text-center">
           <h1 class="display-1 px-8">You're Being Tracked by an ALPR!</h1>
+          <ALPRCounter class="mt-4" />
           <p class="subtitle-1 px-8 mt-6 mb-12">
             Automated License Plate Readers (ALPRs) are monitoring your every move. Learn more about how they work and how you can protect your privacy.
           </p>
@@ -36,7 +37,7 @@
               Risk of Misuse
             </v-card-title>
             <v-card-text>
-              Data from ALPRs has led to wrongful arrests, profiling, and <a target="_blank" href="https://www.kwch.com/2022/10/31/kechi-police-lieutenant-arrested-using-police-technology-stalk-wife/">stalking ex-partners</a> by police officers.
+              Data from ALPRs has led to <a target="_blank" href="https://www.newsobserver.com/news/state/north-carolina/article287381160.html">wrongful arrests</a>, profiling, and <a target="_blank" href="https://www.kwch.com/2022/10/31/kechi-police-lieutenant-arrested-using-police-technology-stalk-wife/">stalking ex-partners</a> by police officers.
             </v-card-text>
           </v-card>
         </v-col>
@@ -62,6 +63,14 @@
         <v-icon end>mdi-map</v-icon>
       </v-btn>
     </v-container>
+
+    <v-container>
+    <v-footer class="text-center">
+      <span class="attribution">
+        Maps ©&nbsp;<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>&nbsp;contributors.
+      </span>
+    </v-footer>
+   </v-container>
 </template>
 
 <style>
@@ -69,7 +78,7 @@
   background: url('/flock-camera.jpeg') no-repeat center center;
   background-size: cover;
   color: white;
-  padding: 100px 0;
+  padding: 100px 0 !important;
   position: relative;
   }
 
@@ -107,7 +116,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.4);
     z-index: 1;
   }
 
@@ -119,8 +128,9 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import ALPRCounter from '@/components/ALPRCounter.vue';
 
 const router = useRouter();
 const userLocation = ref<[number, number] | null>(null);
@@ -164,12 +174,12 @@ async function goToMap(options: GoToMapOptions = {}) {
     await getUserLocation();
     if (userLocation.value) {
       const [lat, lon] = userLocation.value;
-      router.push({ path: '/', hash: `#map=16/${lat.toFixed(6)}/${lon.toFixed(6)}` });
+      router.push({ path: '/map', hash: `#map=16/${lat.toFixed(6)}/${lon.toFixed(6)}` });
     } else {
-      router.push({ path: '/', hash: '#map=16/40.0150/-105.2705' });
+      router.push({ path: '/map', hash: '#map=16/40.0150/-105.2705' });
     }
   } else {
-    router.push({ path: '/' });
+    router.push({ path: '/map' });
   }
 }
 </script>

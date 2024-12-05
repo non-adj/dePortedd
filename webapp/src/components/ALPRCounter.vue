@@ -1,29 +1,35 @@
 <template>
-  <v-card>
-    <v-card-text class="text-center">
-      <div class="d-flex flex-row justify-space-between">
-        <div class="px-2">
-          <h6>US</h6>
-          <h4>{{ formatCount(counts.us) }}</h4>
-        </div>
-        <v-divider vertical></v-divider>
-        <div class="px-2">
-          <h6>Worldwide</h6>
-          <h4>{{ formatCount(counts.worldwide) }}</h4>
-        </div>
-      </div>
-    </v-card-text>
-  </v-card>
+  <div class="counter">
+    <span ref="counterEl" class="font-weight-bold">0</span>
+    <span class="caption">&nbsp;ALPRs Reported Worldwide</span>
+    <div :class="{ 'fade-in': showFinalAnimation }" class="subheading fade-text">and rapidly growing!</div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch, type Ref } from 'vue';
 import { getALPRCounts } from '@/services/apiService';
+import { CountUp } from 'countup.js';
 
-const counts = ref({
-  us: null,
-  worldwide: null,
+const counterEl: Ref<HTMLElement|null> = ref(null);
+const countupOptions = {
+  useEasing: true,
+  useGrouping: true,
+  separator: ',',
+  decimal: '.',
+  prefix: '',
+  suffix: '',
+};
+let counter: CountUp|undefined = undefined;
+interface Counts {
+  us?: number;
+  worldwide?: number;
+}
+const counts: Ref<Counts> = ref({
+  us: undefined,
+  worldwide: undefined,
 });
+const showFinalAnimation = ref(false);
 
 onMounted(() => {
   getALPRCounts().then((response) => {
@@ -31,14 +37,41 @@ onMounted(() => {
   });
 });
 
-function formatCount(count: number | null): string {
-  if (count === null) {
-    return '-';
+watch(counts, (newCounts: Counts) => {
+  if (!newCounts.worldwide) return;
+  if (!counterEl.value) {
+    console.error('Counter element not found');
+    return;
+  };
+
+  if (!counter) {
+    counter = new CountUp(counterEl.value, newCounts.worldwide, countupOptions);
+    setTimeout(() => {
+      counter?.start();
+    }, 500);
+    setTimeout(() => {
+      showFinalAnimation.value = true;
+    }, 3000);
   }
-  if (count < 1000) {
-    return Math.round(count / 10) * 10 + '';
-  }
-  const rounded = Math.round(count / 100) / 10;
-  return `${rounded}k+`;
-}
+});
 </script>
+
+<style scoped>
+.counter {
+  font-size: 1.5rem;
+}
+
+.subheading {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.fade-text {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.fade-in {
+  opacity: 1;
+}
+</style>

@@ -11,6 +11,7 @@ a:hover {
 :root {
   --df-background-color: white;
   --df-text-color: #ccc;
+  --df-page-background-color: #f5f5f5;
 }
 
 .leaflet-popup-content-wrapper, .leaflet-popup-tip, .leaflet-bar a {
