@@ -5,13 +5,13 @@
         <v-icon start>mdi-face-recognition</v-icon> <b>Face Recognition</b>
       </v-list-item>
       <v-list-item>
-        <v-icon start>mdi-car</v-icon> <b>License Plate</b>
+        <v-icon start>mdi-cctv</v-icon> <b>License Plate Reader</b>
       </v-list-item>
       <v-list-item v-if="isFaceRecognition">
         <v-icon start>mdi-adjust</v-icon> <b>Omnidirectional</b>
       </v-list-item>
       <v-list-item v-else>
-        <v-icon start>mdi-cctv</v-icon> <b>Directional {{ alpr.tags.direction ? `(${degreesToCardinal(parseInt(alpr.tags.direction))})` : '' }}</b>
+        <v-icon start>mdi-compass-outline</v-icon> <b>{{ cardinalDirection }}</b>
       </v-list-item>
       <v-list-item>
         <v-icon start>mdi-domain</v-icon> <b>
@@ -74,6 +74,10 @@ const kvTags = computed(() => {
     .filter(([key]) => whitelistedTags.includes(key))
     .map(([key, value]) => ({ key, value: valueTransformations[key]?.(value) ?? value }));
 });
+
+const cardinalDirection = computed(() => 
+  props.alpr.tags.direction === undefined ? 'Unknown' : degreesToCardinal(parseInt(props.alpr.tags.direction))
+);
 
 function degreesToCardinal(degrees: number): string {
   const cardinals = ['North', 'Northeast', 'East', 'Southeast', 'South', 'Southwest', 'West', 'Northwest'];
