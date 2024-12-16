@@ -22,7 +22,7 @@
             {{ alpr.tags.brand }}
           </span>
           <span v-else>
-            Unknown Brand
+            Unknown Manufacturer
             <!-- <v-btn :href="osmNodeUrl" variant="text" flat size="x-small" color="warning" target="_blank">
               <v-icon start size="small">mdi-pencil</v-icon>Fix
             </v-btn> -->

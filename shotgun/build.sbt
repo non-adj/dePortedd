@@ -16,8 +16,6 @@ val PekkoHttpVersion = "1.0.1"
 libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.5.6",
   "org.slf4j" % "slf4j-api" % "2.0.12",
-  "com.auth0" % "jwks-rsa" % "0.22.1",
-  "com.github.jwt-scala" % "jwt-json-common_native0.4_2.12" % "10.0.1",
   "org.apache.pekko" %% "pekko-actor-typed" % PekkoVersion,
   "org.apache.pekko" %% "pekko-stream" % PekkoVersion,
   "org.apache.pekko" %% "pekko-http" % PekkoHttpVersion,
@@ -25,3 +23,10 @@ libraryDependencies ++= Seq(
   "org.apache.pekko" %% "pekko-http-cors" % PekkoHttpVersion,
   "org.apache.pekko" %% "pekko-slf4j" % PekkoVersion,
 )
+
+assembly / assemblyMergeStrategy := {
+  case PathList("module-info.class") => MergeStrategy.first
+  case x =>
+    val oldStrategy = (assembly / assemblyMergeStrategy).value
+    oldStrategy(x)
+}
