@@ -1,15 +1,6 @@
 <template>
   <v-row style="align-items: center; margin-top: 1.25rem;">
     <v-col cols="12" sm="6">
-      <!-- <v-select
-        v-model="selectedBrand"
-        return-object
-        :items="alprBrands"
-        item-title="name"
-        item-value="wikidata"
-        label="Select a company"
-        outlined
-      /> -->
       <h2 class="text-center mb-4">Choose Brand</h2>
       <v-row>
         <v-col v-for="brand in alprBrands" :key="brand.wikidata" cols="6">
@@ -26,10 +17,6 @@
       </v-row>
     </v-col>
 
-    <!-- <v-col cols="12" sm="4">
-      <v-img rounded cover aspect-ratio="1" width="220" :src="selectedBrand.exampleImage" />
-    </v-col> -->
-
     <v-col cols="12" sm="6">
       <h3 class="text-center">{{ selectedBrand.nickname }}</h3>
       <DFCode>
@@ -39,8 +26,8 @@
         camera:type=fixed<br>
         surveillance=public<br>
         surveillance:zone=traffic<br>
-        brand=<span class="highlight">{{ selectedBrand.name }}</span><br>
-        brand:wikidata=<span class="highlight">{{ selectedBrand.wikidata }}</span><br>
+        manufacturer=<span class="highlight">{{ selectedBrand.name }}</span><br>
+        manufacturer:wikidata=<span class="highlight">{{ selectedBrand.wikidata }}</span><br>
       </DFCode>
 
       <h5 class="text-center mt-4">and if operator is known</h5>
