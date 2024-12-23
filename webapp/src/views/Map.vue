@@ -7,59 +7,13 @@
     </v-card>
 
     <!-- use-global-leaflet=false is a workaround for a bug in current version of vue-leaflet -->
-    <l-map
+    <leaflet-map
       v-if="center"
-      ref="map"
-      v-model:zoom="zoom"
       v-model:center="center"
-      :use-global-leaflet="false"
+      v-model:zoom="zoom"
       @update:bounds="updateBounds"
-      @ready="mapLoaded"
-      :options="{ zoomControl: false }"
-    >
-      <l-control position="topleft">
-        <form @submit.prevent="onSearch">
-          <v-text-field
-            :rounded="xs || undefined"
-            :density="xs ? 'compact' : 'default'"
-            class="map-search"
-            ref="searchField"
-            prepend-inner-icon="mdi-magnify"
-            placeholder="Search for a location"
-            single-line
-            variant="solo"
-            clearable
-            hide-details
-            v-model="searchQuery"
-            type="search"
-          >
-            <template v-slot:append-inner>
-              <v-btn :disabled="!searchQuery" variant="text" flat color="#0080BC" @click="onSearch">
-                Go<v-icon end>mdi-chevron-right</v-icon>
-              </v-btn>
-            </template>
-          </v-text-field>
-        </form>
-      </l-control>
-      <!-- url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" -->
-
-      <l-tile-layer
-        :url="mapTileUrl"
-        layer-type="base"
-        name="OpenStreetMap"
-        attribution="&copy; <a target=&quot;_blank&quot; href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-      />
-
-      <l-control position="bottomright">
-        <v-btn @click="goToUserLocation" icon class="mt-2">
-          <v-icon x-large>mdi-crosshairs-gps</v-icon>
-        </v-btn>
-      </l-control>
-
-      <DFMarkerCluster v-if="showClusters" v-for="cluster in clusters" :key="cluster.id" :lat="cluster.lat" :lon="cluster.lon" />
-      <DFMapMarker v-else v-for="alpr in visibleALPRs" :key="alpr.id" :alpr :show-fov="zoom >= 16" />
-    </l-map>
-    <div class="loader" v-else>
+    />
+    <div v-else class="loader">
       <span class="mb-4 text-grey">Loading Map</span>
       <v-progress-circular indeterminate color="primary" />
     </div>
@@ -77,9 +31,12 @@ import type { Cluster } from '@/services/apiService';
 import { getALPRs, geocodeQuery, getClusters } from '@/services/apiService';
 import { useDisplay, useTheme } from 'vuetify';
 import DFMapMarker from '@/components/DFMapMarker.vue';
-import DFMarkerCluster from '@/components/DFMarkerCluster.vue';
-import NewVisitor from '@/components/NewVisitor.vue';
 import type { ALPR } from '@/types';
+import L from 'leaflet';
+globalThis.L = L;
+import 'leaflet/dist/leaflet.css'
+import 'vue-leaflet-markercluster/dist/style.css'
+import LeafletMap from '@/components/LeafletMap.vue';
 
 const DEFAULT_ZOOM = 12;
 const MIN_ZOOM_FOR_REFRESH = 4;
@@ -167,10 +124,6 @@ function getUserLocation(): Promise<[number, number]> {
   });
 };
 
-function mapLoaded(map: any) {
-  updateBounds(map.getBounds());
-}
-
 function updateBounds(newBounds: any) {
   updateURL();
   
@@ -187,7 +140,7 @@ function updateBounds(newBounds: any) {
     return;
   }
 
-  updateMarkers();
+  // updateMarkers();
 }
 
 function updateURL() {
