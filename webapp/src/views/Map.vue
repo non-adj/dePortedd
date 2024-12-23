@@ -58,6 +58,7 @@ import { BoundingBox } from '@/services/apiService';
 import type { Cluster } from '@/services/apiService';
 import { getALPRs, geocodeQuery, getClusters } from '@/services/apiService';
 import { useDisplay, useTheme } from 'vuetify';
+import { useGlobalStore } from '@/stores/global';
 import type { ALPR } from '@/types';
 import L from 'leaflet';
 globalThis.L = L;
@@ -74,7 +75,6 @@ const center: Ref<any|null> = ref(null);
 const bounds: Ref<BoundingBox|null> = ref(null);
 const searchField: Ref<any|null> = ref(null);
 const searchQuery: Ref<string> = ref('');
-const currentLocation: Ref<any|null> = ref(null);
 
 const router = useRouter();
 const { xs } = useDisplay();
@@ -91,6 +91,11 @@ const clusters: Ref<Cluster[]> = ref([]);
 const bboxForLastRequest: Ref<BoundingBox|null> = ref(null);
 const showClusters = computed(() => zoom.value <= CLUSTER_ZOOM_THRESHOLD);
 const isLoadingALPRs = ref(false);
+
+const globalStore = useGlobalStore();
+
+const setCurrentLocation = globalStore.setCurrentLocation;
+const currentLocation = computed(() => globalStore.currentLocation);
 
 const visibleALPRs = computed(() => {
   return alprs.value.filter(alpr => bounds.value?.containsPoint(alpr.lat, alpr.lon));
@@ -122,37 +127,15 @@ function onSearch() {
 }
 
 function goToUserLocation() {
-  getUserLocation()
-    .then(location => {
-      console.log('User location:', location);
-      center.value = { lat: location[0], lng: location[1] };
+  setCurrentLocation()
+    .then((cl) => {
+      center.value = cl;
       zoom.value = DEFAULT_ZOOM;
-    }).catch(error => {
+    })
+    .catch(error => {
       console.debug('Error getting user location.', error);
     });
 }
-
-function getUserLocation(): Promise<[number, number]> {
-  return new Promise((resolve, reject) => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          currentLocation.value = { lat: position.coords.latitude, lng: position.coords.longitude };
-          resolve([position.coords.latitude, position.coords.longitude]);
-        },
-        (error) => {
-          reject(error);
-        },
-        {
-          timeout: 10000,
-          enableHighAccuracy: true,
-        }
-      );
-    } else {
-      reject(new Error('Geolocation is not supported by this browser.'));
-    }
-  });
-};
 
 function updateBounds(newBounds: any) {
   updateURL();

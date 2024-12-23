@@ -128,42 +128,12 @@
 
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import ALPRCounter from '@/components/ALPRCounter.vue';
+import { useGlobalStore } from '@/stores/global';
 
 const router = useRouter();
-const userLocation = ref<[number, number] | null>(null);
-
-async function fetchUserLocation(): Promise<[number, number]> {
-  return new Promise((resolve, reject) => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          resolve([position.coords.latitude, position.coords.longitude]);
-        },
-        (error) => {
-          reject(error);
-        },
-        {
-          timeout: 10000,
-          enableHighAccuracy: true,
-        }
-      );
-    } else {
-      reject(new Error('Geolocation is not supported by this browser.'));
-    }
-  });
-}
-
-async function getUserLocation() {
-  try {
-    const [lat, lon] = await fetchUserLocation();
-    userLocation.value = [lat, lon];
-  } catch (error) {
-    console.debug('Error fetching user location:', error);
-  }
-}
+const { setCurrentLocation } = useGlobalStore();
 
 interface GoToMapOptions {
   withCurrentLocation?: boolean;
@@ -171,13 +141,14 @@ interface GoToMapOptions {
 
 async function goToMap(options: GoToMapOptions = {}) {
   if (options.withCurrentLocation) {
-    await getUserLocation();
-    if (userLocation.value) {
-      const [lat, lon] = userLocation.value;
+    setCurrentLocation()
+    .then((currentLocation) => {
+      const [lat, lon] = currentLocation;
       router.push({ path: '/map', hash: `#map=16/${lat.toFixed(6)}/${lon.toFixed(6)}` });
-    } else {
-      router.push({ path: '/map', hash: '#map=16/40.0150/-105.2705' });
-    }
+    })
+    .catch(() => {
+      router.push({ path: '/map' });
+    });
   } else {
     router.push({ path: '/map' });
   }

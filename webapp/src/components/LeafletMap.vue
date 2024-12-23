@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, h, createApp, watch } from 'vue';
+import { onMounted, h, createApp, watch, type PropType } from 'vue';
 import L, { type LatLngExpression } from 'leaflet';
 
 import DFMapPopup from './DFMapPopup.vue';
@@ -32,7 +32,7 @@ const props = defineProps({
   },
   alprs: Array,
   currentLocation: {
-    type: Object,
+    type: Object as PropType<[number, number] | null>,
     default: null,
   },
 });
@@ -60,12 +60,17 @@ function initializeMap() {
 }
 
 function renderCurrentLocation() {
+  if (!props.currentLocation)
+    return;
+  else
+    console.log('Current location:', props.currentLocation);
+
   if (currentLocationLayer) {
     map.removeLayer(currentLocationLayer);
   }
 
   currentLocationLayer = L.featureGroup();
-  const clMarker = L.circleMarker([props.currentLocation.lat, props.currentLocation.lng], {
+  const clMarker = L.circleMarker([props.currentLocation[0], props.currentLocation[1]], {
     radius: 10,
     color: '#ffffff',
     fillColor: '#007bff',
@@ -82,9 +87,7 @@ function renderCurrentLocation() {
 function populateMap() {
   const showFov = props.zoom >= 16;
 
-  if (props.currentLocation) {
-    renderCurrentLocation();
-  }
+  renderCurrentLocation();
 
   if (clusterLayer) {
     map.removeLayer(clusterLayer);
@@ -212,6 +215,7 @@ function registerWatchers() {
   });
 
   watch(() => props.currentLocation, (newLocation, oldLocation) => {
+    console.log("current location watcher triggered!");
     renderCurrentLocation();
   });
 }
@@ -243,8 +247,8 @@ function registerWatchers() {
 
 .bottomright {
   position: absolute;
-  bottom: 50px;
-  right: 60px;
+  bottom: 50px; /* hack */
+  right: 60px; /* hack */
   z-index: 1000;
 }
 </style>
