@@ -1,10 +1,18 @@
 <template>
-  <div id="map"></div>
+  <div id="map">
+    <div class="topleft">
+      <slot name="topleft"></slot>
+    </div>
+
+    <div class="bottomright">
+      <slot name="bottomright"></slot>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, h, createApp, watch, type PropType } from 'vue';
-import L from 'leaflet';
+import { onMounted, h, createApp, watch } from 'vue';
+import L, { type LatLngExpression } from 'leaflet';
 
 import DFMapPopup from './DFMapPopup.vue';
 
@@ -22,12 +30,17 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  alprs: Array
+  alprs: Array,
+  currentLocation: {
+    type: Object,
+    default: null,
+  },
 });
 
 let map: L.Map;
 let circlesLayer: L.FeatureGroup;
 let clusterLayer: L.MarkerClusterGroup;
+let currentLocationLayer: L.FeatureGroup;
 
 onMounted(() => {
   initializeMap();
@@ -46,8 +59,32 @@ function initializeMap() {
   populateMap();
 }
 
+function renderCurrentLocation() {
+  if (currentLocationLayer) {
+    map.removeLayer(currentLocationLayer);
+  }
+
+  currentLocationLayer = L.featureGroup();
+  const clMarker = L.circleMarker([props.currentLocation.lat, props.currentLocation.lng], {
+    radius: 10,
+    color: '#ffffff',
+    fillColor: '#007bff',
+    fillOpacity: 1,
+    weight: 4
+  });
+
+  clMarker.bindPopup('Current Location');
+
+  currentLocationLayer.addLayer(clMarker);
+  map.addLayer(currentLocationLayer);
+}
+
 function populateMap() {
   const showFov = props.zoom >= 16;
+
+  if (props.currentLocation) {
+    renderCurrentLocation();
+  }
 
   if (clusterLayer) {
     map.removeLayer(clusterLayer);
@@ -159,9 +196,10 @@ function hasCrossedZoomThreshold(oldZoom: number, newZoom: number, threshold: nu
 }
 
 function registerWatchers() {
-  watch(() => props.center, (newCenter) => {
-    if (newCenter !== props.center) // TODO: is this necessary?
-      map.setView(newCenter);
+  watch(() => props.center, (newCenter: any, oldCenter: any) => {
+    if (newCenter.lat !== oldCenter.lat || newCenter.lng !== oldCenter.lng) {
+      map.setView(newCenter as LatLngExpression);
+    }
   });
 
   watch(() => props.zoom, (newZoom, oldZoom) => {
@@ -171,6 +209,10 @@ function registerWatchers() {
         populateMap();
       }
     }
+  });
+
+  watch(() => props.currentLocation, (newLocation, oldLocation) => {
+    renderCurrentLocation();
   });
 }
 
@@ -183,12 +225,27 @@ function registerWatchers() {
 @import 'leaflet.markercluster/dist/MarkerCluster.css';
 
 #map {
-  height: 100%;
+  height: calc(100dvh - 64px);
+  margin-top: 64px;
   width: 100%;
   position: absolute;
   top: 0;
   left: 0;
   z-index: 0;
+}
+
+.topleft {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+}
+
+.bottomright {
+  position: absolute;
+  bottom: 50px;
+  right: 60px;
+  z-index: 1000;
 }
 </style>
 
@@ -199,13 +256,13 @@ function registerWatchers() {
   cursor: default;
 }
 .svgMarker {
-    pointer-events: none;
-    cursor: default;
+  pointer-events: none;
+  cursor: default;
 }
 
 /* Enables clicks only on actual SVG path */
 .someSVGpath {
-    pointer-events: all;
-    cursor: pointer;
+  pointer-events: all;
+  cursor: pointer;
 }
 </style>

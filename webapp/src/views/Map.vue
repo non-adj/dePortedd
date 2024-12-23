@@ -1,18 +1,47 @@
 <template>
   <div class="map-container" @keyup="handleKeyUp">
-    <!-- <NewVisitor /> -->
-
     <v-card class="map-notif" v-show="isLoadingALPRs && !showClusters">
       <v-card-title><v-progress-circular indeterminate color="primary" /></v-card-title>
     </v-card>
 
-    <!-- use-global-leaflet=false is a workaround for a bug in current version of vue-leaflet -->
     <leaflet-map
       v-if="center"
       v-model:center="center"
       v-model:zoom="zoom"
+      :current-location="currentLocation"
       @update:bounds="updateBounds"
-    />
+    >
+      <!-- SEARCH -->
+      <template v-slot:topleft>
+        <form @submit.prevent="onSearch">
+          <v-text-field
+            :rounded="xs || undefined"
+            :density="xs ? 'compact' : 'default'"
+            class="map-search"
+            ref="searchField"
+            prepend-inner-icon="mdi-magnify"
+            placeholder="Search for a location"
+            single-line
+            variant="solo"
+            clearable
+            hide-details
+            v-model="searchQuery"
+            type="search"
+          >
+            <template v-slot:append-inner>
+              <v-btn :disabled="!searchQuery" variant="text" flat color="#0080BC" @click="onSearch">
+                Go<v-icon end>mdi-chevron-right</v-icon>
+              </v-btn>
+            </template>
+          </v-text-field>
+        </form>
+      </template>
+
+      <!-- CURRENT LOCATION -->
+      <template v-slot:bottomright>
+        <v-fab icon="mdi-crosshairs-gps" @click="goToUserLocation" />
+      </template>
+    </leaflet-map>
     <div v-else class="loader">
       <span class="mb-4 text-grey">Loading Map</span>
       <v-progress-circular indeterminate color="primary" />
@@ -22,7 +51,6 @@
 
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
-import { LMap, LTileLayer, LControl } from '@vue-leaflet/vue-leaflet';
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router'
 import type { Ref } from 'vue';
@@ -30,12 +58,10 @@ import { BoundingBox } from '@/services/apiService';
 import type { Cluster } from '@/services/apiService';
 import { getALPRs, geocodeQuery, getClusters } from '@/services/apiService';
 import { useDisplay, useTheme } from 'vuetify';
-import DFMapMarker from '@/components/DFMapMarker.vue';
 import type { ALPR } from '@/types';
 import L from 'leaflet';
 globalThis.L = L;
 import 'leaflet/dist/leaflet.css'
-import 'vue-leaflet-markercluster/dist/style.css'
 import LeafletMap from '@/components/LeafletMap.vue';
 
 const DEFAULT_ZOOM = 12;
@@ -48,6 +74,8 @@ const center: Ref<any|null> = ref(null);
 const bounds: Ref<BoundingBox|null> = ref(null);
 const searchField: Ref<any|null> = ref(null);
 const searchQuery: Ref<string> = ref('');
+const currentLocation: Ref<any|null> = ref(null);
+
 const router = useRouter();
 const { xs } = useDisplay();
 
@@ -56,7 +84,7 @@ const mapTileUrl = computed(() =>
   theme.global.name.value === 'dark' ?
     'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png' :
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-);
+); // TODO: implement dark mode in LeafletMap.vue
 
 const alprs: Ref<ALPR[]> = ref([]);
 const clusters: Ref<Cluster[]> = ref([]);
@@ -96,6 +124,7 @@ function onSearch() {
 function goToUserLocation() {
   getUserLocation()
     .then(location => {
+      console.log('User location:', location);
       center.value = { lat: location[0], lng: location[1] };
       zoom.value = DEFAULT_ZOOM;
     }).catch(error => {
@@ -108,6 +137,7 @@ function getUserLocation(): Promise<[number, number]> {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          currentLocation.value = { lat: position.coords.latitude, lng: position.coords.longitude };
           resolve([position.coords.latitude, position.coords.longitude]);
         },
         (error) => {
@@ -223,13 +253,14 @@ onMounted(() => {
 
 .map-container {
   width: 100%;
-  height: calc(100dvh - 64px);
   overflow: auto;
 }
 
 .map-search {
   width: calc(100vw - 22px);
-  max-width: 400px;
+  @media (min-width: 600px) {
+    max-width: 320px;
+  }
   z-index: 1000;
 }
 
