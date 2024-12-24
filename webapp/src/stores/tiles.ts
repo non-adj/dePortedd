@@ -13,6 +13,7 @@ export const useTilesStore = defineStore('tiles', () => {
   const tiles: Ref<Record<string, ALPR[]>> = ref({});
   const availableTiles: Ref<string[]> = ref([]);
   const expirationDateUtc: Ref<Date | null> = ref(null);
+  const fetchingTiles = new Set<string>();
   let tileUrlTemplate: string|undefined = undefined;
   let tileSizeDegrees: number|undefined = undefined;
 
@@ -32,6 +33,11 @@ export const useTilesStore = defineStore('tiles', () => {
   const fetchAndAddTile = async (lat: number, lng: number): Promise<void> => {
     const key = `${lat}/${lng}`;
 
+    if (fetchingTiles.has(key)) {
+      console.debug(`Tile ${key} is already being fetched, skipping fetch`);
+      return;
+    }
+
     if (tiles.value[key]) {
       console.debug(`Tile ${key} is already cached, skipping fetch`);
       return;
@@ -42,9 +48,16 @@ export const useTilesStore = defineStore('tiles', () => {
       return;
     }
     const url = tileUrlTemplate.replace('{lat}/{lon}', key);
-    const tile = await api.get(url);
-
-    tiles.value[key] = tile.data;
+    
+    try {
+      fetchingTiles.add(key);
+      const tile = await api.get(url);
+      tiles.value[key] = tile.data;
+    } catch (error) {
+      console.error(`Failed to fetch tile ${key}:`, error);
+    } finally {
+      fetchingTiles.delete(key);
+    }
   }
 
   const fetchVisibleTiles = async (boundingBox: BoundingBox): Promise<void> => {

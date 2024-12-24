@@ -171,7 +171,6 @@ function updateMarkers() {
     return;
   }
 
-  console.log('Fetching visible tiles');
   fetchVisibleTiles(bounds.value);
 }
 
