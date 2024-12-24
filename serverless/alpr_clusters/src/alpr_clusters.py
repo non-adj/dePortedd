@@ -30,7 +30,7 @@ def terraform_rate_expression_to_minutes(rate_expression: str) -> Tuple[int, int
     
 UPDATE_RATE_MINS = terraform_rate_expression_to_minutes(os.getenv("UPDATE_RATE_MINS", "rate(60 minutes)"))
 GRACE_PERIOD_MINS = int(2) # XXX: set expiration a few minutes after in case put object takes a while
-TILE_SIZE_DEGREES = int(5)
+TILE_SIZE_DEGREES = int(20)
 
 WHITELISTED_TAGS = [
     "operator",
