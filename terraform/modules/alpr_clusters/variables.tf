@@ -11,6 +11,10 @@ variable "deflock_stats_bucket" {
   description = "S3 bucket for the ALPR clusters JSON file"
 }
 
+variable "deflock_cdn_bucket" {
+  description = "S3 bucket for the CDN"
+}
+
 variable "rate" {
   description = "Rate at which to run the Lambda function"
 }
