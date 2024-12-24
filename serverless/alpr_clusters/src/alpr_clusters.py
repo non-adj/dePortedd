@@ -28,9 +28,16 @@ def terraform_rate_expression_to_minutes(rate_expression: str) -> Tuple[int, int
     else:
         raise ValueError(f"Unsupported time unit: {unit}")
     
-UPDATE_RATE_MINS = terraform_rate_expression_to_minutes(os.getenv("UPDATE_RATE_MINS", "60"))
+UPDATE_RATE_MINS = terraform_rate_expression_to_minutes(os.getenv("UPDATE_RATE_MINS", "rate(60 minutes)"))
 GRACE_PERIOD_MINS = int(2) # XXX: set expiration a few minutes after in case put object takes a while
 TILE_SIZE_DEGREES = int(5)
+
+WHITELISTED_TAGS = [
+    "operator",
+    "manufacturer",
+    "direction",
+    "brand",
+]
 
 def get_all_nodes():
     # Set up the Overpass API query
@@ -98,7 +105,13 @@ def segment_regions(nodes: Any, tile_size_degrees: int) -> dict[Any]:
         lat, lon = node["lat"], node["lon"]
         tile_lat = int(np.floor(lat / tile_size_degrees)) * tile_size_degrees
         tile_lon = int(np.floor(lon / tile_size_degrees)) * tile_size_degrees
-        tile_dict[f"{tile_lat}/{tile_lon}"].append(node)
+        bare_node = {
+            "id": node["id"],
+            "lat": lat,
+            "lon": lon,
+            "tags": {k: v for k, v in node["tags"].items() if k in WHITELISTED_TAGS},
+        }
+        tile_dict[f"{tile_lat}/{tile_lon}"].append(bare_node)
     print("Region segmentation complete.")
 
     return tile_dict
