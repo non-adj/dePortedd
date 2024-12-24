@@ -98,7 +98,7 @@ def segment_regions(nodes: Any, tile_size_degrees: int) -> dict[Any]:
         lat, lon = node["lat"], node["lon"]
         tile_lat = int(np.floor(lat / tile_size_degrees)) * tile_size_degrees
         tile_lon = int(np.floor(lon / tile_size_degrees)) * tile_size_degrees
-        tile_dict[f"{tile_lat},{tile_lon}"].append(node)
+        tile_dict[f"{tile_lat}/{tile_lon}"].append(node)
     print("Region segmentation complete.")
 
     return tile_dict
@@ -145,7 +145,7 @@ def lambda_handler(event, context):
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = []
         for latlng_string, elements in regions_dict.items():
-            lat, lon = latlng_string.split(",")
+            lat, lon = latlng_string.split("/")
             key = f"regions/{lat}/{lon}.json"
             body = json.dumps(elements)
             futures.append(executor.submit(upload_json_to_s3, bucket_new, key, body))

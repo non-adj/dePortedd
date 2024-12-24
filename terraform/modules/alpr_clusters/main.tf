@@ -53,7 +53,7 @@ resource "aws_lambda_function" "overpass_lambda" {
   package_type     = "Image"
   image_uri        = "${aws_ecr_repository.lambda_repository.repository_url}:latest"
   timeout = 180
-  memory_size = 1024
+  memory_size = 512
   environment {
     variables = {
       UPDATE_RATE_MINS = var.rate
