@@ -63,7 +63,7 @@ function initializeMap() {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
 
-  populateMap();
+  emit('update:bounds', map.getBounds()); // XXX: this event populates the map
 }
 
 function renderCurrentLocation() {
@@ -192,10 +192,6 @@ function registerEvents() {
   map.on('moveend', () => {
     emit('update:center', map.getCenter());
     emit('update:zoom', map.getZoom());
-    emit('update:bounds', map.getBounds());
-  });
-
-  map.on('load', () => {
     emit('update:bounds', map.getBounds());
   });
 }

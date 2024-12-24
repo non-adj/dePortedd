@@ -61,8 +61,13 @@ export const useTilesStore = defineStore('tiles', () => {
   }
 
   const fetchVisibleTiles = async (boundingBox: BoundingBox): Promise<void> => {
-    if (!(tileUrlTemplate && tileSizeDegrees)) {
-      console.warn('Tile URL template is not set, skipping fetch');
+    if (!tileUrlTemplate || !tileSizeDegrees) {
+      console.debug('Tile URL template or tile size is not set, fetching...');
+      await fetchIndex();
+    }
+  
+    if (!tileUrlTemplate || !tileSizeDegrees) {
+      console.warn('Tile URL template or tile size is still not set after fetching index');
       return;
     }
 
@@ -88,8 +93,6 @@ export const useTilesStore = defineStore('tiles', () => {
   }
 
   const allNodes = computed(() => Object.values(tiles.value).flat());
-
-  onBeforeMount(fetchIndex);
 
   return {
     fetchVisibleTiles,
