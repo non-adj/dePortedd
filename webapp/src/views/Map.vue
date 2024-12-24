@@ -10,6 +10,7 @@
       v-model:zoom="zoom"
       :current-location="currentLocation"
       @update:bounds="updateBounds"
+      :alprs
     >
       <!-- SEARCH -->
       <template v-slot:topleft>
@@ -59,6 +60,7 @@ import type { Cluster } from '@/services/apiService';
 import { getALPRs, geocodeQuery, getClusters } from '@/services/apiService';
 import { useDisplay, useTheme } from 'vuetify';
 import { useGlobalStore } from '@/stores/global';
+import { useTilesStore } from '@/stores/tiles';
 import type { ALPR } from '@/types';
 import L from 'leaflet';
 globalThis.L = L;
@@ -75,6 +77,10 @@ const center: Ref<any|null> = ref(null);
 const bounds: Ref<BoundingBox|null> = ref(null);
 const searchField: Ref<any|null> = ref(null);
 const searchQuery: Ref<string> = ref('');
+const tilesStore = useTilesStore();
+
+const { fetchVisibleTiles } = tilesStore;
+const alprs = computed(() => tilesStore.allNodes);
 
 const router = useRouter();
 const { xs } = useDisplay();
@@ -85,8 +91,6 @@ const mapTileUrl = computed(() =>
     'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png' :
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 ); // TODO: implement dark mode in LeafletMap.vue
-
-const alprs: Ref<ALPR[]> = ref([]);
 const clusters: Ref<Cluster[]> = ref([]);
 const bboxForLastRequest: Ref<BoundingBox|null> = ref(null);
 const showClusters = computed(() => zoom.value <= CLUSTER_ZOOM_THRESHOLD);
@@ -148,12 +152,7 @@ function updateBounds(newBounds: any) {
   });
   bounds.value = newBoundingBox;
 
-  if (bboxForLastRequest.value && newBoundingBox.isSubsetOf(bboxForLastRequest.value)) {
-    console.debug('new bounds are a subset of the last request, skipping');
-    return;
-  }
-
-  // updateMarkers();
+  updateMarkers();
 }
 
 function updateURL() {
@@ -166,46 +165,17 @@ function updateURL() {
   });
 }
 
-watch(zoom, (newZoom, oldZoom) => {
-
-  if (newZoom <= CLUSTER_ZOOM_THRESHOLD && oldZoom > CLUSTER_ZOOM_THRESHOLD) {
-    bboxForLastRequest.value = bounds.value; 
-  } else if (newZoom < CLUSTER_ZOOM_THRESHOLD) {
-    alprs.value = [];
-    bboxForLastRequest.value = null;
-  }
-});
-
 function updateMarkers() {
   // Fetch ALPRs in the current view
   if (!bounds.value) {
     return;
   }
 
-  if (showClusters.value || !canRefreshMarkers.value) {
-    return;
-  }
-
-  isLoadingALPRs.value = true;
-  getALPRs(bounds.value)
-    .then((result: any) => {
-      // merge incoming with existing, so that moving the map doesn't remove markers
-      const existingIds = new Set(alprs.value.map(alpr => alpr.id));
-      const newAlprs = result.elements.filter((alpr: any) => !existingIds.has(alpr.id));
-      alprs.value = [...alprs.value, ...newAlprs];
-      bboxForLastRequest.value = bounds.value;
-    })
-    .finally(() => {
-      isLoadingALPRs.value = false;
-    });
+  console.log('Fetching visible tiles');
+  fetchVisibleTiles(bounds.value);
 }
 
 onMounted(() => {
-  getClusters()
-    .then((result: any) => {
-      clusters.value = result.clusters;
-    });
-
   const hash = router.currentRoute.value.hash;
   if (hash) {
     const parts = hash.split('/');

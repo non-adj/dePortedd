@@ -13,6 +13,7 @@
 <script setup lang="ts">
 import { onMounted, h, createApp, watch, type PropType } from 'vue';
 import L, { type LatLngExpression } from 'leaflet';
+import type { ALPR } from '@/types';
 
 import DFMapPopup from './DFMapPopup.vue';
 
@@ -33,7 +34,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  alprs: Array,
+  alprs: {
+    type: Array as PropType<ALPR[]>,
+    default: () => [],
+  },
   currentLocation: {
     type: Object as PropType<[number, number] | null>,
     default: null,
@@ -99,10 +103,9 @@ function populateMap() {
   clusterLayer = L.markerClusterGroup();
   circlesLayer = L.featureGroup();
 
-  for (let i = 0; i < 200; i++) {
-    const lat = 51.505 + (Math.random() - 0.5) * 0.1;
-    const lng = -0.09 + (Math.random() - 0.5) * 0.1;
-    const orientationDegrees = Math.random() * 360;
+  for (const alpr of props.alprs) {
+    const { lat, lon: lng } = alpr;
+    const orientationDegrees = alpr.tags?.direction || 0; // TODO: make sure this works with nodes w/o orientation
 
     let marker: L.CircleMarker | L.Marker;
 
@@ -129,7 +132,7 @@ function populateMap() {
         html: svgMarker,
         iconSize: [60, 60],
         iconAnchor: [30, 30],
-        popupAnchor: [0, -5],
+        popupAnchor: [0, -8],
       });
 
       marker = L.marker([lat, lng], { icon: icon });
@@ -155,11 +158,11 @@ function populateMap() {
       createApp({
         render() {
           return h(DFMapPopup, { alpr: {
-            id: `id-${i}`,
+            id: alpr.id,
             lat: lat,
             lon: lng,
-            tags: { type: 'car' },
-            type: "node",
+            tags: alpr.tags,
+            type: alpr.type,
           } });
         }
       }).use(createVuetify()).mount(popupContent);
@@ -221,6 +224,10 @@ function registerWatchers() {
     console.log("current location watcher triggered!");
     renderCurrentLocation();
   });
+
+  watch(() => props.alprs, (newAlprs, oldAlprs) => {
+    populateMap();
+  }); 
 }
 
 
