@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, h, createApp, watch, type PropType } from 'vue';
+import { onMounted, h, createApp, watch, ref, type PropType, type Ref } from 'vue';
 import L, { type LatLngExpression } from 'leaflet';
 import type { ALPR } from '@/types';
 
@@ -91,6 +91,89 @@ function renderCurrentLocation() {
   map.addLayer(currentLocationLayer);
 }
 
+function makeSVGMarker(alpr: ALPR): L.Marker {
+  const { lat, lon: lng } = alpr;
+  const orientationDegrees = alpr.tags.direction;
+  const fovPath = `
+      <path class="someSVGpath" d="M215.248,221.461L99.696,43.732C144.935,16.031 198.536,0 256,0C313.464,0 367.065,16.031 412.304,43.732L296.752,221.461C287.138,209.593 272.448,202.001 256,202.001C239.552,202.001 224.862,209.593 215.248,221.461Z" style="fill:rgb(87,87,87);fill-opacity:0.46;"/>
+      <path class="someSVGpath" d="M215.248,221.461L99.696,43.732C144.935,16.031 198.536,0 256,0C313.464,0 367.065,16.031 412.304,43.732L296.752,221.461C287.138,209.593 272.448,202.001 256,202.001C239.552,202.001 224.862,209.593 215.248,221.461ZM217.92,200.242C228.694,192.652 241.831,188.195 256,188.195C270.169,188.195 283.306,192.652 294.08,200.242C294.08,200.242 392.803,48.4 392.803,48.4C352.363,26.364 305.694,13.806 256,13.806C206.306,13.806 159.637,26.364 119.197,48.4L217.92,200.242Z" style="fill:rgb(137,135,135);"/>
+    `;
+  const svgMarker = `
+    <svg style="transform:rotate(${orientationDegrees}deg)" class="svgMarker" width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+      ${orientationDegrees ? fovPath : ''}
+      <g transform="matrix(0.906623,0,0,0.906623,23.9045,22.3271)">
+        <circle class="someSVGpath" cx="256" cy="256" r="57.821" style="fill:${MARKER_COLOR};fill-opacity:0.41;"/>
+        <path class="someSVGpath" d="M256,174.25C301.119,174.25 337.75,210.881 337.75,256C337.75,301.119 301.119,337.75 256,337.75C210.881,337.75 174.25,301.119 174.25,256C174.25,210.881 210.881,174.25 256,174.25ZM256,198.179C224.088,198.179 198.179,224.088 198.179,256C198.179,287.912 224.088,313.821 256,313.821C287.912,313.821 313.821,287.912 313.821,256C313.821,224.088 287.912,198.179 256,198.179Z" style="fill:${MARKER_COLOR};"/>
+      </g>
+    </svg>
+    `;
+
+  const el = document.createElement('div');
+  el.innerHTML = svgMarker;
+  el.style.width = '50px';
+  el.style.height = '50px';
+
+  const icon = L.divIcon({
+    className: 'leaflet-data-marker',
+    html: svgMarker,
+    iconSize: [60, 60],
+    iconAnchor: [30, 30],
+    popupAnchor: [0, 0],
+  });
+
+  const marker = L.marker([lat, lng], { icon: icon });
+  const markerWithPopup = bindPopup(marker, alpr);
+
+  return markerWithPopup as L.Marker;
+}
+
+function makeCircleMarker(alpr: ALPR): L.CircleMarker {
+  const { lat, lon: lng } = alpr;
+  const orientationDegrees = alpr.tags.direction;
+
+  const marker = L.circleMarker([lat, lng], {
+    fill: true,
+    fillColor: MARKER_COLOR,
+    fillOpacity: 0.6,
+    stroke: true,
+    color: MARKER_COLOR,
+    opacity: 1,
+    radius: 8,
+    weight: 3,
+  });
+
+  const markerWithPopup = bindPopup(marker, alpr);
+  return markerWithPopup as L.CircleMarker;
+}
+
+function bindPopup(marker: L.CircleMarker | L.Marker, alpr: ALPR): L.CircleMarker | L.Marker {
+  marker.bindPopup('');
+
+  marker.on('popupopen', (e: any) => {
+    const popupContent = document.createElement('div');
+    createApp({
+      render() {
+        return h(DFMapPopup, { alpr: {
+          id: alpr.id,
+          lat: alpr.lat,
+          lon: alpr.lon,
+          tags: alpr.tags,
+          type: alpr.type,
+        } });
+      }
+    }).use(createVuetify()).mount(popupContent);
+
+    e.popup.setContent(popupContent);
+  });
+
+  return marker;
+}
+
+function hasPlottableOrientation(orientationDegrees: string) {
+  // OSM tags are strings, and some have multiple values (e.g. '0;90')
+  return orientationDegrees && !isNaN(parseInt(orientationDegrees));
+}
+
 function populateMap() {
   const showFov = props.zoom >= 16;
 
@@ -102,82 +185,21 @@ function populateMap() {
 
   clusterLayer = L.markerClusterGroup({
     chunkedLoading: true,
-    chunkProgress: () => {}, // update progress bar!
-    disableClusteringAtZoom: 16, // TODO: should probably match the ShowFOV threshold
+    disableClusteringAtZoom: 16, // showFov threshold
     removeOutsideVisibleBounds: true,
   });
   circlesLayer = L.featureGroup();
 
   for (const alpr of props.alprs) {
-    const { lat, lon: lng } = alpr;
-    const orientationDegrees = alpr.tags.direction; // TODO: make sure this works with nodes w/o orientation
+    const orientationDegrees = alpr.tags.direction;
 
     let marker: L.CircleMarker | L.Marker;
 
-    // content of @/public/map-icon.svg; TODO: import it here if possible
-    const fovPath = `
-      <path class="someSVGpath" d="M215.248,221.461L99.696,43.732C144.935,16.031 198.536,0 256,0C313.464,0 367.065,16.031 412.304,43.732L296.752,221.461C287.138,209.593 272.448,202.001 256,202.001C239.552,202.001 224.862,209.593 215.248,221.461Z" style="fill:rgb(87,87,87);fill-opacity:0.46;"/>
-      <path class="someSVGpath" d="M215.248,221.461L99.696,43.732C144.935,16.031 198.536,0 256,0C313.464,0 367.065,16.031 412.304,43.732L296.752,221.461C287.138,209.593 272.448,202.001 256,202.001C239.552,202.001 224.862,209.593 215.248,221.461ZM217.92,200.242C228.694,192.652 241.831,188.195 256,188.195C270.169,188.195 283.306,192.652 294.08,200.242C294.08,200.242 392.803,48.4 392.803,48.4C352.363,26.364 305.694,13.806 256,13.806C206.306,13.806 159.637,26.364 119.197,48.4L217.92,200.242Z" style="fill:rgb(137,135,135);"/>
-    `;
-    const svgMarker = `
-      <svg style="transform:rotate(${orientationDegrees}deg)" class="svgMarker" width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-        ${orientationDegrees ? fovPath : ''}
-        <g transform="matrix(0.906623,0,0,0.906623,23.9045,22.3271)">
-          <circle class="someSVGpath" cx="256" cy="256" r="57.821" style="fill:${MARKER_COLOR};fill-opacity:0.41;"/>
-          <path class="someSVGpath" d="M256,174.25C301.119,174.25 337.75,210.881 337.75,256C337.75,301.119 301.119,337.75 256,337.75C210.881,337.75 174.25,301.119 174.25,256C174.25,210.881 210.881,174.25 256,174.25ZM256,198.179C224.088,198.179 198.179,224.088 198.179,256C198.179,287.912 224.088,313.821 256,313.821C287.912,313.821 313.821,287.912 313.821,256C313.821,224.088 287.912,198.179 256,198.179Z" style="fill:${MARKER_COLOR};"/>
-        </g>
-      </svg>
-      `;
-
-    const el = document.createElement('div');
-    el.innerHTML = svgMarker;
-    el.style.width = '50px';
-    el.style.height = '50px';
-
-    if (showFov) {
-      const icon = L.divIcon({
-        className: 'leaflet-data-marker',
-        html: svgMarker,
-        iconSize: [60, 60],
-        iconAnchor: [30, 30],
-        popupAnchor: [0, -8],
-      });
-
-      marker = L.marker([lat, lng], { icon: icon });
+    if (showFov && hasPlottableOrientation(orientationDegrees)) {
+      marker = makeSVGMarker(alpr);
     } else {
-      marker = L.circleMarker([lat, lng], {
-        fill: true,
-        fillColor: MARKER_COLOR,
-        fillOpacity: 0.6,
-        stroke: true,
-        color: MARKER_COLOR,
-        opacity: 1,
-        radius: 8,
-        weight: 3,
-      });
+      marker = makeCircleMarker(alpr);
     }
-    
-    // Bind an empty popup to the circle
-    marker.bindPopup('');
-
-    // Add an event listener to create the popup content on demand
-    marker.on('popupopen', (e: any) => {
-      const popupContent = document.createElement('div');
-      createApp({
-        render() {
-          return h(DFMapPopup, { alpr: {
-            id: alpr.id,
-            lat: lat,
-            lon: lng,
-            tags: alpr.tags,
-            type: alpr.type,
-          } });
-        }
-      }).use(createVuetify()).mount(popupContent);
-
-      // Set the popup content
-      e.popup.setContent(popupContent);
-    });
 
     circlesLayer.addLayer(marker);
   }

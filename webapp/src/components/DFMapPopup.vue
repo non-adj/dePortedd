@@ -20,9 +20,6 @@
           </span>
           <span v-else>
             Unknown Brand
-            <!-- <v-btn :href="osmNodeUrl" variant="text" flat size="x-small" color="warning" target="_blank">
-              <v-icon start size="small">mdi-pencil</v-icon>Fix
-            </v-btn> -->
           </span>
         </b>
       </v-list-item>
@@ -33,9 +30,6 @@
           </span>
           <span v-else>
             Unknown Operator
-            <!-- <v-btn :href="osmNodeUrl" variant="text" flat size="x-small" color="warning" target="_blank">
-              <v-icon start size="small">mdi-pencil</v-icon>Fix
-            </v-btn> -->
           </span>
         </b>
       </v-list-item>
@@ -44,7 +38,6 @@
     <div class="text-center text-grey-darken-1">
       node/{{ alpr.id }}
     </div>
-    <!-- <v-data-table density="compact" hide-default-header hide-default-footer disable-sort :items="kvTags" /> -->
   </v-sheet>
 </template>
 
@@ -52,7 +45,7 @@
 import { defineProps, computed } from 'vue';
 import type { PropType } from 'vue';
 import type { ALPR } from '@/types';
-import { VIcon, VList, VSheet, VListItem } from 'vuetify/components';
+import { VIcon, VList, VSheet, VListItem, VChip } from 'vuetify/components';
 
 const props = defineProps({
   alpr: {
@@ -61,20 +54,7 @@ const props = defineProps({
   }
 });
 
-const valueTransformations: { [key: string]: (value: string) => string } = {
-  direction: (value: string) => `${degreesToCardinal(parseInt(value))} ${value}º`
-};
-
-const whitelistedTags = ['brand', 'camera:mount', 'camera:type', 'direction', 'operator'];
-
 const isFaceRecognition = computed(() => props.alpr.tags.brand === 'Avigilon');
-const osmNodeUrl = computed(() => `/node/${props.alpr.id}`);
-
-const kvTags = computed(() => {
-  return Object.entries(props.alpr.tags)
-    .filter(([key]) => whitelistedTags.includes(key))
-    .map(([key, value]) => ({ key, value: valueTransformations[key]?.(value) ?? value }));
-});
 
 const cardinalDirection = computed(() => 
   props.alpr.tags.direction === undefined ? 'Unknown' : degreesToCardinal(parseInt(props.alpr.tags.direction))
