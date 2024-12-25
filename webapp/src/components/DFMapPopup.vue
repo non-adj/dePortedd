@@ -14,12 +14,12 @@
         <v-icon start>mdi-compass-outline</v-icon> <b>{{ cardinalDirection }}</b>
       </v-list-item>
       <v-list-item>
-        <v-icon start>mdi-domain</v-icon> <b>
+        <v-icon start>mdi-factory</v-icon> <b>
           <span v-if="alpr.tags.brand">
             {{ alpr.tags.brand }}
           </span>
           <span v-else>
-            Unknown Brand
+            Unknown Manufacturer
           </span>
         </b>
       </v-list-item>

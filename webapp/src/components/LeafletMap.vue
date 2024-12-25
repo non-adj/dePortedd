@@ -187,6 +187,7 @@ function populateMap() {
     chunkedLoading: true,
     disableClusteringAtZoom: 16, // showFov threshold
     removeOutsideVisibleBounds: true,
+    maxClusterRadius: 60,
   });
   circlesLayer = L.featureGroup();
 

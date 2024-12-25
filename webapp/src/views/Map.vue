@@ -1,9 +1,5 @@
 <template>
   <div class="map-container" @keyup="handleKeyUp">
-    <v-card class="map-notif" v-show="isLoadingALPRs && !showClusters">
-      <v-card-title><v-progress-circular indeterminate color="primary" /></v-card-title>
-    </v-card>
-
     <leaflet-map
       v-if="center"
       v-model:center="center"
@@ -56,8 +52,7 @@ import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router'
 import type { Ref } from 'vue';
 import { BoundingBox } from '@/services/apiService';
-import type { Cluster } from '@/services/apiService';
-import { getALPRs, geocodeQuery, getClusters } from '@/services/apiService';
+import { geocodeQuery } from '@/services/apiService';
 import { useDisplay, useTheme } from 'vuetify';
 import { useGlobalStore } from '@/stores/global';
 import { useTilesStore } from '@/stores/tiles';
@@ -68,8 +63,6 @@ import 'leaflet/dist/leaflet.css'
 import LeafletMap from '@/components/LeafletMap.vue';
 
 const DEFAULT_ZOOM = 12;
-const MIN_ZOOM_FOR_REFRESH = 4;
-const CLUSTER_ZOOM_THRESHOLD = 9;
 
 const theme = useTheme();
 const zoom: Ref<number> = ref(DEFAULT_ZOOM);
@@ -85,25 +78,10 @@ const alprs = computed(() => tilesStore.allNodes);
 const router = useRouter();
 const { xs } = useDisplay();
 
-const canRefreshMarkers = computed(() => zoom.value >= MIN_ZOOM_FOR_REFRESH);
-const mapTileUrl = computed(() =>
-  theme.global.name.value === 'dark' ?
-    'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png' :
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-); // TODO: implement dark mode in LeafletMap.vue
-const clusters: Ref<Cluster[]> = ref([]);
-const bboxForLastRequest: Ref<BoundingBox|null> = ref(null);
-const showClusters = computed(() => zoom.value <= CLUSTER_ZOOM_THRESHOLD);
-const isLoadingALPRs = ref(false);
-
 const globalStore = useGlobalStore();
 
 const setCurrentLocation = globalStore.setCurrentLocation;
 const currentLocation = computed(() => globalStore.currentLocation);
-
-const visibleALPRs = computed(() => {
-  return alprs.value.filter(alpr => bounds.value?.containsPoint(alpr.lat, alpr.lon));
-});
 
 function handleKeyUp(event: KeyboardEvent) {
   if (event.key === '/' && searchField.value.value !== document.activeElement) {
@@ -188,7 +166,7 @@ onMounted(() => {
     }
   } else {
     // show US map by default
-    zoom.value = 4;
+    zoom.value = 5;
     center.value = { lat: 39.8283, lng: -98.5795 };
   }
 });

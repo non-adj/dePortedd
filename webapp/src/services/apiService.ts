@@ -71,12 +71,6 @@ export const getALPRCounts = async () => {
   return response.data;
 }
 
-export const getClusters = async () => {
-  const s3Url = "https://deflock-clusters.s3.us-east-1.amazonaws.com/alpr_clusters.json";
-  const response = await apiService.get(s3Url);
-  return response.data;
-}
-
 export const getCities = async () => {
   const s3Url = "https://deflock-clusters.s3.us-east-1.amazonaws.com/flock_cameras_null.json";
   const response = await apiService.get(s3Url);
