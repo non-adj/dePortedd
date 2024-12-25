@@ -63,14 +63,6 @@
         <v-icon end>mdi-map</v-icon>
       </v-btn>
     </v-container>
-
-    <v-container>
-    <v-footer class="text-center">
-      <span class="attribution">
-        Maps ©&nbsp;<a target="_blank" href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>&nbsp;contributors.
-      </span>
-    </v-footer>
-   </v-container>
 </template>
 
 <style>
