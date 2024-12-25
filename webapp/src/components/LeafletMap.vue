@@ -54,7 +54,7 @@ onMounted(() => {
 });
 
 function initializeMap() {
-  map = L.map('map', { zoomControl: false }).setView(props.center, props.zoom);
+  map = L.map('map', { zoomControl: false, maxZoom: 18 /* max for OSM tiles */ }).setView(props.center, props.zoom);
 
   registerEvents();
   registerWatchers();
@@ -188,6 +188,9 @@ function populateMap() {
     disableClusteringAtZoom: 16, // showFov threshold
     removeOutsideVisibleBounds: true,
     maxClusterRadius: 60,
+    zoomToBoundsOnClick: true,
+    spiderfyOnEveryZoom: false,
+    spiderfyOnMaxZoom: false,
   });
   circlesLayer = L.featureGroup();
 
@@ -196,7 +199,7 @@ function populateMap() {
 
     let marker: L.CircleMarker | L.Marker;
 
-    if (showFov && hasPlottableOrientation(orientationDegrees)) {
+    if (hasPlottableOrientation(orientationDegrees)) {
       marker = makeSVGMarker(alpr);
     } else {
       marker = makeCircleMarker(alpr);
@@ -219,31 +222,10 @@ function registerEvents() {
   });
 }
 
-/**
- * Returns true if the zoom level has crossed the threshold for switching map markers.
- * Standard circles are shown until a zoom level of 16 is reached, at which point
- * the map switches to showing the field of view for each camera.
- * @param oldZoom old zoom level
- * @param newZoom new zoom level
- * @param threshold the zoom level threshold
- */
-function hasCrossedZoomThreshold(oldZoom: number, newZoom: number, threshold: number) {
-  return (oldZoom < threshold && newZoom >= threshold) || (oldZoom >= threshold && newZoom < threshold);
-}
-
 function registerWatchers() {
   watch(() => props.center, (newCenter: any, oldCenter: any) => {
     if (newCenter.lat !== oldCenter.lat || newCenter.lng !== oldCenter.lng) {
       map.setView(newCenter as LatLngExpression);
-    }
-  });
-
-  watch(() => props.zoom, (newZoom, oldZoom) => {
-    if (newZoom !== oldZoom) {
-      map.setZoom(newZoom);
-      if (hasCrossedZoomThreshold(oldZoom, newZoom, 16)) {
-        populateMap();
-      }
     }
   });
 
