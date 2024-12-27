@@ -18,8 +18,12 @@
         <p class="mb-8">
           Want to see your name here? <a href="https://github.com/sponsors/frillweeman">Become a sponsor</a>, and your name will appear on this page!
         </p>
+
         <v-row>
-          <v-col v-for="sponsor in sponsors" :key="sponsor.login" cols="6" md="4" lg="3">
+          <v-col v-if="isLoadingSponsors" v-for="n in 4" cols="6" md="4" lg="3">
+            <v-skeleton-loader type="image"></v-skeleton-loader>
+          </v-col>
+          <v-col v-else v-for="sponsor in sponsors" :key="sponsor.login" cols="6" md="4" lg="3">
             <v-card :href="sponsor.url" target="_blank" variant="flat" class="text-center py-2" color="transparent">
               <v-avatar size="64px" class="mb-3">
                 <v-img :src="sponsor.avatarUrl" :alt="sponsor.name" />
@@ -63,6 +67,7 @@ interface Sponsor {
 }
 
 const sponsors: Ref<Sponsor[]> = ref([]);
+const isLoadingSponsors = ref(true);
 
 onMounted(() => {
   getSponsors()
@@ -71,6 +76,9 @@ onMounted(() => {
     })
     .catch((error) => {
       console.error(error);
+    })
+    .finally(() => {
+      isLoadingSponsors.value = false;
     });
 });
 </script>

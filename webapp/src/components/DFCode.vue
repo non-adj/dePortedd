@@ -46,6 +46,10 @@ code {
   overflow-x: scroll;
 }
 
+code {
+  white-space: nowrap;
+}
+
 .copy-button {
   position: absolute;
   right: 0;

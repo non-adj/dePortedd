@@ -14,6 +14,8 @@
           hide-details
         ></v-select>
         <v-img
+          :aspect-ratio="3/2"
+          cover
           v-if="selectedBrand"
           :src="selectedBrand.exampleImage"
           :alt="selectedBrand.nickname"
@@ -40,15 +42,6 @@
           operator=<span class="highlight">(Police Dept/Owner)</span><br>
           operator:wikidata=<span class="highlight">(WikiData ID)</span><br>
         </DFCode>
-
-        <v-alert
-          v-if="selectedBrand.nickname === 'Other'"
-          class="mt-4"
-          variant="tonal"
-          type="info"
-        >
-          Please provide additional details about the ALPR.
-        </v-alert>
       </v-col>
     </v-row>
 </template>
@@ -87,6 +80,7 @@ const alprBrands: WikidataItem[] = [
     name: '(brand goes here)',
     nickname: 'Other',
     wikidata: '(wikidata goes here)',
+    exampleImage: '/other-1.jpeg',
   }
 ];
 const selectedBrand: Ref<WikidataItem> = ref(alprBrands[0]);

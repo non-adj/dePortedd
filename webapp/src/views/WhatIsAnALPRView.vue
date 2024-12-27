@@ -1,10 +1,11 @@
 <template>
-  <v-container class="info-section" max-width="1000">
-    <p>
-      <v-img max-height="450" width="100%" cover src="/flock-camera.jpeg" />
-    </p>
-
-    <h2>What is an ALPR</h2>
+  <v-container fluid>
+    <v-row justify="center" class="hero-section-whatis text-center mb-4">
+    </v-row>
+  </v-container>
+  
+  <v-container class="info-section">
+    <h1 class="mt-0">What is an ALPR?</h1>
     <p>
       Automated License Plate Readers (ALPRs) are cameras that capture images of all passing license plates, storing details like the car's location, date, and time. These cameras collect data on millions of vehicles—regardless of whether the driver is suspected of a crime. While these systems can be useful for tracking stolen cars or wanted individuals, they are mostly used to track the movements of innocent people.
     </p>
@@ -12,110 +13,159 @@
     <p>For a detailed explanation of how ALPRs are a threat to privacy, see this <a href="https://www.aclu.org/issues/privacy-technology/you-are-being-tracked" target="_blank">ACLU article</a> as well as this <a href="https://sls.eff.org/technologies/automated-license-plate-readers-alprs" target="_blank">EFF article</a> on ALPRs.</p>
 
     <h2>Why Should You Be Concerned</h2>
-    <p class="mb-4">
+    <p class="mb-8 text-center">
       ALPRs invade your privacy and violate your civil liberties. Here's how:
     </p>
 
     <dangers />
 
-    <h2 id="not-alpr" :class="{ highlighted: route.hash === '#not-alpr' }">What They Look Like</h2>
-    <v-carousel class="my-4" hide-delimiters>
-      <v-carousel-item
-        v-for="{ url, brand } in images"
-        :key="url"
-        aspect-ratio="1"
-        :src="url"
-        class="text-center"
-      >
-        <v-chip :rounded="false" color="warning" variant="elevated" size="x-large" style="position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);">
-          <span class="font-weight-bold">Brand: <span class="text-uppercase">{{ brand }}</span></span>
-        </v-chip>
-      </v-carousel-item>
-    </v-carousel>
-    
+    <h2>What They Look Like</h2>
 
-    <p>
-      While <a href="https://en.wikipedia.org/wiki/Flock_Safety" target="_blank">Flock Safety</a> is a common brand of ALPRs in the US, there are several others, including <a href="https://en.wikipedia.org/wiki/Vigilant_Solutions" target="_blank">Vigilant Solutions</a>, owned by Motorola Solutions. Flock Safety ALPRs are easy to spot as they almost all look the same, typically mounted on poles with a solar panel on top. In rural areas, they are likely to be on standalone black poles, while in cities, they are more likely to be on existing utility or traffic poles. The cameras are often placed near intersections or on main roads at the edge of a city or town. Vigilant Solutions ALPRs, on the other hand, are typically mounted on traffic poles at or near intersections, with a distinctive white box mounted nearby.
-    </p>
+    <v-alert
+      density="compact"
+      class="mb-6 text-center"
+      variant="tonal"
+      color="rgb(18, 151, 195)"
+    >
+      <p>
+        <v-icon v-if="isMobile" size="x-large">mdi-gesture-tap</v-icon>
+        <v-icon v-else size="x-large">mdi-button-cursor</v-icon>
+      </p>
+      <p>
+        <b>{{ isMobile ? 'Tap' : 'Hover over' }}</b> an image below to identify the make.
+        <span v-if="!isMobile"><b>Click</b> an image to enlarge.</span>
+      </p>
+    </v-alert>
 
-    <h2>Not All Cameras are Law Enforcement ALPRs</h2>
-    <p>
-      Not all cameras near roads are ALPRs operated by law enforcement. Many people mistakenly assume that every traffic camera or intersection camera is an ALPR, but the reality is more nuanced. Here are some common types of cameras you might see near roads:
-    </p>
+    <v-row>
+      <v-col v-for="image in images" cols="12" sm="6" md="4">
+        <v-hover>
+          <template v-slot:default="{ isHovering, props }">
+            <v-img style="cursor: pointer;" @click="openFullScreenImage(image)" v-bind="props" cover :aspect-ratio="3/2" :src="image.url">
+              <transition name="fade">
+                <div class="scrim" v-show="isHovering">
+                  <span class="scrim-text">{{ image.brand }}</span>
+                </div>
+              </transition>
+            </v-img>
+          </template>
+        </v-hover>
+      </v-col>
+    </v-row>
 
-    <div class="ml-4">
-      <h3>Traffic Cameras</h3>
-      <div class="flex-image">
-        <v-img rounded cover aspect-ratio="4/3" width="180" src="/traffic-camera.jpg" />
-        <p>Standard traffic cameras typically capture live video or images of intersections to monitor traffic flow and manage signals. They do not specifically focus on reading license plates or storing data long-term.</p>
-      </div>
-
-      <h3>Red Light Cameras/Speed Cameras</h3>
-      <div class="flex-image">
-        <v-img rounded cover aspect-ratio="4/3" width="180" src="/redlight-camera.jpg" />
-        <p>These cameras are set up to capture violations, such as running a red light or speeding. They may record plate numbers when a violation is detected, but they do not perform continuous surveillance or collect location data over time.</p>
-      </div>
-
-      <h3>Toll Cameras</h3>
-      <div class="flex-image">
-        <v-img rounded cover aspect-ratio="4/3" width="180" src="/toll-camera.jpg" />
-        <p>Cameras on toll roads are used to capture license plates for billing purposes. They are not designed to track vehicles or store data beyond the transaction.</p>
-      </div>
-    </div>
+    <h2>Common Brands of ALPRs</h2>
+    <ul class="serif mb-16">
+      <li>
+        <a href="https://www.flocksafety.com/devices/lpr" target="_blank">Flock Safety</a> - A leading provider of ALPR technology, known for their solar-powered cameras. This is the most common brand of ALPR in the US. Flock Safety cameras are used by police departments, HOAs, as well as private businesses such as hardware stores and hotels. One of the most appealing features of Flock cameras is the data sharing network, which allows law enforcement agencies to access data from other Flock cameras in the area. This means that even if your local police department doesn't have a Flock camera, they can still access data from other Flock cameras in the area.
+      </li>
+      <li>
+        <a href="https://www.motorolasolutions.com/en_us/video-security-access-control/license-plate-recognition-camera-systems.html" target="_blank">Vigilant Solutions</a> - Owned by Motorola Solutions, offering a range of ALPR products and services.
+      </li>
+      <li>
+        <a href="https://www.leonardocompany-us.com/lpr/elsag-fixed" target="_blank">ELSAG</a> - A subsidiary of Leonardo, specializing in ALPR technology.
+      </li>
+      <li>
+        <a href="https://neology.com/solutions/enforcement/" target="_blank">Neology</a> - Specializes in ALPR technology and tolling solutions.
+      </li>
+    </ul>
   </v-container>
+
+  <v-dialog class="full-screen-image" v-model="showFullScreenImage">
+    <v-card style="overflow: hidden;">
+      <v-btn size="x-large" class="image-close-btn" flat icon @click="showFullScreenImage = false" color="transparent">
+        <v-icon :color="fullScreenImage.useDarkCloseButton ? 'black' : 'white'">mdi-close</v-icon>
+      </v-btn>
+      <v-img v-if="fullScreenImage" cover :aspect-ratio="3/2" :src="fullScreenImage.url" />
+    </v-card>
+    
+  </v-dialog>
 
   <Footer />
 </template>
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
+import { ref, type Ref } from 'vue';
+import { useDisplay } from 'vuetify';
 import Dangers from '@/components/Dangers.vue';
 import Footer from '@/components/layout/Footer.vue';
 const route = useRoute();
+const { xs: isMobile } = useDisplay();
 
 const flockImageCount = 6;
 const vigilantImageCount = 3;
 
+const showFullScreenImage = ref(false);
+const fullScreenImage: Ref<any|undefined> = ref(undefined);
+
+function openFullScreenImage(image: object) {
+  if (isMobile.value)
+    return;
+  fullScreenImage.value = image;
+  showFullScreenImage.value = true;
+}
+
 const images = [
   ...Array.from({ length: flockImageCount }, (_, i) => ({
     url: `/flock-${i + 1}.jpg`,
-    brand: 'flock'
+    brand: 'flock',
+    useDarkCloseButton: false,
   })),
   ...Array.from({ length: vigilantImageCount }, (_, i) => ({
     url: `/vigilant-${i + 1}.jpg`,
-    brand: 'motorola'
+    brand: 'motorola',
+    useDarkCloseButton: true,
   }))
 ];
 </script>
 
 <style scoped>
-h2 {
-  margin-top: 2rem;
+@import url('@/assets/typography.css');
+
+h1, h2 {
+  text-align: center;
 }
 
-h3 {
-  margin-top: 1.25rem;
-}
-
-p {
-  margin-top: 0.5rem;
-}
-
-.flex-image {
+.scrim {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  gap: 1rem;
+  justify-content: center;
   align-items: center;
-  margin-top: 0.5rem;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
-li {
-  margin-top: 0.5rem;
-  margin-left: 1rem;
+.image-close-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: white;
+  z-index: 100;
 }
 
-.highlighted {
-  background-color: yellow;
-  padding: 0.5rem;
-  border-radius: 0.25rem;
+.scrim-text {
+  text-transform: uppercase;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.25s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.hero-section-whatis {
+  background: url('/flock-camera.jpeg') no-repeat right center;
+  background-size: cover;
+  color: white;
+  position: relative;
+  height: 400px;
 }
 </style>

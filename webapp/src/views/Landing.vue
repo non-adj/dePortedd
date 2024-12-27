@@ -28,6 +28,14 @@
   
   <!-- Dangers Section -->
   <v-container class="py-10 text-center info-section">
+
+    <h2 class="mb-4">What is an ALPR</h2>
+    <p class="text-left">
+      Automated License Plate Readers (ALPRs) are cameras that capture images of all passing license plates, storing details like the car's location, date, and time. These cameras collect data on millions of vehicles—regardless of whether the driver is suspected of a crime. While these systems can be useful for tracking stolen cars or wanted individuals, they are mostly used to track the movements of innocent people.
+    </p>
+
+    <v-divider class="my-8" />
+
     <h2 class="display-2 mb-4">The Dangers of ALPRs</h2>
     <p class="subtitle-1 px-8">
       ALPRs are a threat to your privacy and civil liberties. They can be used to track your movements and profile you, and even stalk you. Learn more about the dangers of ALPRs and how you can protect yourself.
@@ -69,9 +77,9 @@
       </v-col>
     </v-row>
     
-    <v-btn class="mt-8" color="rgb(18, 151, 195)" large to="/dangers">
+    <v-btn class="mt-8" color="rgb(18, 151, 195)" large to="/what-is-an-alpr">
       <v-icon start>mdi-book-open-page-variant</v-icon>
-      See All Dangers
+      Read More
     </v-btn>
   </v-container>
   
@@ -113,7 +121,7 @@
 }
 
 .map-section {
-  background: url('/deflock-screenshot.webp') no-repeat center center;
+  background: url('/deflock-screenshot.webp') no-repeat right center;
   background-size: cover;
   color: white;
   padding: 100px 0;
