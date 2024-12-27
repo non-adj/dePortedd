@@ -1,17 +1,18 @@
 a {
   font-weight: bold;
-  color: rgb(18, 151, 195);
+  color: var(--df-blue);
   text-decoration: none;
 }
 
-a:hover {
+/* underline only simple <a> elements */
+a:not([class]):hover {
   text-decoration: underline;
 }
 
 :root {
   --df-background-color: white;
   --df-text-color: #ccc;
-  --df-page-background-color: #f5f5f5;
+  --df-blue: rgb(18, 151, 195);
 }
 
 .leaflet-popup-content-wrapper, .leaflet-popup-tip, .leaflet-bar a {

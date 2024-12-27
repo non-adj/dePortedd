@@ -60,7 +60,7 @@ function initializeMap() {
   registerWatchers();
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
 
   emit('update:bounds', map.getBounds()); // XXX: this event populates the map
@@ -69,8 +69,6 @@ function initializeMap() {
 function renderCurrentLocation() {
   if (!props.currentLocation)
     return;
-  else
-    console.log('Current location:', props.currentLocation);
 
   if (currentLocationLayer) {
     map.removeLayer(currentLocationLayer);

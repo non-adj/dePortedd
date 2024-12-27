@@ -83,11 +83,19 @@ const router = createRouter({
       }
     },
     {
-      path: '/legal',
-      name: 'legal',
-      component: () => import('../views/LegalView.vue'),
+      path: '/terms',
+      name: 'terms',
+      component: () => import('../views/TermsOfService.vue'),
       meta: {
-        title: 'Legal | DeFlock'
+        title: 'Terms of Service | DeFlock'
+      }
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('../views/PrivacyPolicy.vue'),
+      meta: {
+        title: 'Privacy Policy | DeFlock'
       }
     },
     {

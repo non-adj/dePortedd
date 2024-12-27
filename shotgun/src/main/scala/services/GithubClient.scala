@@ -29,6 +29,7 @@ class GithubClient(implicit val system: ActorSystem, implicit val executionConte
     |          login
     |          name
     |          avatarUrl
+    |          url
     |        }
     |      }
     |    }

@@ -51,12 +51,15 @@
       We are getting a lot of new datasets and trying to decide how to import them at a large scale, since they need to be verified and deduplicated. If you have any ideas or want to help, please reach out to us <router-link to="/contact">here</router-link> or join our <a href="https://discord.gg/aV7v4R3sKT" target="_blank">Discord</a>.
     </p>
   </v-container>
+
+  <Footer />
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue';
 import { getCities } from '@/services/apiService';
 import CommunityDatasets from '@/components/CommunityDatasets.vue';
+import Footer from '@/components/layout/Footer.vue';
 
 const page = ref(1);
 const selectedState = ref('');
@@ -124,9 +127,5 @@ code {
   padding: 0.15rem;
   border-radius: 0.25rem;
   font-weight: bold;
-}
-
-.info-section {
-  background: var(--df-page-background-color);
 }
 </style>

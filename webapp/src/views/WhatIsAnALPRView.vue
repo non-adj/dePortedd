@@ -63,11 +63,14 @@
       </div>
     </div>
   </v-container>
+
+  <Footer />
 </template>
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import Dangers from '@/components/Dangers.vue';
+import Footer from '@/components/layout/Footer.vue';
 const route = useRoute();
 
 const flockImageCount = 6;
@@ -114,9 +117,5 @@ li {
   background-color: yellow;
   padding: 0.5rem;
   border-radius: 0.25rem;
-}
-
-.info-section {
-  background: var(--df-page-background-color);
 }
 </style>

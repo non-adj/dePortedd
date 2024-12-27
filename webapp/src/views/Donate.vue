@@ -1,5 +1,5 @@
 <template>
-  <v-container class="sponsor-page">
+  <v-container fluid class="sponsor-page">
     <!-- Hero Section -->
     <v-row justify="center" class="hero-section-sponsor text-center mb-4">
       <v-col cols="12" md="8">
@@ -14,10 +14,13 @@
     <!-- GitHub Sponsors Section -->
     <v-row justify="center" class="sponsors-section text-center">
       <v-col cols="12" md="10">
-        <h2 class="mb-4">Our Amazing Sponsors</h2>
+        <h2 class="mb-2">Our Amazing Sponsors</h2>
+        <p class="mb-8">
+          Want to see your name here? <a href="https://github.com/sponsors/frillweeman">Become a sponsor</a>, and your name will appear on this page!
+        </p>
         <v-row>
           <v-col v-for="sponsor in sponsors" :key="sponsor.login" cols="6" md="4" lg="3">
-            <v-card variant="flat" class="text-center py-2">
+            <v-card :href="sponsor.url" target="_blank" variant="flat" class="text-center py-2" color="transparent">
               <v-avatar size="64px" class="mb-3">
                 <v-img :src="sponsor.avatarUrl" :alt="sponsor.name" />
               </v-avatar>
@@ -27,26 +30,36 @@
         </v-row>
       </v-col>
     </v-row>
-  </v-container>
 
-  <!-- Footer Section -->
-  <v-footer class="text-center mt-8">
-    <v-row>
-      <v-col>
-        <p>&copy; {{ new Date().getFullYear() }} DeFlock. All rights reserved.</p>
+    <!-- GitHub Sponsors Section -->
+    <v-row justify="center" class="sponsors-section text-center mt-4">
+      <v-col cols="12" md="10">
+        <h2 class="mb-2">Special Thanks</h2>
+        
+        <v-card href="https://www.404media.co/" target="_blank" max-width="250" variant="flat" class="text-center py-2 mx-auto" color="transparent">
+          <v-img class="ma-4" src="/404media.svg" alt="404 Media Logo" contain />
+          <v-card-title class="mt-2 serif text-center font-weight-bold">404 Media</v-card-title>
+          <v-card-text>
+            <p>Special thanks to Jason Koebler at 404 Media for popularizing this project. Be sure to support them, as they are fellow privacy advocates.</p>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
-  </v-footer>
+  </v-container>
+
+  <Footer />
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, type Ref } from "vue";
 import { getSponsors } from "@/services/apiService";
+import Footer from "@/components/layout/Footer.vue";
 
 interface Sponsor {
   login: string;
   name: string;
   avatarUrl: string;
+  url: string;
 }
 
 const sponsors: Ref<Sponsor[]> = ref([]);

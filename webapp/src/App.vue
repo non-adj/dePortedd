@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { RouterView, useRouter } from 'vue-router'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useTheme } from 'vuetify';
 
 const theme = useTheme();
 const router = useRouter();
+const isDark = computed(() => theme.name.value === 'dark');
 
 function toggleTheme() {
   const newTheme = theme.global.name.value === 'dark' ? 'light' : 'dark';
@@ -23,7 +24,7 @@ const items = [
 ]
 
 const metaItems = [
-  { title: 'Discord', icon: 'mdi-chat-processing-outline', href: 'https://discord.gg/aV7v4R3sKT'},
+  { title: 'Discord', customIcon: '/icon-discord.svg', customIconDark: '/icon-discord-white.svg', href: 'https://discord.gg/aV7v4R3sKT'},
   { title: 'Contact', icon: 'mdi-email-outline', to: '/contact' },
   { title: 'GitHub', icon: 'mdi-github', href: 'https://github.com/frillweeman/deflock'},
   { title: 'Donate', icon: 'mdi-heart', to: '/donate'},
@@ -34,11 +35,9 @@ watch(() => theme.global.name.value, (newTheme) => {
   const root = document.documentElement;
   if (newTheme === 'dark') {
     root.style.setProperty('--df-background-color', 'rgb(33, 33, 33)');
-    root.style.setProperty('--df-page-background-color', 'unset');
     root.style.setProperty('--df-text-color', '#ccc');
   } else {
     root.style.setProperty('--df-background-color', 'white');
-    root.style.setProperty('--df-page-background-color', '#f5f5f5');
     root.style.setProperty('--df-text-color', 'black');
   }
 });
@@ -86,7 +85,11 @@ watch(() => theme.global.name.value, (newTheme) => {
           :to="item.to"
           :href="item.href"
           :target="{ '_blank': item.href }"
-        ><v-icon start>{{ item.icon }}</v-icon>{{ item.title }}</v-list-item>
+        >
+          <v-icon v-if="item.icon" start>{{ item.icon }}</v-icon>
+            <v-img v-else-if="item.customIcon" class="mr-2 custom-icon" contain width="24" height="24" :src="isDark ? item.customIconDark : item.customIcon" style="vertical-align: middle;" />
+            <span style="vertical-align: middle;">{{ item.title }}</span>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -95,3 +98,10 @@ watch(() => theme.global.name.value, (newTheme) => {
     </v-main>
   </v-app>
 </template>
+
+<style lang="css" scoped>
+.custom-icon {
+  display: inline-block;
+  margin-right: 5px;
+}
+</style>
