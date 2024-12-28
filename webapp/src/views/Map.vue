@@ -112,7 +112,9 @@ function goToUserLocation() {
   setCurrentLocation()
     .then((cl) => {
       center.value = cl;
-      zoom.value = DEFAULT_ZOOM;
+      setTimeout(() => {
+        zoom.value = DEFAULT_ZOOM;
+      }, 10);
     })
     .catch(error => {
       console.debug('Error getting user location.', error);

@@ -8,8 +8,8 @@
           :items="alprBrands"
           item-title="nickname"
           return-object
-          label="Manufacturer"
-          variant="solo-filled"
+          label="Choose a Manufacturer"
+          variant="outlined"
           flat
           hide-details
         ></v-select>

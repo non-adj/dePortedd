@@ -16,7 +16,7 @@
       <v-col cols="12" md="10">
         <h2 class="mb-2">Our Amazing Sponsors</h2>
         <p class="mb-8">
-          Want to see your name here? <a href="https://github.com/sponsors/frillweeman">Become a sponsor</a>, and your name will appear on this page!
+          Want to see your name here? <a target="_blank" href="https://github.com/sponsors/frillweeman">Become a sponsor</a>, and your name will appear on this page!
         </p>
 
         <v-row>

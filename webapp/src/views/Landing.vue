@@ -3,25 +3,24 @@
   <v-container fluid class="hero-section">
     <v-row justify="center">
       <v-col cols="12" md="8" class="text-center">
-        <h1 class="display-1 px-8">You're Being Tracked by ALPRs!</h1>
-        <ALPRCounter class="mt-4" />
-        <p class="subtitle-1 px-8 mt-6 mb-12 bigger">
-          Automated License Plate Readers (ALPRs) are monitoring your every move. Learn more about how they work and how you can protect your privacy.
-        </p>
-        <v-btn color="rgb(18, 151, 195)" large @click="goToMap({ withCurrentLocation: true })">
-          Find Nearby ALPRs
-          <v-icon end>mdi-map</v-icon>
-        </v-btn>
+        <h1 class="display-1 px-8">You're Being Tracked</h1>
+        
+        <ALPRCounter class="my-6" />
         
         <!-- Featured On Section -->
-        <v-container class="featured-on-section mt-10">
-          <h4 class="mb-8" style="opacity: 0.8">Featured On</h4>
+        <v-container class="featured-on-section my-8">
+          <h4 class="mb-4" style="opacity: 0.8">Featured On</h4>
           <v-row justify="center" align-items="center">
-            <v-card flat v-for="site in featuredOn" class="mx-4" :width="site.wide ? 200 : 100" height="50" :href="site.url" target="_blank" style="background: rgba(0,0,0,0)">
+            <v-card flat v-for="site in featuredOn" class="mx-4" :width="site.wide ? 200 : 100" height="50" style="background: rgba(0,0,0,0)">
               <v-img contain :src="site.logo" :alt="site.name" class="featured-logo" style="display: flex; align-items: center; height: 100%;" />
             </v-card>
           </v-row>
         </v-container>
+
+        <v-btn size="large" color="rgb(18, 151, 195)" large @click="goToMap({ withCurrentLocation: true })">
+          Explore the Map
+          <v-icon end>mdi-map</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -30,14 +29,14 @@
   <v-container class="py-10 text-center info-section">
 
     <h2 class="mb-4">What is an ALPR</h2>
-    <p class="text-left">
+    <p class="text-left px-6">
       Automated License Plate Readers (ALPRs) are cameras that capture images of all passing license plates, storing details like the car's location, date, and time. These cameras collect data on millions of vehicles—regardless of whether the driver is suspected of a crime. While these systems can be useful for tracking stolen cars or wanted individuals, they are mostly used to track the movements of innocent people.
     </p>
 
     <v-divider class="my-8" />
 
     <h2 class="display-2 mb-4">The Dangers of ALPRs</h2>
-    <p class="subtitle-1 px-8">
+    <p class="px-6">
       ALPRs are a threat to your privacy and civil liberties. They can be used to track your movements and profile you, and even stalk you. Learn more about the dangers of ALPRs and how you can protect yourself.
     </p>
     
@@ -49,7 +48,7 @@
             Privacy Violations
           </v-card-title>
           <v-card-text>
-            ALPRs track your movements and store your data for long periods of time, creating a detailed record of your location history. They surveil mostly innocent people while claiming to target criminals.
+            ALPRs track your movements and store your data for long periods of time, creating a detailed record of your location history.
           </v-card-text>
         </v-card>
       </v-col>
@@ -100,7 +99,7 @@
   background: url('/flock-camera.jpeg') no-repeat center center;
   background-size: cover;
   color: white;
-  padding: 100px 0 50px 0 !important;
+  padding: 60px 0 50px 0 !important;
   position: relative;
 }
 
@@ -111,7 +110,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.55);
   z-index: 1;
 }
 
@@ -121,7 +120,7 @@
 }
 
 .map-section {
-  background: url('/deflock-screenshot.webp') no-repeat right center;
+  background: url('/deflock-screenshot.webp') no-repeat center center;
   background-size: cover;
   color: white;
   padding: 100px 0;

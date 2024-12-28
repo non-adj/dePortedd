@@ -14,7 +14,7 @@
         <v-icon start>mdi-compass-outline</v-icon> <b>{{ cardinalDirection }}</b>
       </v-list-item>
       <v-list-item>
-        <v-icon start>mdi-factory</v-icon> <b>
+        <v-icon start>mdi-domain</v-icon> <b>
           <span v-if="alpr.tags.manufacturer">
             {{ alpr.tags.manufacturer }}
           </span>
@@ -27,7 +27,7 @@
         </b>
       </v-list-item>
       <v-list-item>
-        <v-icon start>mdi-police-badge</v-icon> <b>
+        <v-icon start>mdi-account-tie</v-icon> <b>
           <span v-if="alpr.tags.operator">
             {{ alpr.tags.operator }}
           </span>
@@ -39,7 +39,12 @@
     </v-list>
 
     <div class="text-center text-grey-darken-1">
-      node/{{ alpr.id }}
+      
+      <v-tooltip open-delay="500" text="OSM Node ID" location="bottom">
+        <template #activator="{ props }">
+          <span style="cursor: default" v-bind="props">node/{{ alpr.id }}</span>
+        </template>
+      </v-tooltip>
     </div>
   </v-sheet>
 </template>
@@ -48,7 +53,7 @@
 import { defineProps, computed } from 'vue';
 import type { PropType } from 'vue';
 import type { ALPR } from '@/types';
-import { VIcon, VList, VSheet, VListItem, VChip } from 'vuetify/components';
+import { VIcon, VList, VSheet, VListItem, VTooltip } from 'vuetify/components';
 
 const props = defineProps({
   alpr: {
@@ -60,11 +65,11 @@ const props = defineProps({
 const isFaceRecognition = computed(() => props.alpr.tags.brand === 'Avigilon');
 
 const cardinalDirection = computed(() => 
-  props.alpr.tags.direction === undefined ? 'Unknown' : degreesToCardinal(parseInt(props.alpr.tags.direction))
+  props.alpr.tags.direction === undefined ? 'Unknown Direction' : degreesToCardinal(parseInt(props.alpr.tags.direction))
 );
 
 function degreesToCardinal(degrees: number): string {
   const cardinals = ['North', 'Northeast', 'East', 'Southeast', 'South', 'Southwest', 'West', 'Northwest'];
-  return cardinals[Math.round(degrees / 45) % 8];
+  return 'Faces ' + cardinals[Math.round(degrees / 45) % 8];
 }
 </script>

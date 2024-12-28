@@ -101,7 +101,7 @@ const router = createRouter({
     {
       path: '/qr',
       name: 'qr-landing',
-      component: () => import('../views/QRLandingView.vue'),
+      component: () => import('../views/Landing.vue'),
       meta: {
         title: 'You Found an ALPR | DeFlock'
       }

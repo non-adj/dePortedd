@@ -57,9 +57,9 @@ watch(() => theme.global.name.value, (newTheme) => {
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
+      <!-- <v-btn icon>
         <v-icon @click="toggleTheme">mdi-theme-light-dark</v-icon>
-      </v-btn>
+      </v-btn> -->
     </v-app-bar>
 
     <v-navigation-drawer

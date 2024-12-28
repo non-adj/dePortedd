@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1 class="text-center">Report an ALPR</h1>
+    <h1 class="text-center mt-4">Report a New ALPR</h1>
 
     <p>
       If you've spotted an ALPR in your area, you can help us track it by reporting it to OpenStreetMap, where we source our information. Here's how you can do it:
@@ -9,6 +9,7 @@
     <v-stepper-vertical color="rgb(18, 151, 195)" v-model="step" flat non-linear class="my-8" edit-icon="mdi-home">
       <template v-slot:default="{ step }: { step: any }">
         <v-stepper-vertical-item
+          class="transparent"
           :complete="step > 1"
           title="Create an OpenStreetMap Account"
           value="1"
@@ -20,6 +21,7 @@
         </v-stepper-vertical-item>
 
         <v-stepper-vertical-item
+          class="transparent"
           :complete="step > 2"
           title="Find the ALPR's Location"
           value="2"
@@ -31,6 +33,7 @@
         </v-stepper-vertical-item>
 
         <v-stepper-vertical-item
+          class="transparent"
           :complete="step > 3"
           title="Add the ALPR to OpenStreetMap"
           value="3"
@@ -39,7 +42,7 @@
           <p>
             Once you've found the location of the ALPR, click the <strong>Edit</strong> button in the top left corner of the page. This will open the OpenStreetMap editor, where you can add the ALPR to the map.
           </p>
-          <v-img max-width="450" src="/edit-map.png" class="my-8 mx-auto" />
+          <v-img max-width="450" src="/edit-map.png" class="my-8" />
           <p class="mt-16 mb-8">
             To add the ALPR, click the <strong>Point</strong> button in the top left corner of the editor, then click on the location of the ALPR on the map. In the popup that appears, paste one of the following sets of tags based on the brand of the ALPR:
           </p>
@@ -53,10 +56,11 @@
           <p class="mt-8">
             After copying the tags, paste them into the <strong>Tags</strong> field in the popup.
           </p>
-          <v-img max-width="450" class="my-8 mx-auto" src="/paste-tags.png" />
+          <v-img max-width="450" class="my-8" src="/paste-tags.png" />
         </v-stepper-vertical-item>
 
         <v-stepper-vertical-item
+          class="transparent"
           :complete="step > 4"
           title="Adjust the Direction"
           value="4"
@@ -69,6 +73,7 @@
         </v-stepper-vertical-item>
 
         <v-stepper-vertical-item
+          class="transparent"
           :complete="step > 5"
           title="Submit Your Changes"
           value="5"
@@ -90,6 +95,7 @@
         </v-stepper-vertical-item>
 
         <v-stepper-vertical-item
+          class="transparent"
           :complete="step > 6"
           title="Hang a Sign"
           value="6"
@@ -98,9 +104,28 @@
           <p>
             Download our <a href="/deflock-poster.pdf" target="_blank">ALPR sign</a> and hang it near the ALPR to help raise awareness about the device. Be sure to follow all local laws and regulations when hanging signs.
           </p>
+
+          <template v-slot:next>
+            <v-btn
+              color="primary"
+              disabled
+            >
+              Next
+            </v-btn>
+          </template>
         </v-stepper-vertical-item>
       </template>
     </v-stepper-vertical>
+
+    <h2 class="text-center mt-16">Edit an Existing ALPR</h2>
+    <p>
+      If you find an ALPR that's missing information and would like to update it, you can follow the same steps as above. Each ALPR on DeFlock has a Node ID that you can use to find it on OpenStreetMap.
+    </p>
+
+    <p class="mb-16">
+      Simply click on the ALPR with missing information, and find the Node ID (e.g. <code>node/1237489334</code>) at the bottom of the popup. In the OSM editor search field, paste the <i>numerical portion</i> of the Node ID to find the ALPR and make your changes.
+    </p>
+
   </v-container>
   <Footer />
 </template>
@@ -116,4 +141,8 @@ const step = ref(1);
 
 <style scoped>
 @import url('@/assets/typography.css');
+
+.transparent {
+  background-color: transparent !important;
+}
 </style>
