@@ -42,7 +42,7 @@
       
       <v-tooltip open-delay="500" text="OSM Node ID" location="bottom">
         <template #activator="{ props }">
-          <span style="cursor: default" v-bind="props">node/{{ alpr.id }}</span>
+          <span style="font-size: 0.9em; cursor: default" v-bind="props">node/{{ alpr.id }}</span>
         </template>
       </v-tooltip>
     </div>
