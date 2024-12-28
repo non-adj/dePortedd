@@ -158,6 +158,10 @@ function initializeMap() {
   } else {
     emit('update:bounds', map.getBounds());
   }
+
+  if (props.currentLocation) {
+    updateCurrentLocation();
+  }
 }
 
 function updateMarkers(newAlprs: ALPR[]): void {
