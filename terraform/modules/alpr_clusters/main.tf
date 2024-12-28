@@ -15,6 +15,11 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
 resource "aws_iam_policy" "lambda_s3_write_policy" {
   name        = "${var.module_name}_lambda_s3_write_policy"
   description = "Policy for Lambda to write to S3 bucket ${var.deflock_stats_bucket}"
@@ -28,7 +33,10 @@ resource "aws_iam_policy" "lambda_s3_write_policy" {
           "s3:PutObjectAcl"
         ]
         Effect   = "Allow"
-        Resource = "arn:aws:s3:::${var.deflock_stats_bucket}/${var.output_filename}"
+        Resource = [
+          "arn:aws:s3:::${var.deflock_cdn_bucket}/*",
+          "arn:aws:s3:::${var.deflock_stats_bucket}/*"
+        ] 
       }
     ]
   })
@@ -44,7 +52,13 @@ resource "aws_lambda_function" "overpass_lambda" {
   role             = aws_iam_role.lambda_role.arn
   package_type     = "Image"
   image_uri        = "${aws_ecr_repository.lambda_repository.repository_url}:latest"
-  timeout = 90
+  timeout = 180
+  memory_size = 512
+  environment {
+    variables = {
+      UPDATE_RATE_MINS = var.rate
+    }
+  }
 }
 
 resource "aws_cloudwatch_event_rule" "lambda_rule" {
@@ -69,4 +83,9 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_lambda" {
 
 resource "aws_ecr_repository" "lambda_repository" {
   name = "${var.module_name}-lambda"
+}
+
+resource "aws_cloudwatch_log_group" "lambda_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.overpass_lambda.function_name}"
+  retention_in_days = 14
 }
