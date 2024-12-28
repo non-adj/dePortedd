@@ -43,6 +43,11 @@ code {
   border-radius: 0.25rem;
   display: block;
   margin-top: 0.5rem;
+  overflow-x: scroll;
+}
+
+code {
+  white-space: nowrap;
 }
 
 .copy-button {

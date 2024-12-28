@@ -1,5 +1,5 @@
 <template>
-  <v-expansion-panels multiple>
+  <v-expansion-panels multiple :model-value :readonly="showAll">
     <v-expansion-panel>
       <v-expansion-panel-title class="font-weight-bold">
         ALPRs Do Not Reduce Crime
@@ -19,7 +19,7 @@
           What research does exist regarding the ability of ALPRs to reduce crime is inconclusive at best:
         </p>
 
-        <quoted-source source-url="https://example.com/study" attribution-text="Journal of Experimental Criminology">
+        <quoted-source source-url="https://link.springer.com/article/10.1007/s11292-011-9133-9" attribution-text="Journal of Experimental Criminology">
           Our findings indicate that, when small numbers of LPR patrols are used in crime hot spots in the way we have tested them here, they do not seem to generate either a general or offense-specific deterrent effect.
         </quoted-source>
 
@@ -156,6 +156,16 @@
 
 <script setup lang="ts">
 import QuotedSource from '@/components/QuotedSource.vue';
+import { computed } from 'vue';
+
+const props = defineProps({
+  showAll: {
+    type: Boolean,
+    default: false,
+  }
+});
+
+const modelValue = computed(() => props.showAll ? [0,1,2,3,4,5] : []);
 </script>
 
 <style scoped>

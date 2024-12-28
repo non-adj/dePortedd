@@ -1,23 +1,15 @@
 <template>
   <div class="map-container" @keyup="handleKeyUp">
-    <!-- <NewVisitor /> -->
-
-    <v-card class="map-notif" v-show="isLoadingALPRs && !showClusters">
-      <v-card-title><v-progress-circular indeterminate color="primary" /></v-card-title>
-    </v-card>
-
-    <!-- use-global-leaflet=false is a workaround for a bug in current version of vue-leaflet -->
-    <l-map
+    <leaflet-map
       v-if="center"
-      ref="map"
-      v-model:zoom="zoom"
       v-model:center="center"
-      :use-global-leaflet="false"
+      v-model:zoom="zoom"
+      :current-location="currentLocation"
       @update:bounds="updateBounds"
-      @ready="mapLoaded"
-      :options="{ zoomControl: false }"
+      :alprs
     >
-      <l-control position="topleft">
+      <!-- SEARCH -->
+      <template v-slot:topleft>
         <form @submit.prevent="onSearch">
           <v-text-field
             :rounded="xs || undefined"
@@ -40,26 +32,14 @@
             </template>
           </v-text-field>
         </form>
-      </l-control>
-      <!-- url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" -->
+      </template>
 
-      <l-tile-layer
-        :url="mapTileUrl"
-        layer-type="base"
-        name="OpenStreetMap"
-        attribution="&copy; <a target=&quot;_blank&quot; href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-      />
-
-      <l-control position="bottomright">
-        <v-btn @click="goToUserLocation" icon class="mt-2">
-          <v-icon x-large>mdi-crosshairs-gps</v-icon>
-        </v-btn>
-      </l-control>
-
-      <DFMarkerCluster v-if="showClusters" v-for="cluster in clusters" :key="cluster.id" :lat="cluster.lat" :lon="cluster.lon" />
-      <DFMapMarker v-else v-for="alpr in visibleALPRs" :key="alpr.id" :alpr :show-fov="zoom >= 16" />
-    </l-map>
-    <div class="loader" v-else>
+      <!-- CURRENT LOCATION -->
+      <template v-slot:bottomright>
+        <v-fab icon="mdi-crosshairs-gps" @click="goToUserLocation" />
+      </template>
+    </leaflet-map>
+    <div v-else class="loader">
       <span class="mb-4 text-grey">Loading Map</span>
       <v-progress-circular indeterminate color="primary" />
     </div>
@@ -68,22 +48,21 @@
 
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
-import { LMap, LTileLayer, LControl } from '@vue-leaflet/vue-leaflet';
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router'
 import type { Ref } from 'vue';
 import { BoundingBox } from '@/services/apiService';
-import type { Cluster } from '@/services/apiService';
-import { getALPRs, geocodeQuery, getClusters } from '@/services/apiService';
+import { geocodeQuery } from '@/services/apiService';
 import { useDisplay, useTheme } from 'vuetify';
-import DFMapMarker from '@/components/DFMapMarker.vue';
-import DFMarkerCluster from '@/components/DFMarkerCluster.vue';
-import NewVisitor from '@/components/NewVisitor.vue';
+import { useGlobalStore } from '@/stores/global';
+import { useTilesStore } from '@/stores/tiles';
 import type { ALPR } from '@/types';
+import L from 'leaflet';
+globalThis.L = L;
+import 'leaflet/dist/leaflet.css'
+import LeafletMap from '@/components/LeafletMap.vue';
 
 const DEFAULT_ZOOM = 12;
-const MIN_ZOOM_FOR_REFRESH = 4;
-const CLUSTER_ZOOM_THRESHOLD = 9;
 
 const theme = useTheme();
 const zoom: Ref<number> = ref(DEFAULT_ZOOM);
@@ -91,25 +70,18 @@ const center: Ref<any|null> = ref(null);
 const bounds: Ref<BoundingBox|null> = ref(null);
 const searchField: Ref<any|null> = ref(null);
 const searchQuery: Ref<string> = ref('');
+const tilesStore = useTilesStore();
+
+const { fetchVisibleTiles } = tilesStore;
+const alprs = computed(() => tilesStore.allNodes);
+
 const router = useRouter();
 const { xs } = useDisplay();
 
-const canRefreshMarkers = computed(() => zoom.value >= MIN_ZOOM_FOR_REFRESH);
-const mapTileUrl = computed(() =>
-  theme.global.name.value === 'dark' ?
-    'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png' :
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-);
+const globalStore = useGlobalStore();
 
-const alprs: Ref<ALPR[]> = ref([]);
-const clusters: Ref<Cluster[]> = ref([]);
-const bboxForLastRequest: Ref<BoundingBox|null> = ref(null);
-const showClusters = computed(() => zoom.value <= CLUSTER_ZOOM_THRESHOLD);
-const isLoadingALPRs = ref(false);
-
-const visibleALPRs = computed(() => {
-  return alprs.value.filter(alpr => bounds.value?.containsPoint(alpr.lat, alpr.lon));
-});
+const setCurrentLocation = globalStore.setCurrentLocation;
+const currentLocation = computed(() => globalStore.currentLocation);
 
 function handleKeyUp(event: KeyboardEvent) {
   if (event.key === '/' && searchField.value.value !== document.activeElement) {
@@ -137,38 +109,16 @@ function onSearch() {
 }
 
 function goToUserLocation() {
-  getUserLocation()
-    .then(location => {
-      center.value = { lat: location[0], lng: location[1] };
-      zoom.value = DEFAULT_ZOOM;
-    }).catch(error => {
+  setCurrentLocation()
+    .then((cl) => {
+      center.value = cl;
+      setTimeout(() => {
+        zoom.value = DEFAULT_ZOOM;
+      }, 10);
+    })
+    .catch(error => {
       console.debug('Error getting user location.', error);
     });
-}
-
-function getUserLocation(): Promise<[number, number]> {
-  return new Promise((resolve, reject) => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          resolve([position.coords.latitude, position.coords.longitude]);
-        },
-        (error) => {
-          reject(error);
-        },
-        {
-          timeout: 10000,
-          enableHighAccuracy: true,
-        }
-      );
-    } else {
-      reject(new Error('Geolocation is not supported by this browser.'));
-    }
-  });
-};
-
-function mapLoaded(map: any) {
-  updateBounds(map.getBounds());
 }
 
 function updateBounds(newBounds: any) {
@@ -181,11 +131,6 @@ function updateBounds(newBounds: any) {
     maxLng: newBounds.getEast(),
   });
   bounds.value = newBoundingBox;
-
-  if (bboxForLastRequest.value && newBoundingBox.isSubsetOf(bboxForLastRequest.value)) {
-    console.debug('new bounds are a subset of the last request, skipping');
-    return;
-  }
 
   updateMarkers();
 }
@@ -200,46 +145,16 @@ function updateURL() {
   });
 }
 
-watch(zoom, (newZoom, oldZoom) => {
-
-  if (newZoom <= CLUSTER_ZOOM_THRESHOLD && oldZoom > CLUSTER_ZOOM_THRESHOLD) {
-    bboxForLastRequest.value = bounds.value; 
-  } else if (newZoom < CLUSTER_ZOOM_THRESHOLD) {
-    alprs.value = [];
-    bboxForLastRequest.value = null;
-  }
-});
-
 function updateMarkers() {
   // Fetch ALPRs in the current view
   if (!bounds.value) {
     return;
   }
 
-  if (showClusters.value || !canRefreshMarkers.value) {
-    return;
-  }
-
-  isLoadingALPRs.value = true;
-  getALPRs(bounds.value)
-    .then((result: any) => {
-      // merge incoming with existing, so that moving the map doesn't remove markers
-      const existingIds = new Set(alprs.value.map(alpr => alpr.id));
-      const newAlprs = result.elements.filter((alpr: any) => !existingIds.has(alpr.id));
-      alprs.value = [...alprs.value, ...newAlprs];
-      bboxForLastRequest.value = bounds.value;
-    })
-    .finally(() => {
-      isLoadingALPRs.value = false;
-    });
+  fetchVisibleTiles(bounds.value);
 }
 
 onMounted(() => {
-  getClusters()
-    .then((result: any) => {
-      clusters.value = result.clusters;
-    });
-
   const hash = router.currentRoute.value.hash;
   if (hash) {
     const parts = hash.split('/');
@@ -253,7 +168,7 @@ onMounted(() => {
     }
   } else {
     // show US map by default
-    zoom.value = 4;
+    zoom.value = 5;
     center.value = { lat: 39.8283, lng: -98.5795 };
   }
 });
@@ -270,13 +185,14 @@ onMounted(() => {
 
 .map-container {
   width: 100%;
-  height: calc(100dvh - 64px);
   overflow: auto;
 }
 
 .map-search {
   width: calc(100vw - 22px);
-  max-width: 400px;
+  @media (min-width: 600px) {
+    max-width: 320px;
+  }
   z-index: 1000;
 }
 

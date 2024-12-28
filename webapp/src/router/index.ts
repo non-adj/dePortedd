@@ -83,17 +83,25 @@ const router = createRouter({
       }
     },
     {
-      path: '/legal',
-      name: 'legal',
-      component: () => import('../views/LegalView.vue'),
+      path: '/terms',
+      name: 'terms',
+      component: () => import('../views/TermsOfService.vue'),
       meta: {
-        title: 'Legal | DeFlock'
+        title: 'Terms of Service | DeFlock'
+      }
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('../views/PrivacyPolicy.vue'),
+      meta: {
+        title: 'Privacy Policy | DeFlock'
       }
     },
     {
       path: '/qr',
       name: 'qr-landing',
-      component: () => import('../views/QRLandingView.vue'),
+      component: () => import('../views/Landing.vue'),
       meta: {
         title: 'You Found an ALPR | DeFlock'
       }

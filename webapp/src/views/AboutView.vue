@@ -1,5 +1,5 @@
 <template>
-  <v-container max-width="1000">
+  <v-container max-width="1000" class="mb-16">
     <h2>About Us</h2>
     <p>
       Welcome to DeFlock, your go-to resource for understanding and addressing the growing presence of Automated License Plate Readers (ALPRs) in our communities.
@@ -48,22 +48,13 @@
         Share our site with your friends, family, and social networks to help raise awareness about the dangers of ALPRs.
       </p>
     </div>
-
-    <v-footer class="my-6">
-      <v-col cols="7" class="text-grey">
-        &copy; {{ thisYear }} DeFlock. All rights reserved.
-      </v-col>
-      <v-spacer></v-spacer>
-      <v-col cols="5">
-        <p><router-link class="text-grey" to="/legal">Legal</router-link></p>
-        <p><router-link class="text-grey" to="/contact">Contact Us</router-link></p>
-      </v-col>
-    </v-footer>
   </v-container>
+
+  <Footer />
 </template>
 
 <script setup lang="ts">
-const thisYear = new Date().getFullYear();
+import Footer from '@/components/layout/Footer.vue';
 </script>
 
 <style scoped>

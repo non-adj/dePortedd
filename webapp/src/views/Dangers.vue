@@ -1,5 +1,5 @@
 <template>
-  <v-container class="info-section">
+  <v-container class="info-section mb-16">
     <!-- Hero Section -->
     <v-row justify="center" class="hero-section-harms text-center mb-4">
       <v-col cols="12" md="8">
@@ -21,12 +21,15 @@
       </v-col>
     </v-row>
     
-    <dangers />
+    <dangers showAll />
   </v-container>
+
+  <Footer />
 </template>
 
 <script setup lang="ts">
 import Dangers from '@/components/Dangers.vue';
+import Footer from '@/components/layout/Footer.vue';
 </script>
 
 <style scoped>
@@ -56,9 +59,5 @@ import Dangers from '@/components/Dangers.vue';
 
 p {
   margin-bottom: 16px;
-}
-
-.info-section {
-  background: var(--df-page-background-color);
 }
 </style>
