@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, h, createApp, watch, ref, type PropType, type Ref } from 'vue';
-import L, { type LatLngExpression, type FeatureGroup, type MarkerClusterGroup, type Marker, type CircleMarker } from 'leaflet';
+import L, { type LatLngTuple, type FeatureGroup, type MarkerClusterGroup, type Marker, type CircleMarker } from 'leaflet';
 import type { ALPR } from '@/types';
 import DFMapPopup from './DFMapPopup.vue';
 import { createVuetify } from 'vuetify'
@@ -29,7 +29,7 @@ const isInternalUpdate = ref(false);
 
 const props = defineProps({
   center: {
-    type: Object,
+    type: Object as PropType<LatLngTuple>,
     required: true,
   },
   zoom: {
