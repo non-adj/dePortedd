@@ -17,43 +17,20 @@
       ALPRs invade your privacy and violate your civil liberties. Here's how:
     </p>
 
-    <dangers />
+    <Dangers />
 
-    <h2>What They Look Like</h2>
+    <h2 id="photos">Photos by Vendor</h2>
 
-    <v-alert
-      density="compact"
-      class="mb-6 text-center"
-      variant="tonal"
-      color="rgb(18, 151, 195)"
-    >
-      <p>
-        <v-icon v-if="isMobile" size="x-large">mdi-gesture-tap</v-icon>
-        <v-icon v-else size="x-large">mdi-button-cursor</v-icon>
-      </p>
-      <p>
-        <b>{{ isMobile ? 'Tap' : 'Hover over' }}</b> an image below to identify the make.
-        <span v-if="!isMobile"><b>Click</b> an image to enlarge.</span>
-      </p>
-    </v-alert>
-
-    <v-row>
-      <v-col v-for="image in images" cols="12" sm="6" md="4">
-        <v-hover>
-          <template v-slot:default="{ isHovering, props }">
-            <v-img style="cursor: pointer;" @click="openFullScreenImage(image)" v-bind="props" cover :aspect-ratio="3/2" :src="image.url">
-              <transition name="fade">
-                <div class="scrim" v-show="isHovering">
-                  <span class="scrim-text">{{ image.brand }}</span>
-                </div>
-              </transition>
-            </v-img>
-          </template>
-        </v-hover>
+    <v-row v-for="vendor in vendors" :key="vendor.vendor" class="mb-4">
+      <v-col cols="12">
+        <h3 class="text-center">{{ vendor.vendor }}</h3>
+      </v-col>
+      <v-col v-for="url in vendor.imageUrls" cols="12" sm="6" md="4">
+        <v-img @click="openImageInNewTab(url)" style="cursor: pointer;" cover :aspect-ratio="3/2" :src="url" />
       </v-col>
     </v-row>
 
-    <h2>Common Brands of ALPRs</h2>
+    <h2>Common Vendors</h2>
     <ul class="serif mb-16">
       <li>
         <a href="https://www.flocksafety.com/devices/lpr" target="_blank">Flock Safety</a> - A leading provider of ALPR technology, known for their solar-powered cameras. This is the most common brand of ALPR in the US. Flock Safety cameras are used by police departments, HOAs, as well as private businesses such as hardware stores and hotels. One of the most appealing features of Flock cameras is the data sharing network, which allows law enforcement agencies to access data from other Flock cameras in the area. This means that even if your local police department doesn't have a Flock camera, they can still access data from other Flock cameras in the area.
@@ -69,54 +46,52 @@
       </li>
     </ul>
   </v-container>
-
-  <v-dialog class="full-screen-image" v-model="showFullScreenImage">
-    <v-card style="overflow: hidden;">
-      <v-btn size="x-large" class="image-close-btn" flat icon @click="showFullScreenImage = false" color="transparent">
-        <v-icon :color="fullScreenImage.useDarkCloseButton ? 'black' : 'white'">mdi-close</v-icon>
-      </v-btn>
-      <v-img v-if="fullScreenImage" cover :aspect-ratio="3/2" :src="fullScreenImage.url" />
-    </v-card>
-    
-  </v-dialog>
-
   <Footer />
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
 import { ref, type Ref } from 'vue';
 import { useDisplay } from 'vuetify';
 import Dangers from '@/components/Dangers.vue';
 import Footer from '@/components/layout/Footer.vue';
-const route = useRoute();
 const { xs: isMobile } = useDisplay();
-
-const flockImageCount = 6;
-const vigilantImageCount = 3;
 
 const showFullScreenImage = ref(false);
 const fullScreenImage: Ref<any|undefined> = ref(undefined);
 
-function openFullScreenImage(image: object) {
-  if (isMobile.value)
-    return;
-  fullScreenImage.value = image;
-  showFullScreenImage.value = true;
+function openImageInNewTab(url: string, newTab: boolean = true) {
+  window.open(url, newTab ? '_blank' : '_self');
 }
 
-const images = [
-  ...Array.from({ length: flockImageCount }, (_, i) => ({
-    url: `/flock-${i + 1}.jpg`,
-    brand: 'flock',
-    useDarkCloseButton: false,
-  })),
-  ...Array.from({ length: vigilantImageCount }, (_, i) => ({
-    url: `/vigilant-${i + 1}.jpg`,
-    brand: 'motorola',
-    useDarkCloseButton: true,
-  }))
-];
+const vendors = [
+  {
+    vendor: 'Flock',
+    count: 4,
+    urlScheme: '/alprs/flock-{index}.jpg',
+  },
+  {
+    vendor: 'Motorola/Vigilant',
+    count: 4,
+    urlScheme: '/alprs/motorola-{index}.jpg',
+  },
+  {
+    vendor: 'Leonardo/ELSAG',
+    count: 4,
+    urlScheme: '/alprs/elsag-{index}.jpg',
+  },
+  {
+    vendor: 'Neology',
+    count: 2,
+    urlScheme: '/alprs/neology-{index}.jpg',
+  },
+].reduce((acc: any, vendor: any) => {
+  const imageUrls = Array.from({ length: vendor.count }, (_, index) => 
+    vendor.urlScheme.replace('{index}', String(index + 1)),
+  );
+
+  acc.push({ vendor: vendor.vendor, imageUrls });
+  return acc;
+}, []);
 </script>
 
 <style scoped>

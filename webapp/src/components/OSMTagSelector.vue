@@ -1,6 +1,6 @@
 <template>
   <v-row class="align-center justify-center my-4">
-      <v-col cols="12" sm="6">
+      <v-col cols="12" sm="6" class="text-center">
         <v-select
           color="rgb(18, 151, 195)"
           prepend-inner-icon="mdi-factory"
@@ -22,6 +22,7 @@
           max-width="100%"
           class="my-4"
         ></v-img>
+        <v-btn to="/what-is-an-alpr#photos" color="grey-darken-2" variant="text" size="small"><v-icon start>mdi-image-multiple</v-icon> See All Photos</v-btn>
       </v-col>
     
       <v-col cols="12" sm="6">

@@ -64,8 +64,10 @@ const props = defineProps({
 
 const isFaceRecognition = computed(() => props.alpr.tags.brand === 'Avigilon');
 
-const cardinalDirection = computed(() => 
-  props.alpr.tags.direction === undefined ? 'Unknown Direction' : degreesToCardinal(parseInt(props.alpr.tags.direction))
+const cardinalDirection = computed(() => {
+  const direction = props.alpr.tags.direction || props.alpr.tags["camera:direction"];
+  direction === undefined ? 'Unknown Direction' : degreesToCardinal(parseInt(direction))
+}
 );
 
 function degreesToCardinal(degrees: number): string {

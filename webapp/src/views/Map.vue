@@ -1,4 +1,5 @@
 <template>
+  <NewVisitor />
   <div class="map-container" @keyup="handleKeyUp">
     <leaflet-map
       v-if="center"
@@ -56,15 +57,14 @@ import { geocodeQuery } from '@/services/apiService';
 import { useDisplay, useTheme } from 'vuetify';
 import { useGlobalStore } from '@/stores/global';
 import { useTilesStore } from '@/stores/tiles';
-import type { ALPR } from '@/types';
 import L from 'leaflet';
 globalThis.L = L;
 import 'leaflet/dist/leaflet.css'
 import LeafletMap from '@/components/LeafletMap.vue';
+import NewVisitor from '@/components/NewVisitor.vue';
 
 const DEFAULT_ZOOM = 12;
 
-const theme = useTheme();
 const zoom: Ref<number> = ref(DEFAULT_ZOOM);
 const center: Ref<any|null> = ref(null);
 const bounds: Ref<BoundingBox|null> = ref(null);
