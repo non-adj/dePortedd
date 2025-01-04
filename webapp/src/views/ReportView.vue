@@ -80,7 +80,7 @@
           editable
         >
           <p>
-            Once you've added the ALPR to the map, click the <strong>Save</strong> button in the top left corner of the editor. You'll be asked to provide a brief description of your changes. Once you've submitted your changes, the ALPR will be added to OpenStreetMap.
+            Once you've added the ALPR to the map, click the <strong>Save</strong> button in the top right corner of the editor. You'll be asked to provide a brief description of your changes. Once you've submitted your changes, the ALPR will be added to OpenStreetMap.
           </p>
           <v-alert
             variant="tonal"
