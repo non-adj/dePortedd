@@ -7,7 +7,6 @@ import os
 import time
 import numpy as np
 import requests
-from sklearn.cluster import DBSCAN
 from typing import Tuple
 import re
 from concurrent.futures import ThreadPoolExecutor
@@ -80,7 +79,7 @@ def lambda_handler(event, context):
     print("Uploading data to S3...")
 
     s3 = boto3.client("s3")
-    bucket_new = "cdn.deflock.me"
+    bucket_new = os.getenv("OUTPUT_BUCKET", "cdn.deflock.me")
 
     # TODO: handle outdated index files when their referenced files are deleted
     epoch = int(time.time())
