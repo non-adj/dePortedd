@@ -12,7 +12,6 @@ module "alpr_counts" {
 module "alpr_clusters" {
   module_name = "alpr_clusters"
   source = "./modules/alpr_clusters"
-  deflock_stats_bucket = var.deflock_stats_bucket
   deflock_cdn_bucket = var.deflock_cdn_bucket
-  rate = "rate(1 day)"
+  rate = "rate(1 hour)"
 }

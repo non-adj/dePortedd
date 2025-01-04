@@ -89,7 +89,7 @@
             title="How Long Will It Take?"
           >
             <p>
-              We pull data from OpenStreetMap <i>daily</i>, so it may take up to 24 hours for your changes to appear on this site. Rest assured that your changes will be reflected here soon. As we continue to scale, we hope to reduce this delay.
+              We pull data from OpenStreetMap <i>hourly</i>, so it may take up to an hour for your changes to appear on this site. Rest assured that your changes will be reflected here soon. As we continue to scale, we hope to reduce this delay.
             </p>
           </v-alert>
         </v-stepper-vertical-item>

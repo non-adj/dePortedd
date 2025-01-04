@@ -22,7 +22,7 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
 
 resource "aws_iam_policy" "lambda_s3_write_policy" {
   name        = "${var.module_name}_lambda_s3_write_policy"
-  description = "Policy for Lambda to write to S3 bucket ${var.deflock_stats_bucket}"
+  description = "Policy for Lambda to write to S3 bucket ${var.deflock_cdn_bucket}"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -34,8 +34,7 @@ resource "aws_iam_policy" "lambda_s3_write_policy" {
         ]
         Effect   = "Allow"
         Resource = [
-          "arn:aws:s3:::${var.deflock_cdn_bucket}/*",
-          "arn:aws:s3:::${var.deflock_stats_bucket}/*"
+          "arn:aws:s3:::${var.deflock_cdn_bucket}/*"
         ] 
       }
     ]
@@ -57,6 +56,7 @@ resource "aws_lambda_function" "overpass_lambda" {
   environment {
     variables = {
       UPDATE_RATE_MINS = var.rate
+      OUTPUT_BUCKET = var.deflock_cdn_bucket
     }
   }
 }
