@@ -22,7 +22,7 @@
             {{ alpr.tags.brand }}
           </span>
           <span v-else>
-            Unknown Manufacturer
+            Unspecified Manufacturer
           </span>
         </b>
       </v-list-item>
@@ -32,19 +32,14 @@
             {{ alpr.tags.operator }}
           </span>
           <span v-else>
-            Unknown Operator
+            Unspecified Operator
           </span>
         </b>
       </v-list-item>
     </v-list>
 
-    <div class="text-center text-grey-darken-1">
-      
-      <v-tooltip open-delay="500" text="OSM Node ID" location="bottom">
-        <template #activator="{ props }">
-          <span style="font-size: 0.9em; cursor: default" v-bind="props">node/{{ alpr.id }}</span>
-        </template>
-      </v-tooltip>
+    <div class="text-center">
+      <v-btn target="_blank" size="x-small" :href="osmNodeLink(props.alpr.id)" variant="text" color="grey-darken-1"><v-icon start>mdi-open-in-new</v-icon>View on OSM</v-btn>
     </div>
   </v-sheet>
 </template>
@@ -53,7 +48,7 @@
 import { defineProps, computed } from 'vue';
 import type { PropType } from 'vue';
 import type { ALPR } from '@/types';
-import { VIcon, VList, VSheet, VListItem, VTooltip } from 'vuetify/components';
+import { VIcon, VList, VSheet, VListItem, VBtn } from 'vuetify/components';
 
 const props = defineProps({
   alpr: {
@@ -66,12 +61,16 @@ const isFaceRecognition = computed(() => props.alpr.tags.brand === 'Avigilon');
 
 const cardinalDirection = computed(() => {
   const direction = props.alpr.tags.direction || props.alpr.tags["camera:direction"];
-  direction === undefined ? 'Unknown Direction' : degreesToCardinal(parseInt(direction))
+  return direction === undefined ? 'Unspecified Direction' : degreesToCardinal(parseInt(direction))
 }
 );
 
 function degreesToCardinal(degrees: number): string {
   const cardinals = ['North', 'Northeast', 'East', 'Southeast', 'South', 'Southwest', 'West', 'Northwest'];
   return 'Faces ' + cardinals[Math.round(degrees / 45) % 8];
+}
+
+function osmNodeLink(id: string): string {
+  return `https://www.openstreetmap.org/node/${id}`;
 }
 </script>

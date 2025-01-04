@@ -117,15 +117,10 @@
       </template>
     </v-stepper-vertical>
 
-    <h2 class="text-center mt-16">Edit an Existing ALPR</h2>
-    <p>
-      If you find an ALPR that's missing information and would like to update it, you can follow the same steps as above. Each ALPR on DeFlock has a Node ID that you can use to find it on OpenStreetMap.
-    </p>
-
+    <h2 class="text-center">Edit an Existing ALPR</h2>
     <p class="mb-16">
-      Simply click on the ALPR with missing information, and find the Node ID (e.g. <code>node/1237489334</code>) at the bottom of the popup. In the OSM editor search field, paste the <i>numerical portion</i> of the Node ID to find the ALPR and make your changes.
+      If you find an ALPR that's missing information and would like to update it, you can click the <b>View on OSM</b> button to edit it in the OpenStreetMap editor.
     </p>
-
   </v-container>
   <Footer />
 </template>

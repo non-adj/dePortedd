@@ -12,11 +12,9 @@
 
       <v-list class="text-center">
         <v-list-item class="my-4">
-          <v-list-item-content>
-            <v-icon size="x-large" color="primary" class="mb-2">mdi-progress-pencil</v-icon>
-            <v-list-item-title class="font-weight-bold">The map is incomplete!</v-list-item-title>
-            <v-list-item-subtitle>The ALPRs displayed here are a starting point, and new locations are constantly being added.</v-list-item-subtitle>
-          </v-list-item-content>
+          <v-icon size="x-large" color="primary" class="mb-2">mdi-progress-pencil</v-icon>
+          <v-list-item-title class="font-weight-bold">The map is incomplete!</v-list-item-title>
+          <v-list-item-subtitle>The ALPRs displayed here are a starting point, and new locations are constantly being added.</v-list-item-subtitle>
         </v-list-item>
       </v-list>
 
