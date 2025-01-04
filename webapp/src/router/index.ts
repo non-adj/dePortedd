@@ -115,14 +115,6 @@ const router = createRouter({
       }
     },
     {
-      path: '/dangers',
-      name: 'dangers',
-      component: () => import('../views/Dangers.vue'),
-      meta: {
-        title: 'ALPR Dangers | DeFlock'
-      }
-    },
-    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('../views/404.vue'),
