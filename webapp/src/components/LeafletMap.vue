@@ -56,7 +56,7 @@ let currentLocationLayer: FeatureGroup;
 
 // Marker Creation Utilities
 function createSVGMarker(alpr: ALPR): string {
-  const orientationDegrees = alpr.tags.direction;
+  const orientationDegrees = alpr.tags.direction || alpr.tags['camera:direction'];
   const fovPath = `
       <path class="someSVGpath" d="M215.248,221.461L99.696,43.732C144.935,16.031 198.536,0 256,0C313.464,0 367.065,16.031 412.304,43.732L296.752,221.461C287.138,209.593 272.448,202.001 256,202.001C239.552,202.001 224.862,209.593 215.248,221.461Z" style="fill:rgb(87,87,87);fill-opacity:0.46;"/>
       <path class="someSVGpath" d="M215.248,221.461L99.696,43.732C144.935,16.031 198.536,0 256,0C313.464,0 367.065,16.031 412.304,43.732L296.752,221.461C287.138,209.593 272.448,202.001 256,202.001C239.552,202.001 224.862,209.593 215.248,221.461ZM217.92,200.242C228.694,192.652 241.831,188.195 256,188.195C270.169,188.195 283.306,192.652 294.08,200.242C294.08,200.242 392.803,48.4 392.803,48.4C352.363,26.364 305.694,13.806 256,13.806C206.306,13.806 159.637,26.364 119.197,48.4L217.92,200.242Z" style="fill:rgb(137,135,135);"/>
@@ -73,7 +73,7 @@ function createSVGMarker(alpr: ALPR): string {
 }
 
 function createMarker(alpr: ALPR): Marker | CircleMarker {
-  if (hasPlottableOrientation(alpr.tags.direction)) {
+  if (hasPlottableOrientation(alpr.tags.direction || alpr.tags['camera:direction'])) {
     const icon = L.divIcon({
       className: 'leaflet-data-marker',
       html: createSVGMarker(alpr),

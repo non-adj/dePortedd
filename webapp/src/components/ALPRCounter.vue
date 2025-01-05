@@ -12,6 +12,13 @@ import { useDisplay } from 'vuetify'
 import { getALPRCounts } from '@/services/apiService';
 import { CountUp } from 'countup.js';
 
+const props = defineProps({
+  delayMs: {
+    type: Number,
+    default: 200,
+  }
+});
+
 const counterEl: Ref<HTMLElement|null> = ref(null);
 const countupOptions = {
   useEasing: true,
@@ -33,13 +40,17 @@ const counts: Ref<Counts> = ref({
 const showFinalAnimation = ref(false);
 const { xs: isMobile } = useDisplay();
 
+let timeOfMount: number|undefined = undefined;
+
 onMounted(() => {
-  getALPRCounts().then((response) => {
-    counts.value = response;
+  timeOfMount = new Date().getTime();
+  getALPRCounts().then((countResponse) => {
+    counts.value = countResponse;
+    countUp(countResponse);
   });
 });
 
-watch(counts, (newCounts: Counts) => {
+function countUp(newCounts: Counts) {
   if (!newCounts.worldwide) return;
   if (!counterEl.value) {
     console.error('Counter element not found');
@@ -48,14 +59,23 @@ watch(counts, (newCounts: Counts) => {
 
   if (!counter) {
     counter = new CountUp(counterEl.value, newCounts.worldwide, countupOptions);
-    setTimeout(() => {
-      counter?.start();
-    }, 500);
+
+    if (timeOfMount) {
+      const timeSinceMount = new Date().getTime() - timeOfMount;
+      if (timeSinceMount < props.delayMs) {
+        setTimeout(() => {
+          counter?.start();
+        }, props.delayMs - timeSinceMount);
+      } else {
+        counter.start();
+      }
+    }
+
     setTimeout(() => {
       showFinalAnimation.value = true;
-    }, 3000);
+    }, 2500);
   }
-});
+}
 </script>
 
 <style scoped>

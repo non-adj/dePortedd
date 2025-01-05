@@ -32,6 +32,10 @@ p {
   font-family: "PT Serif", serif;
 }
 
+.sans-serif {
+  font-family: unset !important;
+}
+
 /* Prevent Scrolling Horizontally */
 html, body {
   overflow-x: hidden;
