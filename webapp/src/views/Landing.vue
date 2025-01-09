@@ -11,7 +11,7 @@
         <v-container class="featured-on-section my-8">
           <h4 class="mb-4" style="opacity: 0.8">Featured On</h4>
           <v-row justify="center" align-items="center">
-            <v-card flat v-for="site in featuredOn" class="mx-4" :width="site.wide ? 200 : 100" height="50" style="background: rgba(0,0,0,0)">
+            <v-card v-for="site in featuredOn" flat target="_blank" :href="site.url" class="mx-4" :width="site.wide ? 200 : 100" height="50" style="background: rgba(0,0,0,0)">
               <v-img contain :src="site.logo" :alt="site.name" class="featured-logo" style="display: flex; align-items: center; height: 100%;" />
             </v-card>
           </v-row>
@@ -51,7 +51,7 @@
       Recent security research has revealed that anyone can access live data from Motorola ALPRs by simply visiting a URL. This data includes <b>license plate numbers, make, model, color, and timestamps</b> as well as <b>still images</b> and a <b>live video feed</b>.
     </p>
     <p class="mt-2">
-      Watch Matt Brown's <a target="_blank" href="https://youtu.be/0dUnY1641WM">YouTube video</a> on the topic or <a target="_blank" href="https://github.com/frillweeman/alprleaks">run the script yourself</a> to see how dangerous this vulnerability is.
+      <a target="_blank" href="https://www.404media.co/researcher-turns-insecure-license-plate-cameras-into-open-source-surveillance-tool/">Read the article</a> on the topic or <a target="_blank" href="https://github.com/frillweeman/alprleaks">run the script yourself</a> to see how dangerous this vulnerability is.
     </p>
     </v-alert>
     

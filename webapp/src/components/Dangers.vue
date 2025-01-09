@@ -40,7 +40,7 @@
 
         <ul>
           <li>
-            In January 2025, Motorola Solutions' ALPR system was <a href="https://youtu.be/0dUnY1641WM" target="_blank">found to have a critical security flaw</a> that allowed anyone to access live data from their cameras. Data includes <b>license plate numbers, make, model, color, and timestamps</b>. A <b>live feed</b> of both cameras (color and infrared) was also available to stream using a web browser.
+            In January 2025, Motorola Solutions' ALPR system was <a href="https://www.404media.co/researcher-turns-insecure-license-plate-cameras-into-open-source-surveillance-tool/" target="_blank">found to have a critical security flaw</a> that allowed anyone to access live data from their cameras. Data includes <b>license plate numbers, make, model, color, and timestamps</b>. A <b>live feed</b> of both cameras (color and infrared) was also available to stream using a web browser.
           </li>
         </ul>
       </v-expansion-panel-text>
