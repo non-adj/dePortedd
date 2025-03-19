@@ -2,39 +2,50 @@
   <v-sheet min-width="240">
     <v-list density="compact">
       <v-list-item v-if="isFaceRecognition">
-        <v-icon start>mdi-face-recognition</v-icon> <b>Face Recognition</b>
+        <div class="d-flex align-center">
+          <v-icon start>mdi-face-recognition</v-icon> <b>Face Recognition</b>
+        </div>
       </v-list-item>
       <v-list-item>
-        <v-icon start>mdi-cctv</v-icon> <b>License Plate Reader</b>
+        <div class="d-flex align-center">
+          <v-icon start>mdi-cctv</v-icon> <b>License Plate Reader</b>
+        </div>
       </v-list-item>
       <v-list-item v-if="isFaceRecognition">
         <v-icon start>mdi-adjust</v-icon> <b>Omnidirectional</b>
       </v-list-item>
       <v-list-item v-else>
-        <v-icon start>mdi-compass-outline</v-icon> <b>{{ cardinalDirection }}</b>
+        <div class="d-flex align-center">
+          <v-icon start>mdi-compass-outline</v-icon> <b>{{ cardinalDirection }}</b>
+        </div>
       </v-list-item>
       <v-list-item>
-        <v-icon start>mdi-domain</v-icon> <b>
-          <span v-if="alpr.tags.manufacturer">
-            {{ alpr.tags.manufacturer }}
-          </span>
-          <span v-else-if="alpr.tags.brand">
-            {{ alpr.tags.brand }}
-          </span>
-          <span v-else>
-            Unspecified Manufacturer
-          </span>
-        </b>
+        <div class="d-flex align-center">
+          <v-icon start>mdi-domain</v-icon> <b>
+            <span v-if="alpr.tags.manufacturer">
+              {{ alpr.tags.manufacturer }}
+            </span>
+            <span v-else-if="alpr.tags.brand">
+              {{ alpr.tags.brand }}
+            </span>
+            <span v-else>
+              Unspecified Manufacturer
+            </span>
+          </b>
+        </div>
       </v-list-item>
       <v-list-item>
-        <v-icon start>mdi-account-tie</v-icon> <b>
-          <span v-if="alpr.tags.operator">
-            {{ alpr.tags.operator }}
-          </span>
-          <span v-else>
-            Unspecified Operator
-          </span>
-        </b>
+        <div class="d-flex align-center">
+          <v-icon start>mdi-account-tie</v-icon>
+          <b>
+            <span v-if="alpr.tags.operator">
+              {{ alpr.tags.operator }}
+            </span>
+            <span v-else>
+              Unspecified Operator
+            </span>
+          </b>
+        </div>
       </v-list-item>
     </v-list>
 
@@ -61,12 +72,18 @@ const isFaceRecognition = computed(() => props.alpr.tags.brand === 'Avigilon');
 
 const cardinalDirection = computed(() => {
   const direction = props.alpr.tags.direction || props.alpr.tags["camera:direction"];
-  return direction === undefined ? 'Unspecified Direction' : degreesToCardinal(parseInt(direction))
+  if (direction === undefined) {
+    return 'Unspecified Direction';
+  } else if (direction.includes(';')) {
+    return 'Faces Multiple Directions';
+  } else {
+    return /^\d+$/.test(direction) ? degreesToCardinal(parseInt(direction)) : direction;
+  }
 }
 );
 
 function degreesToCardinal(degrees: number): string {
-  const cardinals = ['North', 'Northeast', 'East', 'Southeast', 'South', 'Southwest', 'West', 'Northwest'];
+  const cardinals = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NE'];
   return 'Faces ' + cardinals[Math.round(degrees / 45) % 8];
 }
 

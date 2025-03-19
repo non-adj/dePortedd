@@ -58,7 +58,7 @@ let currentLocationLayer: FeatureGroup;
 function createSVGMarkers(alpr: ALPR): string {
   const orientationValues = (alpr.tags.direction || alpr.tags['camera:direction'] || '')
     .split(';')
-    .map(val => val.trim());
+    .map(val => /^\d+$/.test(val) ? parseInt(val) : cardinalToDegrees(val.trim()));
 
   const fovPath = `
       <path class="someSVGpath" d="M215.248,221.461L99.696,43.732C144.935,16.031 198.536,0 256,0C313.464,0 367.065,16.031 412.304,43.732L296.752,221.461C287.138,209.593 272.448,202.001 256,202.001C239.552,202.001 224.862,209.593 215.248,221.461Z" style="fill:rgb(87,87,87);fill-opacity:0.46;"/>
@@ -78,6 +78,20 @@ function createSVGMarkers(alpr: ALPR): string {
         </g>
     </svg>
     `;
+}
+
+function cardinalToDegrees(cardinal: string): number {
+  const cardinalMap: Record<string, number> = {
+    N: 0,
+    NE: 45,
+    E: 90,
+    SE: 135,
+    S: 180,
+    SW: 225,
+    W: 270,
+    NW: 315,
+  };
+  return cardinalMap[cardinal] ?? cardinal;
 }
 
 function createMarker(alpr: ALPR): Marker | CircleMarker {
