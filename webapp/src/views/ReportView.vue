@@ -52,7 +52,7 @@
           <OSMTagSelector />
 
           <v-divider class="mb-4 mt-8" />
-          
+
           <p class="mt-8">
             After copying the tags, paste them into the <strong>Tags</strong> field in the popup.
           </p>
@@ -73,6 +73,15 @@
           />
           <p>
             If you know the direction that the ALPR is facing, you can use the up and down arrows to set the direction it faces.
+          </p>
+
+          <v-img
+            max-width="450"
+            class="my-8"
+            src="/multi-directional-marker.png"
+          />
+          <p>
+              To report two cameras that are on the same pole, separate directions with a semi-colon (<code>;</code>).
           </p>
         </v-stepper-vertical-item>
 

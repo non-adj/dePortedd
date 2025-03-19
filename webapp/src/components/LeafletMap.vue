@@ -55,19 +55,27 @@ let clusterLayer: MarkerClusterGroup;
 let currentLocationLayer: FeatureGroup;
 
 // Marker Creation Utilities
-function createSVGMarker(alpr: ALPR): string {
-  const orientationDegrees = alpr.tags.direction || alpr.tags['camera:direction'];
+function createSVGMarkers(alpr: ALPR): string {
+  const orientationValues = (alpr.tags.direction || alpr.tags['camera:direction'] || '')
+    .split(';')
+    .map(val => val.trim());
+
   const fovPath = `
       <path class="someSVGpath" d="M215.248,221.461L99.696,43.732C144.935,16.031 198.536,0 256,0C313.464,0 367.065,16.031 412.304,43.732L296.752,221.461C287.138,209.593 272.448,202.001 256,202.001C239.552,202.001 224.862,209.593 215.248,221.461Z" style="fill:rgb(87,87,87);fill-opacity:0.46;"/>
       <path class="someSVGpath" d="M215.248,221.461L99.696,43.732C144.935,16.031 198.536,0 256,0C313.464,0 367.065,16.031 412.304,43.732L296.752,221.461C287.138,209.593 272.448,202.001 256,202.001C239.552,202.001 224.862,209.593 215.248,221.461ZM217.92,200.242C228.694,192.652 241.831,188.195 256,188.195C270.169,188.195 283.306,192.652 294.08,200.242C294.08,200.242 392.803,48.4 392.803,48.4C352.363,26.364 305.694,13.806 256,13.806C206.306,13.806 159.637,26.364 119.197,48.4L217.92,200.242Z" style="fill:rgb(137,135,135);"/>
     `;
-  return `
-    <svg style="transform:rotate(${orientationDegrees}deg)" class="svgMarker" width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-      ${orientationDegrees ? fovPath : ''}
-      <g transform="matrix(0.906623,0,0,0.906623,23.9045,22.3271)">
-        <circle class="someSVGpath" cx="256" cy="256" r="57.821" style="fill:${MARKER_COLOR};fill-opacity:0.41;"/>
-        <path class="someSVGpath" d="M256,174.25C301.119,174.25 337.75,210.881 337.75,256C337.75,301.119 301.119,337.75 256,337.75C210.881,337.75 174.25,301.119 174.25,256C174.25,210.881 210.881,174.25 256,174.25ZM256,198.179C224.088,198.179 198.179,224.088 198.179,256C198.179,287.912 224.088,313.821 256,313.821C287.912,313.821 313.821,287.912 313.821,256C313.821,224.088 287.912,198.179 256,198.179Z" style="fill:${MARKER_COLOR};"/>
-      </g>
+  const allDirectionsPath = orientationValues.map(degrees => `
+        <g style="transform:rotate(${degrees}deg); transform-origin: center;">
+          ${fovPath}
+        </g>
+      `).join('');
+
+  return `<svg class="svgMarker" width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+      ${allDirectionsPath}
+        <g transform="matrix(0.906623,0,0,0.906623,23.9045,22.3271)">
+          <circle class="someSVGpath" cx="256" cy="256" r="57.821" style="fill:${MARKER_COLOR};fill-opacity:0.41;"/>
+          <path class="someSVGpath" d="M256,174.25C301.119,174.25 337.75,210.881 337.75,256C337.75,301.119 301.119,337.75 256,337.75C210.881,337.75 174.25,301.119 174.25,256C174.25,210.881 210.881,174.25 256,174.25ZM256,198.179C224.088,198.179 198.179,224.088 198.179,256C198.179,287.912 224.088,313.821 256,313.821C287.912,313.821 313.821,287.912 313.821,256C313.821,224.088 287.912,198.179 256,198.179Z" style="fill:${MARKER_COLOR};"/>
+        </g>
     </svg>
     `;
 }
@@ -76,7 +84,7 @@ function createMarker(alpr: ALPR): Marker | CircleMarker {
   if (hasPlottableOrientation(alpr.tags.direction || alpr.tags['camera:direction'])) {
     const icon = L.divIcon({
       className: 'leaflet-data-marker',
-      html: createSVGMarker(alpr),
+      html: createSVGMarkers(alpr),
       iconSize: [60, 60],
       iconAnchor: [30, 30],
       popupAnchor: [0, 0],
