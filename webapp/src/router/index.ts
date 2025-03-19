@@ -123,6 +123,11 @@ const router = createRouter({
       }
     },
     {
+      path: '/foia',
+      name: 'foia',
+      component: () => import('../views/FOIA.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('../views/404.vue'),

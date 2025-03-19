@@ -14,7 +14,9 @@
         <v-list-item class="my-4">
           <v-icon size="x-large" color="primary" class="mb-2">mdi-progress-pencil</v-icon>
           <v-list-item-title class="font-weight-bold">The map is incomplete!</v-list-item-title>
-          <v-list-item-subtitle>The ALPRs displayed here are a starting point, and new locations are constantly being added.</v-list-item-subtitle>
+          <v-list-item-subtitle style="white-space: normal;">
+            New locations are always being added.
+          </v-list-item-subtitle>
         </v-list-item>
       </v-list>
 

@@ -6,14 +6,16 @@
       <p class="mb-4">
         {{ description }}
       </p>
-      <v-btn v-if="buttonText" :href="buttonHref" :to="buttonTo" :target="buttonHref ? '_blank' : '_self'" color="rgb(18, 151, 195)" class="mt-4">{{ buttonText }}</v-btn>
+      <v-btn v-if="buttonText" :href="buttonHref" :to="buttonTo" :target color="rgb(18, 151, 195)" class="mt-4">{{ buttonText }}</v-btn>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
   title: String,
   description: String,
   imageUrl: String,
@@ -21,6 +23,10 @@ defineProps({
   buttonTo: String,
   buttonHref: String,
 });
+
+const target = computed(() => 
+  props.buttonHref && !props.buttonHref.startsWith('#') ? '_blank' : '_self'
+);
 </script>
 
 <style scoped>
