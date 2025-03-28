@@ -140,8 +140,13 @@ function updateURL() {
     return;
   }
 
+  const currentRoute = router.currentRoute.value;
+  const newHash = `#map=${zoom.value}/${center.value.lat.toFixed(6)}/${center.value.lng.toFixed(6)}`;
+
   router.replace({
-    hash: `#map=${zoom.value}/${center.value.lat.toFixed(6)}/${center.value.lng.toFixed(6)}`
+    path: currentRoute.path,
+    query: currentRoute.query,
+    hash: newHash,
   });
 }
 

@@ -1,5 +1,8 @@
 <template>
-  <div id="map">
+  <div id="map" :style="{
+    height: isFullScreen ? '100dvh' : 'calc(100dvh - 64px)',
+    marginTop: isFullScreen ? '0' : '64px',
+  }">
     <div class="topleft">
       <slot name="topleft"></slot>
     </div>
@@ -16,6 +19,8 @@ import L, { type LatLngTuple, type FeatureGroup, type MarkerClusterGroup, type M
 import type { ALPR } from '@/types';
 import DFMapPopup from './DFMapPopup.vue';
 import { createVuetify } from 'vuetify'
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
@@ -26,6 +31,7 @@ const MARKER_COLOR = 'rgb(63,84,243)';
 // Internal State Management
 const markerMap = new Map<string, Marker | CircleMarker>();
 const isInternalUpdate = ref(false);
+const isFullScreen = computed(() => useRoute().query.fullscreen === 'true');
 
 const props = defineProps({
   center: {
@@ -278,8 +284,6 @@ function registerMapEvents() {
 @import 'leaflet.markercluster/dist/MarkerCluster.css';
 
 #map {
-  height: calc(100dvh - 64px);
-  margin-top: 64px;
   width: 100%;
   position: absolute;
   top: 0;
