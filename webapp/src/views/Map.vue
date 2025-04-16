@@ -7,7 +7,7 @@
       v-model:zoom="zoom"
       :current-location="currentLocation"
       @update:bounds="updateBounds"
-      :alprs
+      :events="mockVisaRevocations"
     >
       <!-- SEARCH -->
       <template v-slot:topleft>
@@ -62,6 +62,7 @@ globalThis.L = L;
 import 'leaflet/dist/leaflet.css'
 import LeafletMap from '@/components/LeafletMap.vue';
 import NewVisitor from '@/components/NewVisitor.vue';
+import { mockVisaRevocations } from '@/types';
 
 const DEFAULT_ZOOM = 12;
 

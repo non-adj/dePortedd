@@ -1,15 +1,15 @@
 <template>
   <div class="counter">
     <span :class="{ mobile: isMobile }" ref="counterEl" class="font-weight-bold">0</span>
-    <span class="caption">&nbsp;ALPRs Reported Worldwide</span>
-    <div :class="{ 'fade-in': showFinalAnimation }" class="subheading fade-text">and rapidly growing!</div>
+    <span class="caption">&nbsp;Visa Revocations Tracked</span>
+    <div :class="{ 'fade-in': showFinalAnimation }" class="subheading fade-text">and counting</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch, type Ref } from 'vue';
+import { onMounted, ref, type Ref } from 'vue';
 import { useDisplay } from 'vuetify'
-import { getALPRCounts } from '@/services/apiService';
+import { mockVisaRevocations } from '@/types';
 import { CountUp } from 'countup.js';
 
 const props = defineProps({
@@ -29,14 +29,6 @@ const countupOptions = {
   suffix: '',
 };
 let counter: CountUp|undefined = undefined;
-interface Counts {
-  us?: number;
-  worldwide?: number;
-}
-const counts: Ref<Counts> = ref({
-  us: undefined,
-  worldwide: undefined,
-});
 const showFinalAnimation = ref(false);
 const { xs: isMobile } = useDisplay();
 
@@ -44,21 +36,18 @@ let timeOfMount: number|undefined = undefined;
 
 onMounted(() => {
   timeOfMount = new Date().getTime();
-  getALPRCounts().then((countResponse) => {
-    counts.value = countResponse;
-    countUp(countResponse);
-  });
+  const total = mockVisaRevocations.length;
+  countUp(total);
 });
 
-function countUp(newCounts: Counts) {
-  if (!newCounts.worldwide) return;
+function countUp(total: number) {
   if (!counterEl.value) {
     console.error('Counter element not found');
     return;
   };
 
   if (!counter) {
-    counter = new CountUp(counterEl.value, newCounts.worldwide, countupOptions);
+    counter = new CountUp(counterEl.value, total, countupOptions);
 
     if (timeOfMount) {
       const timeSinceMount = new Date().getTime() - timeOfMount;

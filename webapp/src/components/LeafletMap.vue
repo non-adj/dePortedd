@@ -16,7 +16,8 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, h, createApp, watch, ref, type PropType, type Ref } from 'vue';
 import L, { type LatLngTuple, type FeatureGroup, type MarkerClusterGroup, type Marker, type CircleMarker } from 'leaflet';
-import type { ALPR } from '@/types';
+import type { ALPR, VisaRevocationEvent } from '@/types';
+import { mockVisaRevocations } from '@/types';
 import DFMapPopup from './DFMapPopup.vue';
 import { createVuetify } from 'vuetify'
 import { useRoute } from 'vue-router';
@@ -42,8 +43,8 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  alprs: {
-    type: Array as PropType<ALPR[]>,
+  events: { // renamed from alprs
+    type: Array as PropType<VisaRevocationEvent[]>,
     default: () => [],
   },
   currentLocation: {
@@ -100,19 +101,8 @@ function cardinalToDegrees(cardinal: string): number {
   return cardinalMap[cardinal] ?? cardinal;
 }
 
-function createMarker(alpr: ALPR): Marker | CircleMarker {
-  if (hasPlottableOrientation(alpr.tags.direction || alpr.tags['camera:direction'])) {
-    const icon = L.divIcon({
-      className: 'leaflet-data-marker',
-      html: createSVGMarkers(alpr),
-      iconSize: [60, 60],
-      iconAnchor: [30, 30],
-      popupAnchor: [0, 0],
-    });
-    return L.marker([alpr.lat, alpr.lon], { icon });
-  }
-
-  return L.circleMarker([alpr.lat, alpr.lon], {
+function createMarker(event: VisaRevocationEvent): Marker | CircleMarker {
+  return L.circleMarker([event.lat, event.lon], {
     fill: true,
     fillColor: MARKER_COLOR,
     fillOpacity: 0.6,
@@ -124,22 +114,14 @@ function createMarker(alpr: ALPR): Marker | CircleMarker {
   });
 }
 
-function bindPopup(marker: L.CircleMarker | L.Marker, alpr: ALPR): L.CircleMarker | L.Marker {
+function bindPopup(marker: L.CircleMarker | L.Marker, event: VisaRevocationEvent): L.CircleMarker | L.Marker {
   marker.bindPopup('');
 
   marker.on('popupopen', (e: any) => {
     const popupContent = document.createElement('div');
     createApp({
       render() {
-        return h(DFMapPopup, {
-          alpr: {
-            id: alpr.id,
-            lat: alpr.lat,
-            lon: alpr.lon,
-            tags: alpr.tags,
-            type: alpr.type,
-          }
-        });
+        return h(DFMapPopup, { event });
       }
     }).use(createVuetify()).mount(popupContent);
 
@@ -181,8 +163,8 @@ function initializeMap() {
   map.addLayer(clusterLayer);
   registerMapEvents();
 
-  if (props.alprs.length) {
-    updateMarkers(props.alprs);
+  if (props.events.length) {
+    updateMarkers(props.events);
   } else {
     emit('update:bounds', map.getBounds());
   }
@@ -192,17 +174,17 @@ function initializeMap() {
   }
 }
 
-function updateMarkers(newAlprs: ALPR[]): void {
+function updateMarkers(newEvents: VisaRevocationEvent[]): void {
   const currentIds = new Set(markerMap.keys());
-  const nonexistingAlprs = newAlprs.filter(alpr => !currentIds.has(alpr.id));
+  const nonexistingEvents = newEvents.filter(event => !currentIds.has(event.id));
 
   // Add markers
-  for (const alpr of nonexistingAlprs) {
-    if (!currentIds.has(alpr.id)) {
+  for (const event of nonexistingEvents) {
+    if (!currentIds.has(event.id)) {
       // Add new marker
-      const marker = createMarker(alpr);
-      bindPopup(marker, alpr);
-      markerMap.set(alpr.id, marker);
+      const marker = createMarker(event);
+      bindPopup(marker, event);
+      markerMap.set(event.id, marker);
       circlesLayer.addLayer(marker);
     }
   }
@@ -254,8 +236,8 @@ onMounted(() => {
     }
   });
 
-  watch(() => props.alprs, (newAlprs) => {
-    updateMarkers(newAlprs);
+  watch(() => props.events, (newEvents) => {
+    updateMarkers(newEvents);
   }, { deep: true });
 
   watch(() => props.currentLocation, () => {
