@@ -110,8 +110,7 @@ async function goToMap(options: GoToMapOptions = {}) {
 
 <style>
 .hero-section {
-  background: url('/flock-camera.jpeg') no-repeat center center;
-  background-size: cover;
+  background: none;
   color: white;
   padding: 60px 0 50px 0 !important;
   position: relative;

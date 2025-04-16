@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Landing from '../views/Landing.vue'
+import Home from '../views/Home.vue'
 import Map from '../views/Map.vue'
 import { useHead } from '@unhead/vue'
 
@@ -18,9 +18,9 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: Landing,
+      component: Home,
       meta: {
-        title: 'Find Nearby ALPRs | DeFlock'
+        title: 'DePortedd | Student Visa Revocation Tracker'
       }
     },
     {
@@ -28,111 +28,79 @@ const router = createRouter({
       name: 'map',
       component: Map,
       meta: {
-        title: 'ALPR Map | DeFlock'
+        title: 'Visa Revocation Map | DePortedd'
       }
     },
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      component: () => import('../views/About.vue'),
       meta: {
-        title: 'About | DeFlock'
+        title: 'About | DePortedd'
       }
     },
     {
-      path: '/what-is-an-alpr',
-      name: 'what-is-an-alpr',
-      component: () => import('../views/WhatIsAnALPRView.vue'),
+      path: '/what-is-a-student-visa-revocation',
+      name: 'what-is-a-student-visa-revocation',
+      component: () => import('../views/WhatIsAStudentVisaRevocation.vue'),
       meta: {
-        title: 'What is an ALPR | DeFlock'
+        title: 'What is a Student Visa Revocation | DePortedd'
       }
     },
     {
       path: '/report',
       name: 'report',
-      component: () => import('../views/ReportView.vue'),
+      component: () => import('../views/ReportRevocation.vue'),
       meta: {
-        title: 'Report an ALPR | DeFlock'
+        title: 'Report a Revocation/Deportation | DePortedd'
       }
     },
     {
-      path: '/operators',
-      name: 'operators',
-      component: () => import('../views/OperatorsView.vue'),
+      path: '/flyers-and-posters',
+      name: 'flyers-and-posters',
+      component: () => import('../views/FlyersAndPosters.vue'),
       meta: {
-        title: 'Operators | DeFlock'
-      }
-    },
-    {
-      path: '/wardriving',
-      name: 'wardriving',
-      component: () => import('../views/Wardriving.vue'),
-      meta: {
-        title: 'Wardriving | DeFlock'
+        title: 'Flyers and Posters | DePortedd'
       }
     },
     {
       path: '/contact',
       name: 'contact',
-      component: () => import('../views/ContactView.vue'),
+      component: () => import('../views/Contact.vue'),
       meta: {
-        title: 'Contact | DeFlock'
-      }
-    },
-    {
-      path: '/roadmap',
-      name: 'roadmap',
-      component: () => import('../views/RoadmapView.vue'),
-      meta: {
-        title: 'Roadmap | DeFlock'
+        title: 'Contact | DePortedd'
       }
     },
     {
       path: '/terms',
       name: 'terms',
-      component: () => import('../views/TermsOfService.vue'),
+      component: () => import('../views/Terms.vue'),
       meta: {
-        title: 'Terms of Service | DeFlock'
+        title: 'Terms of Service | DePortedd'
       }
     },
     {
       path: '/privacy',
       name: 'privacy',
-      component: () => import('../views/PrivacyPolicy.vue'),
+      component: () => import('../views/Privacy.vue'),
       meta: {
-        title: 'Privacy Policy | DeFlock'
+        title: 'Privacy Policy | DePortedd'
       }
     },
     {
-      path: '/qr',
-      name: 'qr-landing',
-      component: () => import('../views/Landing.vue'),
+      path: '/why-not-foia',
+      name: 'why-not-foia',
+      component: () => import('../views/WhyNotFOIA.vue'),
       meta: {
-        title: 'You Found an ALPR | DeFlock'
+        title: 'Why NOT to Submit a FOIA | DePortedd'
       }
-    },
-    {
-      path: '/donate',
-      name: 'donate',
-      component: () => import('../views/Donate.vue'),
-      meta: {
-        title: 'Donate | DeFlock'
-      }
-    },
-    {
-      path: '/foia',
-      name: 'foia',
-      component: () => import('../views/FOIA.vue'),
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: () => import('../views/404.vue'),
       meta: {
-        title: 'Not Found | DeFlock'
+        title: 'Not Found | DePortedd'
       }
     }
   ]

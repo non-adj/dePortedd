@@ -12,7 +12,7 @@
 
     <h2>How to Get Started</h2>
     <p>
-      Download and print our <a href="/deflock-poster.pdf" target="_blank">informational flyer</a> or create your own. Make sure to include information about how to report a revocation, where to find support, and why this issue matters.
+      Download and print our <a href="#" target="_blank">informational flyer</a> or create your own. Make sure to include information about how to report a revocation, where to find support, and why this issue matters.
     </p>
     <p>
       Before posting, check your campus policies about flyers and posters. Always be respectful of school rules and local laws.
@@ -23,7 +23,7 @@
       If you post a flyer or organize an awareness event, let us know! You can email us photos or stories, and we may feature your efforts (with permission) to inspire others.
     </p>
     <div class="text-center mt-12">
-      <v-btn href="/deflock-poster.pdf" target="_blank" color="rgb(18, 151, 195)"><v-icon start>mdi-download</v-icon>Download Flyer</v-btn>
+      <v-btn href="#" target="_blank" color="rgb(18, 151, 195)"><v-icon start>mdi-download</v-icon>Download Flyer</v-btn>
     </div>
   </v-container>
   <Footer />

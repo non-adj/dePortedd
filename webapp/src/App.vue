@@ -50,7 +50,7 @@ watch(() => theme.global.name.value, (newTheme) => {
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
         <v-toolbar-title>
-          <v-img style="cursor: pointer" height="36" width="130" src="/deflock-logo.svg" @click="router.push('/')" />
+          <!-- Removed logo image -->
         </v-toolbar-title>
 
         <v-spacer></v-spacer>
