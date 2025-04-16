@@ -16,10 +16,10 @@ function toggleTheme() {
 const items = [
   { title: 'Home', icon: 'mdi-home', to: '/' },
   { title: 'Map', icon: 'mdi-map', to: '/map' },
-  { title: 'What is a Student Visa Revocation?', icon: 'mdi-cctv', to: '/what-is-an-alpr' },
+  { title: 'What is a Student Visa Revocation?', icon: 'mdi-cctv', to: '/what-is-a-student-visa-revocation' },
   { title: 'Report a Revocation/Deportation', icon: 'mdi-map-marker-plus', to: '/report' },
-  { title: 'Why NOT to Submit a FOIA', icon: 'mdi-file-document', to: '/foia' },
-  { title: 'Flyers and Posters', icon: 'mdi-car-connected', to: '/wardriving' },
+  { title: 'Why NOT to Submit a FOIA', icon: 'mdi-file-document', to: '/why-not-foia' },
+  { title: 'Flyers and Posters', icon: 'mdi-car-connected', to: '/flyers-and-posters' },
   // { title: 'Known Operators', icon: 'mdi-police-badge', to: '/operators' },
   // { title: 'About', icon: 'mdi-information', to: '/about' },
   // { title: 'Feature Roadmap', icon: 'mdi-road-variant', to: '/roadmap' },

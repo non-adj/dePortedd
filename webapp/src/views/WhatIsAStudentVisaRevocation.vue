@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row justify="center" class="hero-section-whatis text-center mb-4">
-      <!-- Removed top image from What is a Student Visa Revocation page -->
+      <!-- Image removed -->
     </v-row>
   </v-container>
   
