@@ -3,20 +3,10 @@
   <v-container fluid class="hero-section">
     <v-row justify="center">
       <v-col cols="12" md="8" class="text-center">
-        <h1 class="display-1 px-8">You're Being Tracked</h1>
+        <h1 class="display-1 px-8">Tracking Student Visa Revocations</h1>
         
         <ALPRCounter class="my-6" />
         
-        <!-- Featured On Section -->
-        <v-container class="featured-on-section my-8">
-          <h4 class="mb-4" style="opacity: 0.8">Featured On</h4>
-          <v-row justify="center" align-items="center">
-            <v-card v-for="site in featuredOn" flat target="_blank" :href="site.url" class="mx-4" :width="site.wide ? 200 : 100" height="50" style="background: rgba(0,0,0,0)">
-              <v-img contain :src="site.logo" :alt="site.name" class="featured-logo" style="display: flex; align-items: center; height: 100%;" />
-            </v-card>
-          </v-row>
-        </v-container>
-
         <v-btn size="large" color="rgb(18, 151, 195)" large @click="goToMap({ withCurrentLocation: true })">
           Explore the Map
           <v-icon end>mdi-map</v-icon>
@@ -25,66 +15,61 @@
     </v-row>
   </v-container>
   
-  <!-- Dangers Section -->
+  <!-- Info Section -->
   <v-container class="py-10 text-center info-section">
-
-    <h2 class="mb-4">What is an ALPR</h2>
+    <h2 class="mb-4">What is This Project?</h2>
     <p class="text-left px-6">
-      Automated License Plate Readers (ALPRs) are cameras that capture images of all passing license plates, storing details like the car's location, date, and time. These cameras collect data on millions of vehicles—regardless of whether the driver is suspected of a crime. While these systems can be useful for tracking stolen cars or wanted individuals, they are mostly used to track the movements of innocent people.
+      This website tracks and visualizes student visa revocations and deportations across the United States. Our goal is to provide transparency, support advocacy, and inform students, schools, and the public about where and how these events are occurring.
     </p>
-
     <v-divider class="my-8" />
-
-    <h2 class="display-2 mb-4">The Dangers of ALPRs</h2>
+    <h2 class="display-2 mb-4">Why Track Visa Revocations?</h2>
     <p class="px-6">
-      ALPRs are a threat to your privacy and civil liberties. They can be used to track your movements and profile you, and even stalk you. Learn more about the dangers of ALPRs and how you can protect yourself.
+      Student visa revocations can have life-changing consequences for individuals and communities. By mapping these events, we hope to highlight trends, identify affected institutions, and support efforts to protect the rights of international students.
     </p>
-    
     <v-row class="align-center mt-4">
       <v-col cols="12" md="4" class="text-center">
         <v-card>
           <v-card-title class="headline">
-            <v-icon x-large class="mr-2">mdi-shield-alert</v-icon>
-            Privacy Violations
+            <v-icon x-large class="mr-2">mdi-alert</v-icon>
+            Transparency
           </v-card-title>
           <v-card-text>
-            ALPRs track your movements and store your data for long periods of time, creating a detailed record of your location history.
+            See where student visa revocations and deportations are happening, and which schools are most affected.
           </v-card-text>
         </v-card>
       </v-col>
       <v-col cols="12" md="4" class="text-center">
         <v-card>
           <v-card-title class="headline">
-            <v-icon x-large class="mr-2">mdi-robber</v-icon>
-            Risk of Misuse
+            <v-icon x-large class="mr-2">mdi-account-group</v-icon>
+            Community Reporting
           </v-card-title>
           <v-card-text>
-            Data from ALPRs has led to <a target="_blank" href="https://www.newsobserver.com/news/state/north-carolina/article287381160.html">wrongful arrests</a>, profiling, and <a target="_blank" href="https://www.kwch.com/2022/10/31/kechi-police-lieutenant-arrested-using-police-technology-stalk-wife/">stalking ex-partners</a> by police officers.
+            Contribute data and help build a more complete picture of the impact on students and institutions.
           </v-card-text>
         </v-card>
       </v-col>
       <v-col cols="12" md="4" class="text-center">
         <v-card>
           <v-card-title class="headline">
-            <v-icon x-large class="mr-2">mdi-handcuffs</v-icon>
-            Limited Benefits
+            <v-icon x-large class="mr-2">mdi-school</v-icon>
+            Advocacy
           </v-card-title>
           <v-card-text>
-            There's no substantial evidence that ALPRs effectively prevent crime, despite <a target="_blank" href="https://www.404media.co/researcher-who-oversaw-flock-surveillance-study-now-has-concerns-about-it/">Flock's unethical attempts</a> to prove otherwise.
+            Use the data to support advocacy, research, and policy change for international students.
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
-    
-    <v-btn class="mt-8" color="rgb(18, 151, 195)" large to="/what-is-an-alpr">
+    <v-btn class="mt-8" color="rgb(18, 151, 195)" large to="/about">
       <v-icon start>mdi-book-open-page-variant</v-icon>
-      Read More
+      Learn More
     </v-btn>
   </v-container>
   
   <!-- Map Section -->
   <v-container fluid class="map-section py-10 text-center">
-    <h2 class="display-2 mb-4">Explore ALPR Locations Near You</h2>
+    <h2 class="display-2 mb-4">Explore Visa Revocation Events</h2>
     <v-btn color="white" large @click="goToMap">
       View the Map
       <v-icon end>mdi-map</v-icon>
@@ -93,6 +78,35 @@
   
   <Footer />
 </template>
+
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+import ALPRCounter from '@/components/ALPRCounter.vue';
+import { useGlobalStore } from '@/stores/global';
+import Footer from '@/components/layout/Footer.vue';
+
+const router = useRouter();
+const { setCurrentLocation } = useGlobalStore();
+
+interface GoToMapOptions {
+  withCurrentLocation?: boolean;
+}
+
+async function goToMap(options: GoToMapOptions = {}) {
+  if (options.withCurrentLocation) {
+    setCurrentLocation()
+    .then((currentLocation) => {
+      const [lat, lon] = currentLocation;
+      router.push({ path: '/map', hash: `#map=12/${lat.toFixed(6)}/${lon.toFixed(6)}` });
+    })
+    .catch(() => {
+      router.push({ path: '/map' });
+    });
+  } else {
+    router.push({ path: '/map' });
+  }
+}
+</script>
 
 <style>
 .hero-section {
@@ -145,57 +159,4 @@
 .bigger {
   font-size: 1.1rem;
 }
-
-.featured-logo {
-  opacity: 0.7;
-}
 </style>
-
-
-<script setup lang="ts">
-import { useRouter } from 'vue-router';
-import ALPRCounter from '@/components/ALPRCounter.vue';
-import { useGlobalStore } from '@/stores/global';
-import Footer from '@/components/layout/Footer.vue';
-
-const router = useRouter();
-const { setCurrentLocation } = useGlobalStore();
-
-interface GoToMapOptions {
-  withCurrentLocation?: boolean;
-}
-
-const featuredOn = [
-{
-  name: 'Forbes',
-  logo: '/white-logos/forbes.svg',
-  url: 'https://www.forbes.com/sites/larsdaniel/2024/11/26/think-youre-not-being-watched-deflock-says-think-again/',
-},
-{
-  name: '404 Media',
-  logo: '/white-logos/404media.svg',
-  url: 'https://www.404media.co/the-open-source-project-deflock-is-mapping-license-plate-surveillance-cameras-all-over-the-world/',
-},
-{
-  name: 'LA Times',
-  logo: '/white-logos/latimes.svg',
-  url: 'https://www.latimes.com/california/story/2024-11-14/are-there-automated-license-plate-readers-in-your-city-theres-an-open-source-program-for-that',
-  wide: true,
-}
-];
-
-async function goToMap(options: GoToMapOptions = {}) {
-  if (options.withCurrentLocation) {
-    setCurrentLocation()
-    .then((currentLocation) => {
-      const [lat, lon] = currentLocation;
-      router.push({ path: '/map', hash: `#map=12/${lat.toFixed(6)}/${lon.toFixed(6)}` });
-    })
-    .catch(() => {
-      router.push({ path: '/map' });
-    });
-  } else {
-    router.push({ path: '/map' });
-  }
-}
-</script>

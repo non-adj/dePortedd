@@ -1,27 +1,23 @@
-# DeFlock
+# Student Visa Revocation Tracker
 
-Crowdsourced tool for locating and reporting ALPRs. [View Live Site](https://deflock.me).
-
-![DeFlock Screenshot](./webapp/public/deflock-screenshot.webp)
+A crowdsourced tool for locating, reporting, and visualizing student visa revocations and deportations in the United States.
 
 ## Purpose
 
-I created this project after noticing the mass deployment of ALPRs in cities, towns, and even rural areas in the recent years. It's a massive threat to privacy, and this projects helps shed a light on this issue as ALPRs continue to be deployed to thousands of cities across the US and possibly beyond.
+This project was created to shed light on the scope and impact of student visa revocations and deportations across the US. By mapping and aggregating these events, we aim to provide transparency, support advocacy, and inform affected communities and institutions.
 
 ## What it Does
 
-### View ALPRs on a Map
-Uses OpenStreetMap data to populate a map with crowdsourced locations of ALPRs, along with their type and direction they face.
+### View Visa Revocations on a Map
+Displays locations and counts of student visa revocations and deportations, with breakdowns by state and educational institution.
 
-### Report ALPRs
-Provides OSM tags for easy reporting of ALPRs based on brand on OSM's editing site. Evemtually, this will be a native feature of the site.
+### Report and Track Cases
+Allows users to contribute data on new revocation events and see trends over time.
 
-### Learn About ALPRs
-See photos of common ALPRs and learn about their capabilities.
+### Learn About the Issue
+Provides resources and information about student visa policies, rights, and the impact of revocations. A breakdown of data brokers will also be added in the future.
 
 ## Tech Stack
-
-_Likely to change soon._
 
 ### Backend
 * Scala
@@ -29,7 +25,7 @@ _Likely to change soon._
 * Nginx
 
 ### Cloud
-* AWS Lambda (for [clustering](serverless/alpr_clusters) and [counts](serverless/alpr_counts))
+* AWS Lambda (for clustering and counts)
 * AWS S3
 * AWS ECR
 
@@ -39,7 +35,7 @@ _Likely to change soon._
 * Vue Leaflet (mapping library)
 
 ### Services
-* OpenStreetMap - Overpass API
+* OpenStreetMap - Overpass API (for geocoding)
 * Nominatim - Geocoding
 * Stadia Maps - Map Tiles
 
@@ -62,9 +58,7 @@ _Likely to change soon._
 
 ## Contributing
 
-We welcome contributions from anyone. Here's how you can help:
-
-### How to Contribute
+We welcome contributions from anyone interested in supporting transparency and advocacy for international students. To contribute:
 
 1. Fork the Repository
 2. Make Your Changes
