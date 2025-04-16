@@ -17,34 +17,6 @@ Allows users to contribute data on new revocation events and see trends over tim
 ### Learn About the Issue
 Provides resources and information about student visa policies, rights, and the impact of revocations. A breakdown of data brokers will also be added in the future.
 
-## Tech Stack
-
-### Backend
-* Scala
-* PekkoHTTP
-* Nginx
-
-### Cloud
-* AWS Lambda (for clustering and counts)
-* AWS S3
-* AWS ECR
-
-### Frontend
-* Vue3
-* Vuetify (UI component library)
-* Vue Leaflet (mapping library)
-
-### Services
-* OpenStreetMap - Overpass API (for geocoding)
-* Nominatim - Geocoding
-* Stadia Maps - Map Tiles
-
-## Usage
-
-### Requirements
-* node/npm
-* scala/sbt
-
 ### Running Frontend
 
 1. `cd webapp`
