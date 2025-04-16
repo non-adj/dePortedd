@@ -79,11 +79,7 @@ const internalLinks = [
   { title: 'Contact', to: '/contact', icon: 'mdi-email' },
 ];
 
-const externalLinks = [
-  { title: 'Discord', href: 'https://discord.gg/aV7v4R3sKT', customIcon: '/icon-discord.svg', customIconDark: '/icon-discord-white.svg' },
-  { title: 'Donate', to: '/donate', icon: 'mdi-heart' },
-  { title: 'GitHub', href: 'https://github.com/FoggedLens/deflock', icon: 'mdi-github' },
-]
+const externalLinks = [];
 </script>
 
 <style scoped>

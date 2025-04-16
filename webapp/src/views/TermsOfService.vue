@@ -1,92 +1,41 @@
 <template>
-  <v-container class="mb-16">
-    <h1>Terms of Service for DeFlock</h1>
-    <p>Effective Date: <b>12/26/2024</b></p>
-    
+  <v-container class="py-12">
+    <h1>Terms of Service for DePortedd</h1>
     <p>
-      Welcome to DeFlock. By accessing or using our site, you agree to these Terms of Service. If you do not agree, please refrain from using DeFlock.
+      Welcome to DePortedd. By accessing or using our site, you agree to these Terms of Service. If you do not agree, please refrain from using DePortedd.
     </p>
-
-    <h2>
-      1. About DeFlock
-    </h2>
+    <h2>1. About DePortedd</h2>
     <p>
-      DeFlock provides access to map data sourced from OpenStreetMap (OSM). Our platform allows users to view maps and provides examples of OSM tags for contributing Automatic License Plate Recognition (ALPR) data or other information to OSM.
+      DePortedd provides access to information and map data about student visa revocations and deportations. Our platform allows users to view, report, and learn about these events. We do not provide legal advice or representation.
     </p>
-
-    <h2>
-      2. User Responsibilities
-    </h2>
-    <h3>
-      2.1 Tagging Guidance
-    </h3>
-    <p>
-      While DeFlock provides examples of OSM tags that may be relevant for your contributions, it is the user’s responsibility to ensure the accuracy and appropriateness of the tags used when uploading to OSM. DeFlock is not liable for any consequences arising from incorrect or inappropriate tagging.
-    </p>
-
-    <h3>
-      2.2 Prohibited Uses
-    </h3>
-    <p>
-      DeFlock must not be used for any of the following purposes:
-    </p>
-
-    <ul class="serif">
-      <li>Locating specific nodes, ways, or relations on OpenStreetMap for the purpose of vandalism, including deleting accurate information or modifying it to be false or misleading.</li>
-      <li>Scraping, harvesting, or systematically collecting data from DeFlock or OpenStreetMap in violation of their terms or for unauthorized purposes.</li>
-      <li>Impersonating other contributors or providing false information when contributing to OpenStreetMap.</li>
-      <li>Using DeFlock or its guidance to create commercial products or services without proper attribution or compliance with OpenStreetMap's licensing terms.</li>
-      <li>Attempting to disrupt or interfere with the functionality of DeFlock, including through hacking, reverse engineering, or introducing malicious software.</li>
-      <li>Using DeFlock in ways that promote hate speech, harassment, or illegal activities.</li>
+    <h2>2. User Responsibilities</h2>
+    <ul>
+      <li>Do not submit false or misleading information.</li>
+      <li>Do not use DePortedd for harassment, hate speech, or illegal activities.</li>
+      <li>Do not attempt to disrupt or interfere with the functionality of DePortedd, including through hacking, reverse engineering, or introducing malicious software.</li>
+      <li>Do not use DePortedd to create commercial products or services without permission.</li>
     </ul>
-
+    <h2>3. Third-Party Services</h2>
     <p>
-      By using DeFlock, you agree to comply with all applicable laws and regulations.
+      DePortedd may integrate with third-party services for map data or other features. Any interactions with these services are governed by their terms of use. DePortedd is not responsible for the collection, storage, or use of data by third-party services.
     </p>
-
-    <h2>
-      3. Third-Party Services
-    </h2>
+    <h2>4. Disclaimer</h2>
     <p>
-      DeFlock integrates with OpenStreetMap, and any interactions with OSM are governed by their terms of use. DeFlock is not responsible for the collection, storage, or use of data by OSM or any third-party services. For more information, please review the OpenStreetMap Terms of Use.
+      DePortedd is provided "as is" without warranties of any kind. We do not guarantee the accuracy, reliability, or completeness of any data or information provided. DePortedd is not liable for any issues arising from the use of this site.
     </p>
-
-    <h2>4. Disclaimer of Liability</h2>
-    <p>
-      DeFlock is provided "as is" without warranties of any kind. We do not guarantee the accuracy, reliability, or completeness of any map data or tagging guidance provided. DeFlock is not liable for any issues arising from:
-    </p>
-
-    <ul class="serif">
-      <li>The accuracy or use of data sourced from OpenStreetMap.</li>
-      <li>Contributions made to OpenStreetMap, including tagging errors or disputes.</li>
-      <li>Any unauthorized or prohibited use of our platform.</li>
-    </ul>
-
     <h2>5. Intellectual Property</h2>
     <p>
-      All content provided by DeFlock, including design, text, and logos, is the intellectual property of DeFlock unless otherwise noted. Users may not copy, distribute, or modify this content without prior written permission.
+      All content provided by DePortedd, including design, text, and logos, is the intellectual property of DePortedd unless otherwise noted. Users may not copy, distribute, or modify this content without prior written permission.
     </p>
+    <h2>6. Termination</h2>
     <p>
-      DeFlock's source code is licensed under the MIT License. For details, please refer to the <a target="_blank" href="https://github.com/FoggedLens/deflock?tab=MIT-1-ov-file#readme">LICENSE file</a>.
+      We reserve the right to suspend or terminate access to DePortedd at our sole discretion if we believe a user has violated these Terms of Service.
     </p>
-
-    <h2>6. Termination of Use</h2>
-    <p>
-      We reserve the right to suspend or terminate access to DeFlock at our sole discretion if we believe a user has violated these Terms of Service.
-    </p>
-
     <h2>7. Changes to the Terms of Service</h2>
     <p>
-      DeFlock reserves the right to update or modify these Terms of Service at any time. Changes will be effective upon posting to our website. Continued use of DeFlock constitutes acceptance of the updated terms.
+      DePortedd reserves the right to update or modify these Terms of Service at any time. Changes will be effective upon posting to our website. Continued use of DePortedd constitutes acceptance of the updated terms.
     </p>
-
-    <h2>8. Contact Us</h2>
-    <p>
-      If you have any questions or concerns regarding these Terms of Service, please contact us at:
-    </p>
-    <p>
-      Email: <a href="mailto:contact@deflock.me">contact@deflock.me</a>
-    </p>
+    <p class="mt-8 text-grey">Effective Date: April 16, 2025</p>
   </v-container>
 
   <Footer />

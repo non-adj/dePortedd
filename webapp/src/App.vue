@@ -16,21 +16,16 @@ function toggleTheme() {
 const items = [
   { title: 'Home', icon: 'mdi-home', to: '/' },
   { title: 'Map', icon: 'mdi-map', to: '/map' },
-  { title: 'What is an ALPR?', icon: 'mdi-cctv', to: '/what-is-an-alpr' },
-  { title: 'Report an ALPR', icon: 'mdi-map-marker-plus', to: '/report' },
-  { title: 'How to FOIA', icon: 'mdi-file-document', to: '/foia' },
-  { title: 'Wardriving', icon: 'mdi-car-connected', to: '/wardriving' },
+  { title: 'What is a Student Visa Revocation?', icon: 'mdi-cctv', to: '/what-is-an-alpr' },
+  { title: 'Report a Revocation/Deportation', icon: 'mdi-map-marker-plus', to: '/report' },
+  { title: 'Why NOT to Submit a FOIA', icon: 'mdi-file-document', to: '/foia' },
+  { title: 'Flyers and Posters', icon: 'mdi-car-connected', to: '/wardriving' },
   // { title: 'Known Operators', icon: 'mdi-police-badge', to: '/operators' },
   // { title: 'About', icon: 'mdi-information', to: '/about' },
   // { title: 'Feature Roadmap', icon: 'mdi-road-variant', to: '/roadmap' },
 ]
 
-const metaItems = [
-  { title: 'Discord', customIcon: '/icon-discord.svg', customIconDark: '/icon-discord-white.svg', href: 'https://discord.gg/aV7v4R3sKT'},
-  { title: 'Contact', icon: 'mdi-email-outline', to: '/contact' },
-  { title: 'GitHub', icon: 'mdi-github', href: 'https://github.com/frillweeman/deflock'},
-  { title: 'Donate', icon: 'mdi-heart', to: '/donate'},
-];
+const metaItems = [];
 const drawer = ref(false)
 
 watch(() => theme.global.name.value, (newTheme) => {
