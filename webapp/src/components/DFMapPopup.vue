@@ -14,10 +14,16 @@
           <div class="value">{{ formatDate(event.date) }}</div>
         </v-list-item-title>
       </v-list-item>
-      <v-list-item class="mb-2" v-if="event.reason">
+      <v-list-item class="mb-2">
         <v-list-item-title>
           <b>Reason Given:</b>
-          <div class="value">{{ event.reason }}</div>
+          <div class="value">{{ event.reason || 'Unknown' }}</div>
+        </v-list-item-title>
+      </v-list-item>
+      <v-list-item class="mb-2">
+        <v-list-item-title>
+          <b>Force Used:</b>
+          <div class="value">{{ forceUsed(event) }}</div>
         </v-list-item-title>
       </v-list-item>
       <v-list-item>
@@ -50,6 +56,14 @@ function formatDate(dateStr: string): string {
     month: 'long',
     day: 'numeric',
   });
+}
+
+function forceUsed(event: VisaRevocationEvent): string {
+  if (event.iceInvolved) return 'ICE';
+  if (event.campusSecurity) return 'Campus Security';
+  if (event.homelandSecurity) return 'Homeland Security';
+  if (event.localPolice) return 'Local Police';
+  return 'Unknown';
 }
 </script>
 

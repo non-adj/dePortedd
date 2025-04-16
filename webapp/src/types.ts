@@ -21,6 +21,12 @@ export interface VisaRevocationEvent {
   school: string;
   date: string;
   reason?: string;
+  count?: number;
+  statement?: string;
+  iceInvolved?: boolean;
+  campusSecurity?: boolean;
+  homelandSecurity?: boolean;
+  localPolice?: boolean;
 }
 
 // Mock data for visa revocation events
@@ -29,30 +35,62 @@ import type { VisaRevocationEvent } from './types';
 export const mockVisaRevocations: VisaRevocationEvent[] = [
   {
     id: '1',
-    lat: 40.7128,
-    lon: -74.0060,
-    state: 'NY',
-    school: 'New York University',
-    date: '2024-11-01',
-    reason: 'Status violation',
+    lat: 44.5638,
+    lon: -123.2794,
+    state: 'OR',
+    school: 'Oregon State University',
+    date: '2025-04-05',
+    count: 13,
+    reason: undefined,
+    statement: undefined,
+    iceInvolved: true,
+    campusSecurity: false,
+    homelandSecurity: false,
+    localPolice: false,
   },
   {
     id: '2',
-    lat: 34.0689,
-    lon: -118.4452,
-    state: 'CA',
-    school: 'UCLA',
-    date: '2024-10-15',
-    reason: 'Academic probation',
+    lat: 44.0455,
+    lon: -123.0716,
+    state: 'OR',
+    school: 'University of Oregon',
+    date: '2025-04-07',
+    count: 4,
+    reason: undefined,
+    statement: undefined,
+    iceInvolved: false,
+    campusSecurity: true,
+    homelandSecurity: false,
+    localPolice: false,
   },
   {
     id: '3',
-    lat: 41.8781,
-    lon: -87.6298,
-    state: 'IL',
-    school: 'University of Chicago',
-    date: '2024-09-20',
-    reason: 'Unauthorized employment',
+    lat: 45.5231,
+    lon: -122.6784,
+    state: 'OR',
+    school: 'Portland Community College',
+    date: '2025-04-14',
+    count: 3,
+    reason: undefined,
+    statement: undefined,
+    iceInvolved: false,
+    campusSecurity: false,
+    homelandSecurity: true,
+    localPolice: false,
   },
-  // Add more mock events as needed
+  {
+    id: '4',
+    lat: 45.5118,
+    lon: -122.6845,
+    state: 'OR',
+    school: 'Portland State University',
+    date: '2025-04-15',
+    count: 3,
+    reason: 'Protests',
+    statement: undefined,
+    iceInvolved: false,
+    campusSecurity: false,
+    homelandSecurity: false,
+    localPolice: false,
+  },
 ];
