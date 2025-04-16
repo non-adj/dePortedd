@@ -5,93 +5,50 @@
   </v-container>
   
   <v-container class="info-section">
-    <h1 class="mt-0">What is an ALPR?</h1>
+    <h1 class="mt-0">What is a Student Visa Revocation?</h1>
     <p>
-      Automated License Plate Readers (ALPRs) are cameras that capture images of all passing license plates, storing details like the car's location, date, and time. These cameras collect data on millions of vehicles—regardless of whether the driver is suspected of a crime. While these systems can be useful for tracking stolen cars or wanted individuals, they are mostly used to track the movements of innocent people.
+      A student visa revocation is when the U.S. government cancels the legal status of an international student’s visa, often forcing them to leave the country immediately or face deportation. This can happen for a variety of reasons, including academic issues, alleged violations of visa terms, or changes in government policy. Sometimes, revocations occur suddenly and without warning, leaving students with little time to respond or seek help.
     </p>
 
-    <p>For a detailed explanation of how ALPRs are a threat to privacy, see this <a href="https://www.aclu.org/issues/privacy-technology/you-are-being-tracked" target="_blank">ACLU article</a> as well as this <a href="https://sls.eff.org/technologies/automated-license-plate-readers-alprs" target="_blank">EFF article</a> on ALPRs.</p>
-
-    <h2>Why Should You Be Concerned</h2>
-    <p class="mb-8 text-center">
-      ALPRs invade your privacy and violate your civil liberties. Here's how:
+    <h2>How Does It Impact International Students?</h2>
+    <p>
+      The consequences of a student visa revocation are severe. Students may be forced to abandon their studies, lose tuition and housing investments, and face long-term bans from re-entering the United States. The emotional toll can be devastating, affecting mental health, family stability, and future opportunities. Many students also fear stigma or retaliation if their situation becomes public.
     </p>
 
-    <Dangers />
+    <h2>Why Aren't TRIO or DACA Enough?</h2>
+    <p>
+      While programs like <b>TRIO</b> and <b>DACA</b> provide support and protection for some immigrant and first-generation students, they do not cover most international students on F-1 or J-1 visas. TRIO programs are designed for U.S. citizens and permanent residents, and DACA only applies to certain undocumented immigrants who arrived as children. International students remain especially vulnerable, with few legal protections or advocacy resources when facing visa revocation or deportation.
+    </p>
 
-    <h2 id="photos">Photos by Vendor</h2>
+    <h2>Data Brokers & Student Surveillance</h2>
+    <p>
+      Data brokers are companies that collect, aggregate, and sell information about individuals—including international students. These organizations often work with government agencies, law enforcement, and private institutions to track, profile, and sometimes wrongly accuse students of violations or crimes they did not commit. Their activities can lead to visa revocations, deportations, and loss of privacy for students.
+    </p>
+    <ul>
+      <li><b>LexisNexis</b>: Provides investigative tools and databases to law enforcement and immigration authorities. Their data has been used to accuse students of crimes or visa violations, sometimes without due process or accurate evidence.</li>
+      <li><b>Deep Sync (American Student List)</b>: Specializes in deanonymizing online activity and selling lists of student data to third parties, including government agencies and marketers. This can put students at risk of targeted surveillance or unwanted attention.</li>
+      <li><b>Experian</b>: One of the largest credit reporting agencies, Experian also sells data on students and immigrants to marketers, background check companies, and sometimes government agencies, enabling profiling and targeting.</li>
+      <li><b>Acxiom</b>: Aggregates vast amounts of personal data, including education and immigration status, and provides detailed profiles to clients in law enforcement, government, and private industry, which can be used to justify surveillance or revocation actions.</li>
+      <li><b>CoreLogic</b>: Specializes in property, financial, and background data, and provides information to landlords, schools, and government agencies that can be used to track, screen, or flag students for investigation or removal.</li>
+    </ul>
 
-    <v-row v-for="vendor in vendors" :key="vendor.vendor" class="mb-4">
-      <v-col cols="12">
-        <h3 class="text-center">{{ vendor.vendor }}</h3>
-      </v-col>
-      <v-col v-for="url in vendor.imageUrls" cols="12" sm="6" md="4">
-        <v-img @click="openImageInNewTab(url)" style="cursor: pointer;" cover :aspect-ratio="3/2" :src="url" />
-      </v-col>
-    </v-row>
+    <h2>Why This Matters</h2>
+    <p>
+      International students contribute to the academic, cultural, and economic life of the United States. When their visas are revoked, it not only disrupts their lives, but also impacts campuses and communities nationwide. By tracking and sharing these stories, we hope to raise awareness, support affected students, and advocate for fairer policies.
+    </p>
 
-    <h2>Common Vendors</h2>
-    <ul class="serif mb-16">
-      <li>
-        <a href="https://www.flocksafety.com/devices/lpr" target="_blank">Flock Safety</a> - A leading provider of ALPR technology, known for their solar-powered cameras. This is the most common brand of ALPR in the US. Flock Safety cameras are used by police departments, HOAs, as well as private businesses such as hardware stores and hotels. One of the most appealing features of Flock cameras is the data sharing network, which allows law enforcement agencies to access data from other Flock cameras in the area. This means that even if your local police department doesn't have a Flock camera, they can still access data from other Flock cameras in the area.
-      </li>
-      <li>
-        <a href="https://www.motorolasolutions.com/en_us/video-security-access-control/license-plate-recognition-camera-systems.html" target="_blank">Vigilant Solutions</a> - Owned by Motorola Solutions, offering a range of ALPR products and services.
-      </li>
-      <li>
-        <a href="https://www.leonardocompany-us.com/lpr/elsag-fixed" target="_blank">ELSAG</a> - A subsidiary of Leonardo, specializing in ALPR technology.
-      </li>
-      <li>
-        <a href="https://neology.com/solutions/enforcement/" target="_blank">Neology</a> - Specializes in ALPR technology and tolling solutions.
-      </li>
+    <h2>Resources & Support</h2>
+    <ul>
+      <li><a href="#" target="_blank">Legal Aid for International Students (placeholder)</a></li>
+      <li><a href="#" target="_blank">Know Your Rights: Student Visa Holders (placeholder)</a></li>
+      <li><a href="#" target="_blank">Mental Health Support (placeholder)</a></li>
     </ul>
   </v-container>
   <Footer />
 </template>
 
 <script setup lang="ts">
-import { ref, type Ref } from 'vue';
-import { useDisplay } from 'vuetify';
-import Dangers from '@/components/Dangers.vue';
 import Footer from '@/components/layout/Footer.vue';
-const { xs: isMobile } = useDisplay();
-
-const showFullScreenImage = ref(false);
-const fullScreenImage: Ref<any|undefined> = ref(undefined);
-
-function openImageInNewTab(url: string, newTab: boolean = true) {
-  window.open(url, newTab ? '_blank' : '_self');
-}
-
-const vendors = [
-  {
-    vendor: 'Flock',
-    count: 4,
-    urlScheme: '/alprs/flock-{index}.jpg',
-  },
-  {
-    vendor: 'Motorola/Vigilant',
-    count: 4,
-    urlScheme: '/alprs/motorola-{index}.jpg',
-  },
-  {
-    vendor: 'Leonardo/ELSAG',
-    count: 4,
-    urlScheme: '/alprs/elsag-{index}.jpg',
-  },
-  {
-    vendor: 'Neology',
-    count: 2,
-    urlScheme: '/alprs/neology-{index}.jpg',
-  },
-].reduce((acc: any, vendor: any) => {
-  const imageUrls = Array.from({ length: vendor.count }, (_, index) => 
-    vendor.urlScheme.replace('{index}', String(index + 1)),
-  );
-
-  acc.push({ vendor: vendor.vendor, imageUrls });
-  return acc;
-}, []);
 </script>
 
 <style scoped>
@@ -99,41 +56,6 @@ const vendors = [
 
 h1, h2 {
   text-align: center;
-}
-
-.scrim {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.image-close-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  color: white;
-  z-index: 100;
-}
-
-.scrim-text {
-  text-transform: uppercase;
-}
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.25s;
-}
-
-.fade-enter, .fade-leave-to {
-  opacity: 0;
 }
 
 .hero-section-whatis {
